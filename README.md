@@ -74,6 +74,16 @@ Monoreponun tamamı repo kökünde; **`backend/` Vercel’de çalıştırılmaz*
 3. **Framework Preset:** **Next.js**.
 4. **Services / multi-service** (Django + Next birlikte) seçme; Django için Vercel’de ekstra servis gerekmez.
 
+### Cursor / VS Code — `requirements.txt` her zaman UTF-8
+
+Railway / `pip` hata vermemesi için `backend/requirements.txt` dosyası **UTF-8** olmalı (UTF-16 ile kaydetme).
+
+1. Cursor’da dosyayı aç: **`backend/requirements.txt`**
+2. **Durum çubuğunun sağ altı**nda kodlamaya bak: **`UTF-8`** değilse (ör. UTF-16) tıkla.
+3. **Save with Encoding** → **UTF-8** → kaydet (**Ctrl+S**).
+
+Bu repoda klasör Workspace için varsayılan **UTF-8** ayarı vardır: **`.vscode/settings.json`** ve **`.editorconfig`**.
+
 ### Notlar
 - Öğretmen onayı admin panelinden `teacher_verification_status=approved` ile verilir; frontend rozet/etiket için `accounts/me/` endpoint’i kullanılabilir.
 - Stripe/iyzico gerçek entegrasyonu için webhook + ödeme flow’u eklenmelidir (schema alanları hazır).
