@@ -18,9 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ .
 
-ARG COLLECTSTATIC_SECRET=collectstatic-build-only
-ENV DJANGO_SECRET_KEY=${COLLECTSTATIC_SECRET}
-RUN python manage.py collectstatic --noinput --clear
+# collectstatic için geçici anahtar — imaj katmanında ENV ile gizli anahtar tutmuyoruz
+RUN DJANGO_SECRET_KEY=collectstatic-build-only python manage.py collectstatic --noinput --clear
 
 EXPOSE 8080
 

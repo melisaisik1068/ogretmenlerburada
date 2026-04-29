@@ -128,6 +128,7 @@ python manage.py createsuperuser
 2. **CORS**: `CORS_ALLOWED_ORIGINS` Vercel URL’sinin **şemalı** tam eşleniği değil.
 3. **CSRF**: Admin kullanılacaksa `CSRF_TRUSTED_ORIGINS` tanımlı olmalı.
 4. **`DATABASE_URL` yok**: PostgreSQL ile servis bağlantısı / değişken referansı eksik.
+5. **pip `Invalid requirement ... \x00`**: `backend/requirements.txt` yanlışlıkla **UTF-16** ile kaydedilmiş. Cursor/VS Code’da dosyayı **UTF-8** ile yeniden kaydedin (Save with Encoding → UTF-8), sonra commit/push.
 
 ## D) Sıradaki doğal adımlar (bundan sonra)
 

@@ -18,9 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ARG COLLECTSTATIC_SECRET=collectstatic-build-only
-ENV DJANGO_SECRET_KEY=${COLLECTSTATIC_SECRET}
-RUN python manage.py collectstatic --noinput --clear
+RUN DJANGO_SECRET_KEY=collectstatic-build-only python manage.py collectstatic --noinput --clear
 
 EXPOSE 8080
 
