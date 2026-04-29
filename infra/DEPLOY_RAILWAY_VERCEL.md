@@ -22,8 +22,14 @@ Bu rehber, **backend’in Railway’de**, ön yüzün **Vercel’de** çalışma
 
 ### Adım A2 — Kök dizin (monorepo)
 
-1. **Settings → Root Directory** → **`backend`** yazılıp kaydedilir.  
-   (Kodların `requirements.txt` ve `manage.py` bu klasördedir.)
+İki senaryodan **birini** seç:
+
+| Yöntem | Root Directory | Docker / Build |
+|--------|----------------|------------------|
+| **A)** Önerilen (bu repo için) | **Boş** veya **`./`** | Repo kökündeki **`Dockerfile`** → `COPY backend/` ile API imajı üretilir. Railway loglarında **`Dockerfile` bulundu`** görülür. |
+| **B)** Alt klasör | **`backend`** | Aynı imaj **`backend/Dockerfile`** ile üretilir (`COPY . .` doğrudan `backend` içinden). |
+
+> Logda **`skipping 'Dockerfile' at 'backend/Dockerfile' ... root_dir=`** görürsen Railway servisi **repo kökünü** kullanıyordur → **köke taşınmış** `Dockerfile` kullan veya **Root Directory = `backend`** yap.
 
 ### Adım A3 — PostgreSQL ekle
 
