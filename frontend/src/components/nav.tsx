@@ -32,7 +32,7 @@ const gradeGroups: Array<{ title: string; items: Array<{ label: string; href: st
 
 export function TopNav() {
   return (
-    <header className="border-b border-slate-100 bg-white/80 backdrop-blur supports-backdrop-filter:bg-white/70">
+    <header className="border-b border-white/35 bg-white/55 backdrop-blur-xl supports-backdrop-filter:bg-white/45">
       <div className="container-page flex h-16 items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2">
@@ -79,7 +79,7 @@ function MegaMenu() {
           Sınıflar <span className="text-slate-400 transition group-open:rotate-180">⌄</span>
         </span>
       </summary>
-      <div className="absolute left-0 top-full z-50 mt-3 w-[720px] rounded-2xl bg-white p-5 shadow-xl ring-1 ring-slate-200">
+      <div className="absolute left-0 top-full z-50 mt-3 w-[720px] rounded-2xl border border-white/40 bg-white/85 p-5 shadow-2xl shadow-blue-500/5 backdrop-blur-xl ring-1 ring-white/25">
         <div className="grid gap-6 md:grid-cols-3">
           {gradeGroups.map((g) => (
             <div key={g.title}>
@@ -118,7 +118,7 @@ function MobileMenu() {
         Menü <span className="ml-2 text-slate-400 transition group-open:rotate-180">⌄</span>
       </summary>
       <div className="container-page py-4">
-        <div className="grid gap-3 rounded-2xl bg-white p-4 shadow-lg ring-1 ring-slate-200">
+        <div className="grid gap-3 rounded-2xl border border-white/40 bg-white/85 p-4 shadow-lg shadow-blue-500/5 backdrop-blur-xl ring-1 ring-white/25">
           <div className="text-xs font-bold tracking-wide text-slate-500">Sınıflar</div>
           <div className="grid gap-2 sm:grid-cols-2">
             {gradeGroups.flatMap((g) => g.items).map((it) => (
