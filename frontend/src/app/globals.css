@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* --- Modern UI utilities (2026) --- */
+
+.container-page {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6;
+}
+
+.link-muted {
+  @apply text-slate-600 transition hover:text-slate-900;
+}
+
+.btn-solid {
+  @apply inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition;
+  @apply bg-slate-900 text-white hover:bg-slate-800;
+}
+
+.btn-outline {
+  @apply inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition;
+  @apply bg-white text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50;
+}
+
+.btn-accent {
+  @apply inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition;
+  @apply text-white;
+  @apply bg-[linear-gradient(90deg,#22c55e,#06b6d4,#3b82f6)];
+  @apply shadow-[0_12px_28px_rgba(34,197,94,0.18)];
+  @apply hover:brightness-105;
+}
+
+.btn-ghost {
+  @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-medium text-white/80 ring-1 ring-white/10 backdrop-blur-xl transition;
+  @apply hover:bg-white/6 hover:text-white;
+}
+
+.btn-primary {
+  @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-slate-950 transition;
+  @apply bg-[linear-gradient(90deg,rgba(56,189,248,1),rgba(99,102,241,1))];
+  @apply shadow-[0_12px_30px_rgba(56,189,248,0.22)];
+  @apply hover:brightness-110;
+}
+
+.btn-secondary {
+  @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-white transition;
+  @apply bg-white/8 ring-1 ring-white/12 backdrop-blur-xl;
+  @apply hover:bg-white/12;
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #38bdf8, #6366f1, #22c55e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-60%);
+  }
+  100% {
+    transform: translateX(60%);
+  }
+}
+
+.animate-floaty {
+  animation: floaty 7.5s ease-in-out infinite;
+}
+
+.shimmer-border {
+  position: relative;
+}
+
+.shimmer-border::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 24px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+  opacity: 0;
+  transform: translateX(-60%);
+  transition: opacity 250ms ease;
+  pointer-events: none;
+}
+
+.shimmer-border:hover::after {
+  opacity: 1;
+  animation: shimmer 1.2s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-floaty {
+    animation: none !important;
+  }
+  .shimmer-border:hover::after {
+    animation: none !important;
+  }
+}
