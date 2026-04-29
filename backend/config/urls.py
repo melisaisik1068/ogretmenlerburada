@@ -33,6 +33,7 @@ urlpatterns = [
     path("api/booking/", include("booking.urls")),
     path("api/marketplace/", include("marketplace.urls")),
     path("api/lessons/", include("lessons.urls")),
+    path("api/contact/", include("contact.urls")),
 ]
 
 if settings.DEBUG:

@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { AuthLinks } from "@/components/auth/auth-links";
+
 const gradeGroups: Array<{ title: string; items: Array<{ label: string; href: string }> }> = [
   {
     title: "İLKOKUL",
@@ -54,14 +56,7 @@ export function TopNav() {
           </Link>
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Link className="btn-outline h-10" href="/login">
-            Giriş Yap
-          </Link>
-          <Link className="btn-accent h-10" href="/signup">
-            Ücretsiz Üye Ol
-          </Link>
-        </div>
+        <AuthLinks />
 
         <div className="md:hidden">
           <MobileMenu />

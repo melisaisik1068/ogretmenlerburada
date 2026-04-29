@@ -1,29 +1,22 @@
 import { SiteFooter } from "@/components/footer";
 import { TopNav } from "@/components/nav";
+import { SignupForm } from "@/components/auth/signup-form";
 
 export default function SignupPage() {
   return (
-    <div className="min-h-dvh bg-white text-slate-900">
+    <div className="relative min-h-dvh bg-white text-slate-900">
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
       <TopNav />
       <main className="container-page py-12">
-        <div className="mx-auto max-w-2xl rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <div className="mx-auto max-w-2xl rounded-3xl border border-white/30 bg-white/65 p-6 shadow-2xl shadow-blue-500/10 backdrop-blur-xl ring-1 ring-white/25">
           <h1 className="text-xl font-extrabold tracking-tight">Ücretsiz Üye Ol</h1>
-          <p className="mt-2 text-sm text-slate-600">Kayıt akışını burada derslig.com benzeri şekilde tasarlayacağız.</p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {["Öğrenci", "Öğretmen", "Veli", "Okul"].map((x) => (
-              <button
-                key={x}
-                className="shimmer-border rounded-2xl bg-white p-5 text-left ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <div className="text-sm font-extrabold tracking-tight text-slate-900">{x}</div>
-                <div className="mt-1 text-sm text-slate-600">[DOLDUR] kısa açıklama</div>
-              </button>
-            ))}
-          </div>
+          <p className="mt-2 text-sm text-slate-600">
+            Kayıt bilgilerin <span className="font-semibold">POST /api/accounts/register/</span> üzerinden backend&apos;e gider; başarılı olunca otomatik oturum açılır.
+          </p>
+          <SignupForm />
         </div>
       </main>
       <SiteFooter />
     </div>
   );
 }
-

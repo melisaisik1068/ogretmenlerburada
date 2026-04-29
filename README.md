@@ -53,6 +53,17 @@ npm install
 npm run dev
 ```
 
+### Frontend ↔ Django API (JWT)
+
+- Çalıştırma: `cd backend && .venv\\Scripts\\python manage.py runserver 0.0.0.0:8000` ve `cd frontend && npm run dev`.
+- Next istemcisi varsayılan olarak `NEXT_PUBLIC_API_BASE_URL` (örn. `http://localhost:8000`) kullanır.
+- Oturum: tarayıcı **`/api/auth/login`** üzerinden JWT alır; access token **`ob_access`** httpOnly çerezinde tutulur (middleware `/dashboard` için kullanır).
+- Kayıt: **`POST /api/accounts/register/`** (Next proxy: **`POST /api/auth/register`**).
+- İletişim formu: Django **`POST /api/contact/messages/`** (Next proxy: **`POST /api/contact`**).
+- Kurs listesi: **`GET /api/lessons/courses/`** (`/classes` sayfasında kullanılır).
+- Planlar: **`GET /api/subscriptions/plans/`** (`/upgrade`).
+- CORS: geliştirmede `http://localhost:3000`; üretimde `CORS_ALLOWED_ORIGINS` ile frontend domain’ini ekleyin.
+
 ### Vercel (yalnızca Next.js)
 Monoreponun tamamı repo kökünde; **`backend/` Vercel’de çalıştırılmaz** (API ayrı sunucuda). Yeni proje oluştururken:
 

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 from dotenv import load_dotenv
 import os
 
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     "booking",
     "marketplace",
     "lessons",
+    "contact",
 ]
 
 MIDDLEWARE = [
@@ -162,4 +164,9 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "ÖğretmenlerBurada API",
     "DESCRIPTION": "EdTech platformu API şeması.",
     "VERSION": "0.1.0",
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
