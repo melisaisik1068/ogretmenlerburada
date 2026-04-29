@@ -57,8 +57,9 @@ npm run dev
 Monoreponun tamamı repo kökünde; **`backend/` Vercel’de çalıştırılmaz** (API ayrı sunucuda). Yeni proje oluştururken:
 
 1. Repoyu içe aktar.
-2. **Root Directory:** repo kökü (**`.`** — boş bırak / monorepo kökü). `vercel.json` burada tanımlıdır; **`frontend` seçme** (aksi halde `npm ci --prefix frontend` yanlış dizine bakar).
-3. **Application Preset:** mümkünse tek framework (**Next.js / Other**); **Services** (Django + Next birlikte) seçme — Django için ekstra `experimentalServices` gerekmez.
+2. **Root Directory:** **`frontend`** — Deploy düğmesinin yanındaki **Edit** ile klasörü seç (varsayılan komutlar `npm install` / `next build` olur).
+3. **Framework Preset:** **Next.js**.
+4. **Services / multi-service** (Django + Next birlikte) seçme; Django için Vercel’de ekstra servis gerekmez.
 
 ### Notlar
 - Öğretmen onayı admin panelinden `teacher_verification_status=approved` ile verilir; frontend rozet/etiket için `accounts/me/` endpoint’i kullanılabilir.
