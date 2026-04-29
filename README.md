@@ -64,6 +64,8 @@ npm run dev
 - Planlar: **`GET /api/subscriptions/plans/`** (`/upgrade`).
 - CORS: geliştirmede `http://localhost:3000`; üretimde `CORS_ALLOWED_ORIGINS` ile frontend domain’ini ekleyin.
 
+Railway ile API ve Vercel ile ön yüz yayını için adım adım rehbere **`infra/DEPLOY_RAILWAY_VERCEL.md`** bakın.
+
 ### Vercel (yalnızca Next.js)
 Monoreponun tamamı repo kökünde; **`backend/` Vercel’de çalıştırılmaz** (API ayrı sunucuda). Yeni proje oluştururken:
 
