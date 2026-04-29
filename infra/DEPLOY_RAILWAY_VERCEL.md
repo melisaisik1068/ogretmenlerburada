@@ -38,7 +38,7 @@ Railway → API servisi → **Variables** ile örnek aşağıdaki gibi set edili
 |--------|----------------|----------|
 | `DJANGO_SECRET_KEY` | Uzun rastgele dize | `python -c "import secrets; print(secrets.token_urlsafe(50))"` |
 | `DJANGO_DEBUG` | `0` | Üretimde kapalı |
-| `DJANGO_ALLOWED_HOSTS` | `<railway-domaini>,*.up.railway.app` | Railway’in verdiği host adı dosyayı ekle (`Settings → Networking → Public Domain` önizlemesine bakılabilir) |
+| `DJANGO_ALLOWED_HOSTS` | `xxxxx.up.railway.app,.up.railway.app` | Tam host + Django’da **başında nokta** ile alt alan eşlemesi (`.up.railway.app` → tüm `*.up.railway.app`) |
 | `CORS_ALLOWED_ORIGINS` | `https://XXXX.vercel.app` | Vercel üretim (ve gerekiyorsa preview) adresleri virgülle |
 | `CSRF_TRUSTED_ORIGINS` | `https://XXXX.vercel.app` | Django admin / form güvenliği için aynı kökleri `https://` ile ekle |
 
@@ -51,8 +51,19 @@ Railway → API servisi → **Variables** ile örnek aşağıdaki gibi set edili
 
 ### Adım A6 — Sağlık kontrolü (tarayıcı veya curl)
 
+- `GET https://<railway-domain>/api/health/` → **`{"status":"ok"}`** (DB gerektirmez; load balancer uyumu için).
 - `GET https://<railway-domain>/api/docs/` → Swagger **açılmalı**.
 - `GET https://<railway-domain>/admin/` → Admin sayfası (statik Whitenoise ile).
+
+### Adım A6b — Dockerfile ile deploy (isteğe bağlı)
+
+Railway servisinde **Build → Docker file** seçilebilir; repoda **`backend/Dockerfile`** bulunur.
+
+1. Railway → servis → **Settings** → build stratejisinde Dockerfile yolunun **`Dockerfile`** (root `backend/` iken) olduğundan emin ol.
+2. **Release command** yine: `python manage.py migrate` (imaj içinde `ENTRYPOINT` yok; Railway release aşamasında çalışır).
+3. Ortam değişkenleri Nixpacks ile aynı (`DATABASE_URL`, `DJANGO_*`, CORS, CSRF).
+
+> Nixpacks + `Procfile` yerine Docker kullanırsan, loglarda Gunicorn’un container içinde `PORT` ile bind ettiğini doğrula.
 
 ### Adım A7 — Süper kullanıcı (ilk kez)
 
@@ -97,9 +108,11 @@ python manage.py createsuperuser
 
 ## C) Son kontrol listesi
 
+- [ ] `https://<railway>/api/health/` → `{"status":"ok"}` ?
 - [ ] `https://<railway>/api/docs/` çalışıyor mu?
-- [ ] Vercel’den site açılıyor mu; giriş/kayıt **Network**’te Railway host’una istek gidiyor mu?
-- [ ] Yerelde olduğu gibi: backend **çalışırken** `NEXT_PUBLIC_API_BASE_URL` doğru kök adres olmalı (path’siz).
+- [ ] Vercel **Environment**’ta `NEXT_PUBLIC_API_BASE_URL` = Railway HTTPS kök adresi mi?
+- [ ] İsteğe bağlı **`API_INTERNAL_URL`** (Vercel sunucunun Route Handler ile API’yi çağırması) aynı kök ise yine **`https://<railway>`** atanabilir.
+- [ ] Giriş/kayıtta tarayıcı **Network**: istekler doğrudan **`https://<railway>`** kök host’una gidiyor mu?
 
 ---
 
@@ -110,7 +123,18 @@ python manage.py createsuperuser
 3. **CSRF**: Admin kullanılacaksa `CSRF_TRUSTED_ORIGINS` tanımlı olmalı.
 4. **`DATABASE_URL` yok**: PostgreSQL ile servis bağlantısı / değişken referansı eksik.
 
-Kaynak yapı dosyası: `backend/Procfile` (Railway **`$PORT`** üzerinden Gunicorn).
+## D) Sıradaki doğal adımlar (bundan sonra)
+
+1. Django **admin**: `/admin/` ile planlar (`SubscriptionPlan`), kullanıcı onayı, iletişim mesajları.
+2. **`MEDIA`/yüklemeler**: Railway disk geçici; uzun vadede S3 uyumlu depolama (ayrı rehber).
+3. **`createsuperuser`** ve ilk **abonelik planları** (`basic` / `pro` …) oluşturulması.
+4. Vercel’de üretim + preview URL’lerinin tamamının `CORS_ALLOWED_ORIGINS`’e eklenmesi (gerekirse virgülle çoklu).
+
+---
+
+Kaynak yapı dosyası: **`backend/Procfile`** (Railway **`$PORT`** üzerinden Gunicorn).
+
+Alternatif konteyner: **`backend/Dockerfile`** + **`backend/.dockerignore`**.
 
 Railway Dashboard’da sık yapılan eşleme:
 
