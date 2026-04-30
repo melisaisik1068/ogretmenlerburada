@@ -30,23 +30,21 @@ export default async function UpgradePage() {
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
       <TopNav />
       <main className="container-page py-12">
-        <h1 className="text-2xl font-extrabold tracking-tight">Plan yükselt</h1>
-        <p className="mt-2 max-w-2xl text-sm text-slate-600">
+        <div className="section-eyebrow">Pricing</div>
+        <h1 className="section-title">Plan yükselt</h1>
+        <p className="section-lead">
           Abonelik planları Django&apos;daki <span className="font-mono text-xs">GET /api/subscriptions/plans/</span>{" "}
           endpoint&apos;inden gelir.
         </p>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {plans.length === 0 ? (
-            <div className="rounded-3xl border border-white/30 bg-white/55 p-6 text-sm text-slate-600 backdrop-blur-xl">
+            <div className="surface p-6 text-sm text-slate-600 md:col-span-3">
               Planlar yüklenemedi veya henüz tanımlı değil. Django admin üzerinden abonelik planları ekleyebilirsin.
             </div>
           ) : (
             plans.map((p) => (
-              <div
-                key={p.code}
-                className="rounded-3xl border border-white/25 bg-white/60 p-6 shadow-xl shadow-blue-500/5 backdrop-blur-xl ring-1 ring-white/20"
-              >
+              <div key={p.code} className="surface p-6">
                 <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{p.code}</div>
                 <div className="mt-2 text-xl font-extrabold text-slate-900">{p.title}</div>
                 <div className="mt-2 text-sm text-slate-600">{p.price_try} ₺ / ay</div>

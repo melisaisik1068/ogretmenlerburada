@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
 :root {
+  /* Masterstudy-like palette (classic LMS) */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a; /* slate-900 */
+  --ms-primary: #1a73e8; /* link / accents */
+  --ms-accent: #ffb606; /* highlight (yellow) */
+  --ms-muted: #64748b; /* slate-500 */
+  --ms-surface: #ffffff;
+  --ms-surface-2: #f8fafc; /* slate-50 */
+  --ms-border: rgba(15, 23, 42, 0.12);
+  --ms-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  --ms-radius: 18px;
 }
 
 @theme inline {
@@ -31,16 +40,14 @@ body {
   @apply mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8;
 }
 
-/* Soft animated mesh (Glass 2.0 backdrop) */
+/* Soft, subtle background (keep mesh but reduce prominence) */
 .mesh-bg {
-  background-color: #f8fafc;
+  background-color: var(--ms-surface-2);
   background-image:
-    radial-gradient(at 42% 22%, rgba(191, 219, 254, 0.55) 0px, transparent 52%),
-    radial-gradient(at 82% 6%, rgba(239, 246, 255, 0.95) 0px, transparent 48%),
-    radial-gradient(at 6% 48%, rgba(219, 234, 254, 0.5) 0px, transparent 52%),
-    radial-gradient(at 78% 88%, rgba(186, 230, 253, 0.38) 0px, transparent 46%),
-    radial-gradient(at 14% 86%, rgba(255, 255, 255, 0.92) 0px, transparent 42%);
-  animation: mesh-float 22s ease-in-out infinite;
+    radial-gradient(at 18% 10%, rgba(26, 115, 232, 0.12) 0px, transparent 54%),
+    radial-gradient(at 85% 18%, rgba(255, 182, 6, 0.12) 0px, transparent 48%),
+    radial-gradient(at 12% 78%, rgba(16, 185, 129, 0.08) 0px, transparent 56%);
+  animation: mesh-float 28s ease-in-out infinite;
 }
 
 @keyframes mesh-float {
@@ -66,6 +73,35 @@ body {
   @apply text-slate-600 transition hover:text-slate-900;
 }
 
+.link-primary {
+  color: var(--ms-primary);
+  @apply transition hover:brightness-110;
+}
+
+.section-eyebrow {
+  @apply text-xs font-semibold uppercase tracking-wide text-slate-500;
+}
+
+.section-title {
+  @apply text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl;
+}
+
+.section-lead {
+  @apply mt-2 max-w-3xl text-sm leading-6 text-slate-600;
+}
+
+.badge {
+  @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold;
+  @apply bg-slate-50 text-slate-700 ring-1 ring-slate-200;
+}
+
+.surface {
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  box-shadow: var(--ms-shadow);
+  border: 1px solid var(--ms-border);
+}
+
 .btn-solid {
   @apply inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition;
   @apply bg-slate-900 text-white hover:bg-slate-800;
@@ -78,9 +114,9 @@ body {
 
 .btn-accent {
   @apply inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition;
-  @apply text-white;
-  @apply bg-[linear-gradient(90deg,#22c55e,#06b6d4,#3b82f6)];
-  @apply shadow-[0_12px_28px_rgba(34,197,94,0.18)];
+  @apply text-slate-950;
+  background: linear-gradient(90deg, var(--ms-accent), #ffd56a);
+  box-shadow: 0 16px 34px rgba(255, 182, 6, 0.22);
   @apply hover:brightness-105;
 }
 
@@ -90,9 +126,9 @@ body {
 }
 
 .btn-primary {
-  @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-slate-950 transition;
-  @apply bg-[linear-gradient(90deg,rgba(56,189,248,1),rgba(99,102,241,1))];
-  @apply shadow-[0_12px_30px_rgba(56,189,248,0.22)];
+  @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-white transition;
+  background: linear-gradient(90deg, var(--ms-primary), #4c8df0);
+  box-shadow: 0 16px 34px rgba(26, 115, 232, 0.22);
   @apply hover:brightness-110;
 }
 
@@ -103,7 +139,7 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(90deg, #38bdf8, #6366f1, #22c55e);
+  background: linear-gradient(90deg, var(--ms-primary), #22c55e);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

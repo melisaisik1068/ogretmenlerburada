@@ -18,68 +18,84 @@ const gradeLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-12 border-t border-white/30 bg-white/55 backdrop-blur-xl sm:mt-16">
-      <div className="container-page py-10 sm:py-12">
-        <div className="grid gap-8 md:grid-cols-12 md:gap-10">
+    <footer className="mt-12 bg-slate-950 text-white sm:mt-16">
+      <div className="container-page py-12 sm:py-16">
+        <div className="grid gap-10 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-4">
-            <div className="text-lg font-extrabold tracking-tight text-slate-900">ÖğretmenlerBurada</div>
-            <div className="mt-2 text-sm text-slate-600">Herkesin kazandığı öğrenme ligi.</div>
-            <div className="mt-5 flex flex-col gap-3 text-sm text-slate-600">
+            <div className="text-lg font-extrabold tracking-tight text-white">ÖğretmenlerBurada</div>
+            <div className="mt-2 text-sm text-white/70">Herkesin kazandığı öğrenme ligi.</div>
+            <div className="mt-6 flex flex-col gap-3 text-sm text-white/70">
               <a
                 href="mailto:destek@ogretmenlerburada.com"
-                className="flex items-center gap-3 rounded-2xl border border-white/40 bg-white/45 px-3 py-2 transition hover:border-blue-200/60 hover:bg-white/70"
+                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 transition hover:bg-white/10"
               >
-                <Mail className="h-4 w-4 shrink-0 text-blue-600" aria-hidden />
-                <span className="font-medium text-slate-900">destek@ogretmenlerburada.com</span>
+                <Mail className="h-4 w-4 shrink-0 text-(--ms-accent)" aria-hidden />
+                <span className="font-medium text-white">destek@ogretmenlerburada.com</span>
               </a>
-              <div className="flex items-start gap-3 rounded-2xl border border-white/40 bg-white/45 px-3 py-2">
-                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
-                <span>Kurumsal iletişim hatları · önümüzdeki dönemde aktif</span>
+              <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-white/70" aria-hidden />
+                <span>+90 212 000 00 00</span>
               </div>
-              <div className="flex items-start gap-3 rounded-2xl border border-white/40 bg-white/45 px-3 py-2">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-indigo-600" aria-hidden />
-                <span>Türkiye · İstanbul merkezli ekip</span>
+              <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-white/70" aria-hidden />
+                <span>Türkiye · İstanbul</span>
               </div>
             </div>
           </div>
 
           <div className="md:col-span-3">
-            <div className="text-sm font-bold text-slate-900">Kurumsal</div>
-            <div className="mt-3 grid gap-2 text-sm">
-              <Link className="link-muted" href="/schools">
-                Okullar için
+            <div className="text-sm font-bold text-white">Kurumsal</div>
+            <div className="mt-4 grid gap-2 text-sm">
+              <Link className="text-white/70 transition hover:text-white" href="/schools">
+                Okullar
               </Link>
-              <Link className="link-muted" href="/faq">
-                Sıkça Sorulan Sorular
+              <Link className="text-white/70 transition hover:text-white" href="/faq">
+                SSS
               </Link>
-              <Link className="link-muted" href="/contact">
+              <Link className="text-white/70 transition hover:text-white" href="/contact">
                 İletişim
               </Link>
             </div>
           </div>
 
           <div className="md:col-span-5">
-            <div className="text-sm font-bold text-slate-900">Sınıflar</div>
-            <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm sm:grid-cols-3">
+            <div className="text-sm font-bold text-white">Sınıflar</div>
+            <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 text-sm sm:grid-cols-3">
               {gradeLinks.map((l) => (
-                <Link key={l.href} className="link-muted" href={l.href}>
+                <Link key={l.href} className="text-white/70 transition hover:text-white" href={l.href}>
                   {l.label}
                 </Link>
               ))}
             </div>
+
+            <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div className="text-sm font-extrabold tracking-tight text-white">Subscribe our newsletter</div>
+              <div className="mt-2 text-sm text-white/70">Duyurular ve yeni kurslardan haberdar ol.</div>
+              <form className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  className="h-11 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25"
+                />
+                <button type="submit" className="btn-accent h-11 justify-center">
+                  Subscribe
+                </button>
+              </form>
+              <div className="mt-2 text-xs text-white/50">Demo form: gerçek gönderim daha sonra.</div>
+            </div>
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-3 border-t border-white/25 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
           <div>Copyright © {new Date().getFullYear()} ÖğretmenlerBurada</div>
           <div className="flex flex-wrap gap-3">
-            <Link className="link-muted" href="#">
+            <Link className="text-white/60 transition hover:text-white" href="#">
               KVKK
             </Link>
-            <Link className="link-muted" href="#">
+            <Link className="text-white/60 transition hover:text-white" href="#">
               Kullanım Koşulları
             </Link>
-            <Link className="link-muted" href="#">
+            <Link className="text-white/60 transition hover:text-white" href="#">
               Gizlilik
             </Link>
           </div>
