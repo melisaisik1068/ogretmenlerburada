@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
 import { GlassMotionCard, springInteract, SpringLink, Stagger, glassCard } from "@/components/motion/bento-motion";
+import { NewsletterForm } from "@/components/newsletter/newsletter-form";
 
 const grades = [
   "1. Sınıf",
@@ -291,28 +292,7 @@ export function LandingMain() {
                 <p className="mt-2 text-sm text-slate-600">
                   Yeni kurslar ve duyurular için e-posta listesine katıl.
                 </p>
-                <form
-                  className="mt-5 grid gap-3"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                  }}
-                >
-                  <label className="text-xs font-semibold text-slate-600" htmlFor="newsletterEmail">
-                    Your e-mail address
-                  </label>
-                  <input
-                    id="newsletterEmail"
-                    type="email"
-                    placeholder="you@example.com"
-                    className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
-                  />
-                  <button type="submit" className="btn-accent justify-center">
-                    Subscribe
-                  </button>
-                  <div className="text-xs text-slate-500">
-                    Şimdilik demo: gerçek gönderim daha sonra eklenecek.
-                  </div>
-                </form>
+                <NewsletterForm inputId="newsletterEmail" className="mt-5 grid gap-3" />
               </div>
             </div>
           </div>
@@ -346,6 +326,7 @@ function TopCoursesSection({ reduce }: { reduce: boolean }) {
 function TopCoursesClient({ reduce }: { reduce: boolean }) {
   const [tab, setTab] = useState<"newest" | "oldest" | "rating">("newest");
   const [items, setItems] = useState<CoursePublic[]>([]);
+  const [visibleCount, setVisibleCount] = useState(6);
   const [isLoading, setIsLoading] = useState(true);
 
   const base = useMemo(() => (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/+$/, ""), []);
@@ -363,7 +344,8 @@ function TopCoursesClient({ reduce }: { reduce: boolean }) {
         let sorted = [...list];
         if (tab === "oldest") sorted = sorted.reverse();
         // rating tab: API rating yok → mevcut sıralama
-        setItems(sorted.slice(0, 6));
+        setItems(sorted);
+        setVisibleCount(6);
       } catch {
         if (!alive) return;
         setItems([]);
@@ -382,6 +364,9 @@ function TopCoursesClient({ reduce }: { reduce: boolean }) {
       alive = false;
     };
   }, [base, tab]);
+
+  const visible = items.slice(0, visibleCount);
+  const canLoadMore = !isLoading && visibleCount < items.length;
 
   return (
     <>
@@ -420,7 +405,7 @@ function TopCoursesClient({ reduce }: { reduce: boolean }) {
             {base ? "Henüz kurs yok veya API’ye ulaşılamıyor. Kurs ekleyince bu alan dolacak." : "API base URL tanımlı değil."}
           </div>
         ) : (
-          items.map((c) => (
+          visible.map((c) => (
             <motion.article
               key={c.id}
               variants={
@@ -444,17 +429,34 @@ function TopCoursesClient({ reduce }: { reduce: boolean }) {
                 </div>
                 <h3 className="mt-2 text-lg font-extrabold tracking-tight text-slate-900">{c.title}</h3>
                 <p className="mt-2 line-clamp-3 text-sm text-slate-600">{c.description || "—"}</p>
-                <div className="mt-4 text-xs text-slate-500">
-                  Teacher:{" "}
-                  <span className="font-semibold text-slate-700">
-                    {[c.teacher.first_name, c.teacher.last_name].filter(Boolean).join(" ") || c.teacher.username}
-                  </span>
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+                  <div>
+                    Teacher:{" "}
+                    <span className="font-semibold text-slate-700">
+                      {[c.teacher.first_name, c.teacher.last_name].filter(Boolean).join(" ") || c.teacher.username}
+                    </span>
+                  </div>
+                  <Link href="/classes" className="link-primary text-xs font-semibold">
+                    View →
+                  </Link>
                 </div>
               </div>
             </motion.article>
           ))
         )}
       </Stagger>
+
+      {canLoadMore ? (
+        <div className="mt-8 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setVisibleCount((n) => Math.min(n + 6, items.length))}
+            className="btn-outline"
+          >
+            Load More
+          </button>
+        </div>
+      ) : null}
     </>
   );
 }

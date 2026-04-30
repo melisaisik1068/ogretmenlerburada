@@ -31,7 +31,7 @@ export default async function UpgradePage() {
       <TopNav />
       <main className="container-page py-12">
         <div className="section-eyebrow">Pricing</div>
-        <h1 className="section-title">Plan yükselt</h1>
+        <h1 className="section-title">Memberships</h1>
         <p className="section-lead">
           Abonelik planları Django&apos;daki <span className="font-mono text-xs">GET /api/subscriptions/plans/</span>{" "}
           endpoint&apos;inden gelir.
@@ -48,6 +48,11 @@ export default async function UpgradePage() {
                 <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{p.code}</div>
                 <div className="mt-2 text-xl font-extrabold text-slate-900">{p.title}</div>
                 <div className="mt-2 text-sm text-slate-600">{p.price_try} ₺ / ay</div>
+                <ul className="mt-5 grid gap-2 text-sm text-slate-600">
+                  <li>• Kurs içeriklerine erişim</li>
+                  <li>• Topluluk & destek</li>
+                  <li>• Gelişim takibi (yakında)</li>
+                </ul>
                 <Link className="btn-accent mt-5 inline-flex w-full justify-center" href="/contact">
                   Teklif al
                 </Link>

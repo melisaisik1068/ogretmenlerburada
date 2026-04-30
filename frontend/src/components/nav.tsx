@@ -49,8 +49,20 @@ export function TopNav() {
             Ana Sayfa
           </Link>
           <MegaMenu />
+          <Link className="link-muted" href="/blog">
+            Blog
+          </Link>
+          <Link className="link-muted" href="/events">
+            Events
+          </Link>
+          <Link className="link-muted" href="/shop">
+            Shop
+          </Link>
           <Link className="link-muted" href="/schools">
             Okullar
+          </Link>
+          <Link className="link-muted" href="/upgrade">
+            Memberships
           </Link>
           <Link className="link-muted" href="/faq">
             SSS
@@ -170,8 +182,20 @@ function MobileMenu() {
             ))}
           </div>
           <div className="grid gap-2 border-t border-slate-100 pt-3">
+            <Link className="link-muted" href="/blog">
+              Blog
+            </Link>
+            <Link className="link-muted" href="/events">
+              Events
+            </Link>
+            <Link className="link-muted" href="/shop">
+              Shop
+            </Link>
             <Link className="link-muted" href="/schools">
               Okullar
+            </Link>
+            <Link className="link-muted" href="/upgrade">
+              Memberships
             </Link>
             <Link className="link-muted" href="/faq">
               SSS

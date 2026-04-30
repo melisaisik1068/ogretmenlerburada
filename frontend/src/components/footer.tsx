@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 
+import { NewsletterForm } from "@/components/newsletter/newsletter-form";
+
 const gradeLinks = [
   { label: "1. Sınıf", href: "/classes/1" },
   { label: "2. Sınıf", href: "/classes/2" },
@@ -71,17 +73,7 @@ export function SiteFooter() {
             <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5">
               <div className="text-sm font-extrabold tracking-tight text-white">Subscribe our newsletter</div>
               <div className="mt-2 text-sm text-white/70">Duyurular ve yeni kurslardan haberdar ol.</div>
-              <form className="mt-4 flex flex-col gap-3 sm:flex-row">
-                <input
-                  type="email"
-                  placeholder="you@example.com"
-                  className="h-11 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25"
-                />
-                <button type="submit" className="btn-accent h-11 justify-center">
-                  Subscribe
-                </button>
-              </form>
-              <div className="mt-2 text-xs text-white/50">Demo form: gerçek gönderim daha sonra.</div>
+              <NewsletterForm tone="dark" className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start" />
             </div>
           </div>
         </div>

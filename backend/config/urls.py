@@ -37,6 +37,8 @@ urlpatterns = [
     path("api/marketplace/", include("marketplace.urls")),
     path("api/lessons/", include("lessons.urls")),
     path("api/contact/", include("contact.urls")),
+    path("api/blog/", include("blog.urls")),
+    path("api/events/", include("events.urls")),
 ]
 
 if settings.DEBUG:

@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     "marketplace",
     "lessons",
     "contact",
+    "blog",
+    "events",
 ]
 
 MIDDLEWARE = [

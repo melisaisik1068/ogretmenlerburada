@@ -37,3 +37,22 @@ export type CoursePublic = {
   subject: { id: number; slug: string; title: string };
   teacher: Pick<UserMe, "id" | "username" | "first_name" | "last_name">;
 };
+
+export type LessonPublic = {
+  id: number;
+  course: number;
+  title: string;
+  duration_minutes: number;
+  price_try: number;
+  content: string;
+  video_url: string;
+  order_index: number;
+  is_published: boolean;
+  created_at: string;
+};
+
+export type CourseDetail = CoursePublic & {
+  lessons: LessonPublic[];
+  is_published: boolean;
+  created_at: string;
+};
