@@ -1,0 +1,31 @@
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
+import { getApiBaseUrl } from "@/lib/env";
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const course = searchParams.get("course");
+  const base = getApiBaseUrl();
+  const url = course ? `${base}/api/reviews/course-reviews/?course=${encodeURIComponent(course)}` : `${base}/api/reviews/course-reviews/`;
+  const res = await fetch(url, { headers: { Accept: "application/json" }, cache: "no-store" });
+  const data = await res.json().catch(() => ({}));
+  return NextResponse.json(data, { status: res.status });
+}
+
+export async function POST(req: Request) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("ob_access")?.value;
+  if (!token) return NextResponse.json({ detail: "Unauthorized" }, { status: 401 });
+
+  const body = await req.json().catch(() => ({}));
+  const base = getApiBaseUrl();
+  const res = await fetch(`${base}/api/reviews/course-reviews/`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  return NextResponse.json(data, { status: res.status });
+}
+

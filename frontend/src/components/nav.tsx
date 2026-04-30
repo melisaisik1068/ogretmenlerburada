@@ -58,6 +58,12 @@ export function TopNav() {
           <Link className="link-muted" href="/shop">
             Shop
           </Link>
+          <Link className="link-muted" href="/search">
+            Search
+          </Link>
+          <Link className="link-muted" href="/wishlist">
+            Wishlist
+          </Link>
           <Link className="link-muted" href="/schools">
             Okullar
           </Link>
@@ -190,6 +196,12 @@ function MobileMenu() {
             </Link>
             <Link className="link-muted" href="/shop">
               Shop
+            </Link>
+            <Link className="link-muted" href="/search">
+              Search
+            </Link>
+            <Link className="link-muted" href="/wishlist">
+              Wishlist
             </Link>
             <Link className="link-muted" href="/schools">
               Okullar

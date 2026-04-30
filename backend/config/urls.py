@@ -39,6 +39,10 @@ urlpatterns = [
     path("api/contact/", include("contact.urls")),
     path("api/blog/", include("blog.urls")),
     path("api/events/", include("events.urls")),
+    path("api/wishlist/", include("wishlist.urls")),
+    path("api/progress/", include("progress.urls")),
+    path("api/reviews/", include("reviews.urls")),
+    path("api/search/", include("search.urls")),
 ]
 
 if settings.DEBUG:

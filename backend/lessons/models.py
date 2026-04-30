@@ -53,6 +53,7 @@ class Lesson(models.Model):
     video_url = models.URLField(blank=True, default="")
 
     order_index = models.PositiveIntegerField(default=0)
+    is_preview = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

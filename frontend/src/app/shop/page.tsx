@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { SiteFooter } from "@/components/footer";
 import { TopNav } from "@/components/nav";
+import { WishlistButton } from "@/components/wishlist/wishlist-button";
 import { getApiBaseUrl } from "@/lib/env";
 
 type Material = {
@@ -63,6 +64,7 @@ export default async function ShopPage() {
                   <a href={m.file} className="btn-outline h-10 px-4">
                     Download
                   </a>
+                  <WishlistButton kind="material" targetId={m.id} className="h-10" />
                 </div>
               </article>
             ))

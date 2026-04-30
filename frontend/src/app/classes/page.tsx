@@ -2,22 +2,50 @@ import Link from "next/link";
 
 import { SiteFooter } from "@/components/footer";
 import { TopNav } from "@/components/nav";
+import { RatingBadge } from "@/components/reviews/course-reviews";
+import { WishlistButton } from "@/components/wishlist/wishlist-button";
 import { getApiBaseUrl } from "@/lib/env";
 import type { CoursePublic } from "@/lib/types/api";
 
-async function fetchCourses(): Promise<CoursePublic[]> {
+type PageResp<T> = { count: number; next: string | null; previous: string | null; results: T[] };
+type Subject = { id: number; slug: string; title: string };
+
+async function fetchSubjects(): Promise<Subject[]> {
   const base = getApiBaseUrl();
+  const out: Subject[] = [];
+  let next: string | null = `${base}/api/lessons/subjects/?page_size=60`;
+  for (let guard = 0; guard < 10 && next; guard++) {
+    try {
+      const res = await fetch(next, { next: { revalidate: 60 }, headers: { Accept: "application/json" } });
+      if (!res.ok) break;
+      const data = (await res.json()) as PageResp<Subject> | Subject[];
+      const results = Array.isArray(data) ? data : (data.results ?? []);
+      for (const s of results) out.push(s);
+      next = Array.isArray(data) ? null : (data.next ?? null);
+    } catch {
+      break;
+    }
+  }
+  return out.sort((a, b) => a.title.localeCompare(b.title, "tr"));
+}
+
+async function fetchCourses(params: Record<string, string | undefined>): Promise<PageResp<CoursePublic>> {
+  const base = getApiBaseUrl();
+  const usp = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) {
+    if (v == null || v === "") continue;
+    usp.set(k, v);
+  }
   try {
-    const res = await fetch(`${base}/api/lessons/courses/`, {
+    const res = await fetch(`${base}/api/lessons/courses/?${usp.toString()}`, {
       next: { revalidate: 60 },
       headers: { Accept: "application/json" },
     });
-    if (!res.ok) return [];
-    const data = (await res.json()) as CoursePublic[] | { results?: CoursePublic[] };
-    if (Array.isArray(data)) return data;
-    return data.results ?? [];
+    if (!res.ok) return { count: 0, next: null, previous: null, results: [] };
+    const data = (await res.json()) as PageResp<CoursePublic>;
+    return data;
   } catch {
-    return [];
+    return { count: 0, next: null, previous: null, results: [] };
   }
 }
 
@@ -38,89 +66,45 @@ function buildQuery(params: Record<string, string | undefined>): string {
   return qs ? `?${qs}` : "";
 }
 
-function inferPriceBand(accessLevel: string | undefined): "free" | "paid" {
-  const v = (accessLevel ?? "").toLowerCase();
-  if (!v) return "paid";
-  if (v.includes("free") || v.includes("public") || v.includes("open")) return "free";
-  return "paid";
-}
-
-function sortCourses(courses: CoursePublic[], sort: string | undefined): CoursePublic[] {
-  const list = [...courses];
-  if (sort === "oldest") return list.reverse();
-  // rating not available yet — keep server order
-  return list;
-}
-
-function filterCourses({
-  courses,
-  q,
-  subject,
-  level,
-  price,
-}: {
-  courses: CoursePublic[];
-  q?: string;
-  subject?: string;
-  level?: string;
-  price?: string;
-}): CoursePublic[] {
-  const qq = (q ?? "").trim().toLowerCase();
-  const subj = (subject ?? "").trim();
-  const lvl = (level ?? "").trim();
-  const pr = (price ?? "").trim();
-  return courses.filter((c) => {
-    if (subj && c.subject.slug !== subj) return false;
-    if (lvl && c.access_level !== lvl) return false;
-    if (pr && inferPriceBand(c.access_level) !== pr) return false;
-    if (!qq) return true;
-    const teacher = [c.teacher.first_name, c.teacher.last_name].filter(Boolean).join(" ") || c.teacher.username;
-    const hay = `${c.title}\n${c.description ?? ""}\n${teacher}\n${c.subject.title}`.toLowerCase();
-    return hay.includes(qq);
-  });
-}
-
 export default async function ClassesPage({
   searchParams,
 }: {
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
   const sp = searchParams ?? {};
-  const sort = getParam(sp, "sort");
+  const sort = getParam(sp, "sort") ?? "newest";
   const q = getParam(sp, "q");
   const subject = getParam(sp, "subject");
+  const teacher = getParam(sp, "teacher");
   const level = getParam(sp, "level");
-  const price = getParam(sp, "price"); // free | paid
-  const rating = getParam(sp, "rating"); // not implemented yet (UI only)
+  const priceMin = getParam(sp, "price_min");
+  const priceMax = getParam(sp, "price_max");
+  const durationMin = getParam(sp, "duration_min");
+  const durationMax = getParam(sp, "duration_max");
+  const page = getParam(sp, "page") ?? "1";
+  const pageSizeParam = getParam(sp, "page_size") ?? "12";
 
-  const courses = await fetchCourses();
-  const filtered = filterCourses({ courses, q, subject, level, price });
-  const sorted = sortCourses(filtered, sort);
+  const baseParams = { q, subject, teacher, level, price_min: priceMin, price_max: priceMax, duration_min: durationMin, duration_max: durationMax, page_size: pageSizeParam };
 
-  const subjectOptions = Array.from(
-    new Map(courses.map((c) => [c.subject.slug, c.subject.title] as const)).entries(),
-  ).map(([slug, title]) => ({ slug, title }));
-  subjectOptions.sort((a, b) => a.title.localeCompare(b.title, "tr"));
+  const [data, subjects] = await Promise.all([fetchCourses({ ...baseParams, sort, page }), fetchSubjects()]);
+  const sorted = data.results;
 
-  const levelOptions = Array.from(new Set(courses.map((c) => c.access_level).filter(Boolean)));
-  levelOptions.sort((a, b) => a.localeCompare(b, "tr"));
+  const sortNewestHref = `/classes${buildQuery({ ...baseParams, sort: "newest", page: "1" })}`;
+  const sortOldestHref = `/classes${buildQuery({ ...baseParams, sort: "oldest", page: "1" })}`;
+  const sortDurationHref = `/classes${buildQuery({ ...baseParams, sort: "duration_desc", page: "1" })}`;
+  const sortPriceAscHref = `/classes${buildQuery({ ...baseParams, sort: "price_asc", page: "1" })}`;
+  const sortPriceDescHref = `/classes${buildQuery({ ...baseParams, sort: "price_desc", page: "1" })}`;
 
-  const baseParams = { q, subject, level, price, rating };
-  const sortNewestHref = `/classes${buildQuery({ ...baseParams, sort: "newest" })}`;
-  const sortOldestHref = `/classes${buildQuery({ ...baseParams, sort: "oldest" })}`;
-  const sortRatingHref = `/classes${buildQuery({ ...baseParams, sort: "rating" })}`;
+  const currentPage = Math.max(1, parseInt(page, 10) || 1);
+  const pageSize = Math.max(1, Math.min(60, parseInt(pageSizeParam, 10) || 12));
+  const totalPages = Math.max(1, Math.ceil((data.count || 0) / pageSize));
+  const prevHref = currentPage > 1 ? `/classes${buildQuery({ ...baseParams, sort, page: String(currentPage - 1) })}` : null;
+  const nextHref = currentPage < totalPages ? `/classes${buildQuery({ ...baseParams, sort, page: String(currentPage + 1) })}` : null;
 
-  const teacherCounts = new Map<string, { label: string; count: number }>();
-  for (const c of filtered) {
-    const label = [c.teacher.first_name, c.teacher.last_name].filter(Boolean).join(" ").trim() || c.teacher.username;
-    const key = label.toLowerCase();
-    const prev = teacherCounts.get(key);
-    teacherCounts.set(key, { label, count: (prev?.count ?? 0) + 1 });
-  }
-  const featuredTeacher = Array.from(teacherCounts.values()).sort((a, b) => b.count - a.count)[0];
-  const featuredTeacherHref = featuredTeacher
-    ? `/classes${buildQuery({ ...baseParams, q: featuredTeacher.label, sort: sort ?? "newest" })}`
-    : undefined;
+  const pageWindow = 2;
+  const startPage = Math.max(1, currentPage - pageWindow);
+  const endPage = Math.min(totalPages, currentPage + pageWindow);
+  const pageLinks = Array.from({ length: Math.max(0, endPage - startPage + 1) }, (_, i) => startPage + i);
 
   return (
     <div className="relative min-h-dvh bg-white text-slate-900">
@@ -148,7 +132,8 @@ export default async function ClassesPage({
             <div className="surface p-5">
               <div className="text-sm font-extrabold tracking-tight text-slate-900">Filter courses</div>
               <form className="mt-4 grid gap-4" action="/classes" method="get">
-                <input type="hidden" name="sort" value={sort ?? "newest"} />
+                <input type="hidden" name="sort" value={sort} />
+                <input type="hidden" name="page" value="1" />
 
                 <div>
                   <label htmlFor="q" className="text-xs font-semibold text-slate-600">
@@ -174,8 +159,8 @@ export default async function ClassesPage({
                     className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
                   >
                     <option value="">All</option>
-                    {subjectOptions.map((s) => (
-                      <option key={s.slug} value={s.slug}>
+                    {subjects.map((s) => (
+                      <option key={s.id} value={s.slug}>
                         {s.title}
                       </option>
                     ))}
@@ -193,54 +178,52 @@ export default async function ClassesPage({
                     className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
                   >
                     <option value="">All</option>
-                    {levelOptions.map((l) => (
-                      <option key={l} value={l}>
-                        {l}
+                    <option value="free">free</option>
+                    <option value="basic">basic</option>
+                    <option value="pro">pro</option>
+                    <option value="enterprise">enterprise</option>
+                  </select>
+                </div>
+
+                <div>
+                  <div className="text-xs font-semibold text-slate-600">Price range (TRY)</div>
+                  <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                    <input name="price_min" defaultValue={priceMin ?? ""} placeholder="Min" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
+                    <input name="price_max" defaultValue={priceMax ?? ""} placeholder="Max" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-xs font-semibold text-slate-600">Duration range (min)</div>
+                  <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                    <input name="duration_min" defaultValue={durationMin ?? ""} placeholder="Min" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
+                    <input name="duration_max" defaultValue={durationMax ?? ""} placeholder="Max" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="page_size" className="text-xs font-semibold text-slate-600">
+                    Page size
+                  </label>
+                  <select
+                    id="page_size"
+                    name="page_size"
+                    defaultValue={pageSizeParam}
+                    className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
+                  >
+                    {[12, 24, 36, 48, 60].map((n) => (
+                      <option key={n} value={String(n)}>
+                        {n} / page
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <div className="text-xs font-semibold text-slate-600">Price</div>
-                  <div className="mt-2 grid gap-2">
-                    {[
-                      { id: "all", label: "All", value: "" },
-                      { id: "free", label: "Free", value: "free" },
-                      { id: "paid", label: "Paid", value: "paid" },
-                    ].map((p) => (
-                      <label key={p.id} className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                        <input
-                          type="radio"
-                          name="price"
-                          value={p.value}
-                          defaultChecked={(price ?? "") === p.value}
-                        />
-                        <span className="font-semibold text-slate-900">{p.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="rating" className="text-xs font-semibold text-slate-600">
-                    Rating (coming soon)
+                  <label htmlFor="teacher" className="text-xs font-semibold text-slate-600">
+                    Teacher (username or id)
                   </label>
-                  <select
-                    id="rating"
-                    name="rating"
-                    defaultValue={rating ?? ""}
-                    disabled
-                    className="mt-2 h-11 w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-500 outline-none"
-                  >
-                    <option value="">Any</option>
-                    <option value="4">4.0+</option>
-                    <option value="4.5">4.5+</option>
-                    <option value="5">5.0</option>
-                  </select>
-                  <div className="mt-2 text-xs text-slate-500">
-                    Rating verisi API’ye eklenince aktif olacak.
-                  </div>
+                  <input id="teacher" name="teacher" defaultValue={teacher ?? ""} className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
                 </div>
 
                 <div className="grid gap-2 sm:grid-cols-2">
@@ -253,32 +236,9 @@ export default async function ClassesPage({
                 </div>
 
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600">
-                  Results: <span className="font-semibold text-slate-900">{sorted.length}</span> / {courses.length}
+                  Results: <span className="font-semibold text-slate-900">{data.count}</span> · Page {currentPage}/{totalPages}
                 </div>
               </form>
-            </div>
-
-            <div className="mt-6 surface p-5">
-              <div className="text-sm font-extrabold tracking-tight text-slate-900">Featured teacher</div>
-              <div className="mt-3 text-sm text-slate-600">
-                {featuredTeacher ? (
-                  <>
-                    <div className="text-base font-extrabold text-slate-900">{featuredTeacher.label}</div>
-                    <div className="mt-1 text-sm text-slate-600">
-                      Courses: <span className="font-semibold text-slate-900">{featuredTeacher.count}</span>
-                    </div>
-                    {featuredTeacherHref ? (
-                      <div className="mt-4">
-                        <Link href={featuredTeacherHref} className="btn-solid h-10 px-4">
-                          View courses
-                        </Link>
-                      </div>
-                    ) : null}
-                  </>
-                ) : (
-                  <div>Henüz gösterilecek veri yok.</div>
-                )}
-              </div>
             </div>
           </aside>
 
@@ -291,7 +251,7 @@ export default async function ClassesPage({
               <div className="flex flex-wrap gap-2">
                 <Link
                   href={sortNewestHref}
-                  className={sort !== "oldest" && sort !== "rating" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}
+                  className={sort === "newest" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}
                 >
                   Newest
                 </Link>
@@ -302,15 +262,21 @@ export default async function ClassesPage({
                   Oldest
                 </Link>
                 <Link
-                  href={sortRatingHref}
-                  className={sort === "rating" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}
+                  href={sortDurationHref}
+                  className={sort === "duration_desc" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}
                 >
-                  Overall rating
+                  Duration
+                </Link>
+                <Link href={sortPriceAscHref} className={sort === "price_asc" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
+                  Price ↑
+                </Link>
+                <Link href={sortPriceDescHref} className={sort === "price_desc" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
+                  Price ↓
                 </Link>
               </div>
             </div>
 
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div id="courses" className="mt-5 grid gap-4 sm:grid-cols-2">
               {sorted.length === 0 ? (
                 <div className="surface p-6 text-sm text-slate-600 sm:col-span-2">
                   Sonuç bulunamadı. Filtreleri temizleyip tekrar deneyebilirsin.
@@ -330,7 +296,10 @@ export default async function ClassesPage({
                     <div className="p-5">
                       <div className="flex items-center justify-between gap-3">
                         <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{c.subject.title}</div>
-                        <span className="badge">{c.access_level?.toUpperCase?.() ?? "—"}</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <RatingBadge ratingAvg={c.rating_avg} ratingCount={c.rating_count} />
+                          <span className="badge">{c.access_level?.toUpperCase?.() ?? "—"}</span>
+                        </div>
                       </div>
                       <h2 className="mt-2 text-lg font-extrabold tracking-tight text-slate-900">{c.title}</h2>
                       <p className="mt-2 line-clamp-3 text-sm text-slate-600">{c.description || "—"}</p>
@@ -341,14 +310,78 @@ export default async function ClassesPage({
                             {[c.teacher.first_name, c.teacher.last_name].filter(Boolean).join(" ") || c.teacher.username}
                           </span>
                         </div>
-                        <Link href={`/classes/${c.id}`} className="link-primary text-xs font-semibold">
-                          View →
-                        </Link>
+                    <div className="flex items-center gap-2">
+                      <WishlistButton kind="course" targetId={c.id} className="h-9 py-1.5" />
+                      <Link href={`/classes/${c.id}`} className="link-primary text-xs font-semibold">
+                        View →
+                      </Link>
+                    </div>
                       </div>
                     </div>
                   </article>
                 ))
               )}
+            </div>
+
+            <div className="mt-8 grid gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="text-xs text-slate-500">
+                  Total: <span className="font-semibold text-slate-900">{data.count}</span> · Page size:{" "}
+                  <span className="font-semibold text-slate-900">{pageSize}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {prevHref ? (
+                    <Link href={`${prevHref}#courses`} className="btn-outline h-10 px-4">
+                      ← Prev
+                    </Link>
+                  ) : (
+                    <span className="btn-outline h-10 px-4 opacity-50">← Prev</span>
+                  )}
+                  {nextHref ? (
+                    <Link href={`${nextHref}#courses`} className="btn-outline h-10 px-4">
+                      Next →
+                    </Link>
+                  ) : (
+                    <span className="btn-outline h-10 px-4 opacity-50">Next →</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                {startPage > 1 ? (
+                  <>
+                    <Link href={`/classes${buildQuery({ ...baseParams, sort, page: "1" })}#courses`} className="badge hover:bg-slate-100">
+                      1
+                    </Link>
+                    <span className="text-xs text-slate-400">…</span>
+                  </>
+                ) : null}
+                {pageLinks.map((p) => {
+                  const href = `/classes${buildQuery({ ...baseParams, sort, page: String(p) })}#courses`;
+                  const cls = p === currentPage ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100";
+                  return (
+                    <Link key={p} href={href} className={cls}>
+                      {p}
+                    </Link>
+                  );
+                })}
+                {endPage < totalPages ? (
+                  <>
+                    <span className="text-xs text-slate-400">…</span>
+                    <Link href={`/classes${buildQuery({ ...baseParams, sort, page: String(totalPages) })}#courses`} className="badge hover:bg-slate-100">
+                      {totalPages}
+                    </Link>
+                  </>
+                ) : null}
+              </div>
+
+              {nextHref ? (
+                <div>
+                  <Link href={`${nextHref}#courses`} className="btn-accent w-full justify-center">
+                    Load more
+                  </Link>
+                </div>
+              ) : null}
             </div>
           </section>
         </div>

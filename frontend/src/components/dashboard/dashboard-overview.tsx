@@ -96,6 +96,11 @@ export function DashboardOverview({ user, subscription }: Props) {
             <SpringLink href="/contact" className="btn-outline">
               İletişim
             </SpringLink>
+            {user?.role === "teacher" ? (
+              <SpringLink href="/dashboard/teacher/courses" className="btn-solid">
+                Teacher panel
+              </SpringLink>
+            ) : null}
           </div>
         </GlassMotionCard>
       </Stagger>

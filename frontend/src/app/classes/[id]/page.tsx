@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 
 import { SiteFooter } from "@/components/footer";
 import { TopNav } from "@/components/nav";
+import { CourseReviews, RatingBadge } from "@/components/reviews/course-reviews";
 import { getApiBaseUrl } from "@/lib/env";
 import type { CourseDetail } from "@/lib/types/api";
 
@@ -22,11 +24,30 @@ async function fetchCourse(id: string): Promise<{ ok: true; data: CourseDetail }
   }
 }
 
+type ProgressRow = { lesson_id: number; course_id: number; is_completed: boolean; progress_percent: number };
+
+async function fetchProgress(courseId: string): Promise<ProgressRow[] | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("ob_access")?.value;
+  if (!token) return null;
+  const base = getApiBaseUrl();
+  try {
+    const res = await fetch(`${base}/api/progress/courses/${courseId}/`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as ProgressRow[];
+  } catch {
+    return null;
+  }
+}
+
 export default async function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!id) return notFound();
 
-  const res = await fetchCourse(id);
+  const [res, progress] = await Promise.all([fetchCourse(id), fetchProgress(id)]);
   if (!res.ok) {
     if (res.status === 404) return notFound();
   }
@@ -64,6 +85,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
                 <div className="mt-5 flex flex-wrap gap-2">
                   <span className="badge">{res.data.subject.title}</span>
                   <span className="badge">{res.data.access_level?.toUpperCase?.() ?? "—"}</span>
+                  <RatingBadge ratingAvg={res.data.rating_avg} ratingCount={res.data.rating_count} />
                   <span className="badge">
                     Teacher:{" "}
                     {[res.data.teacher.first_name, res.data.teacher.last_name].filter(Boolean).join(" ") || res.data.teacher.username}
@@ -72,6 +94,18 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
 
                 <div className="mt-8 surface p-6">
                   <div className="text-sm font-extrabold tracking-tight text-slate-900">Lessons</div>
+                  {progress ? (
+                    <div className="mt-2 text-xs text-slate-500">
+                      Completed:{" "}
+                      <span className="font-semibold text-slate-900">
+                        {progress.filter((p) => p.is_completed).length}
+                      </span>
+                      {" / "}
+                      {res.data.lessons?.length ?? 0}
+                    </div>
+                  ) : (
+                    <div className="mt-2 text-xs text-slate-500">Progress için giriş yapmalısın.</div>
+                  )}
                   <div className="mt-4 grid gap-3">
                     {res.data.lessons?.length ? (
                       res.data.lessons.map((l) => (
@@ -83,12 +117,28 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
                             </div>
                           </div>
                           {l.content ? <div className="mt-2 line-clamp-3 text-sm text-slate-600">{l.content}</div> : null}
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            <Link href={`/classes/${id}/lessons/${l.id}`} className="btn-solid h-10 px-4">
+                              Play
+                            </Link>
+                            <Link href={`/classes/${id}/lessons/${l.id}`} className="btn-outline h-10 px-4">
+                              Details
+                            </Link>
+                            {progress?.some((p) => p.lesson_id === l.id && p.is_completed) ? (
+                              <span className="badge">Completed</span>
+                            ) : null}
+                            {l.is_preview ? <span className="badge">Preview</span> : null}
+                          </div>
                         </div>
                       ))
                     ) : (
                       <div className="text-sm text-slate-600">Henüz ders yok.</div>
                     )}
                   </div>
+                </div>
+
+                <div className="mt-6">
+                  <CourseReviews courseId={res.data.id} />
                 </div>
               </div>
 
