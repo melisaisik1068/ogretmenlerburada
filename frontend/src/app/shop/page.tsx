@@ -10,7 +10,8 @@ type Material = {
   title: string;
   description: string;
   type: string;
-  file: string;
+  file?: string;
+  can_download?: boolean;
   price_try: number;
   created_at: string;
   seller: { id: number; username: string; first_name: string; last_name: string };
@@ -61,9 +62,6 @@ export default async function ShopPage() {
                   <Link href={`/shop/${m.id}`} className="btn-solid h-10 px-4">
                     Details
                   </Link>
-                  <a href={m.file} className="btn-outline h-10 px-4">
-                    Download
-                  </a>
                   <WishlistButton kind="material" targetId={m.id} className="h-10" />
                 </div>
               </article>

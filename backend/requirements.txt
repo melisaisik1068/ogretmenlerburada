@@ -18,6 +18,8 @@ PyYAML==6.0.3
 referencing==0.37.0
 rpds-py==0.30.0
 sqlparse==0.5.5
+stripe==15.0.1
 tzdata==2026.2
 whitenoise==6.11.0
 uritemplate==4.2.0
+

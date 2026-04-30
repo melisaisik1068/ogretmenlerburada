@@ -164,6 +164,7 @@ STORAGES = {
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+SERVE_MEDIA_PUBLIC = os.getenv("DJANGO_SERVE_MEDIA_PUBLIC", "0") == "1"
 
 AUTH_USER_MODEL = "accounts.User"
 

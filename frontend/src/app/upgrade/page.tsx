@@ -53,9 +53,7 @@ export default async function UpgradePage() {
                   <li>• Topluluk & destek</li>
                   <li>• Gelişim takibi (yakında)</li>
                 </ul>
-                <Link className="btn-accent mt-5 inline-flex w-full justify-center" href="/contact">
-                  Teklif al
-                </Link>
+                <CheckoutButton planCode={p.code} />
               </div>
             ))
           )}
@@ -71,6 +69,51 @@ export default async function UpgradePage() {
         </div>
       </main>
       <SiteFooter />
+    </div>
+  );
+}
+
+function CheckoutButton({ planCode }: { planCode: string }) {
+  "use client";
+  const React = require("react") as typeof import("react");
+  const { useState } = React;
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  async function go() {
+    setLoading(true);
+    setErr("");
+    try {
+      const res = await fetch("/api/subscriptions/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ plan: planCode }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setErr(typeof (data as any).detail === "string" ? (data as any).detail : "Checkout başlatılamadı.");
+        return;
+      }
+      const url = (data as any).checkout_url as string | undefined;
+      if (!url) {
+        setErr("Checkout URL alınamadı.");
+        return;
+      }
+      window.location.href = url;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="mt-5 grid gap-2">
+      {err ? <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">{err}</div> : null}
+      <button className="btn-accent inline-flex w-full justify-center" type="button" onClick={() => void go()} disabled={loading}>
+        {loading ? "Yönlendiriliyor…" : "Subscribe"}
+      </button>
+      <Link className="link-muted text-xs" href="/contact">
+        Kurumsal/özel teklif için iletişim
+      </Link>
     </div>
   );
 }

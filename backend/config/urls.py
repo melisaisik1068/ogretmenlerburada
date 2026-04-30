@@ -45,5 +45,5 @@ urlpatterns = [
     path("api/search/", include("search.urls")),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG and (getattr(settings, "SERVE_MEDIA_PUBLIC", False) is True):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

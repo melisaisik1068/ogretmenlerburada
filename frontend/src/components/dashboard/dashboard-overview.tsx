@@ -93,6 +93,12 @@ export function DashboardOverview({ user, subscription }: Props) {
             <SpringLink href="/upgrade" className="btn-accent">
               Planları gör
             </SpringLink>
+            <SpringLink href="/dashboard/subscription" className="btn-outline">
+              Aboneliğim
+            </SpringLink>
+            <SpringLink href="/dashboard/orders" className="btn-outline">
+              Siparişlerim
+            </SpringLink>
             <SpringLink href="/contact" className="btn-outline">
               İletişim
             </SpringLink>

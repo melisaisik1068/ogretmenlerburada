@@ -10,7 +10,8 @@ type Material = {
   title: string;
   description: string;
   type: string;
-  file: string;
+  file?: string;
+  can_download?: boolean;
   price_try: number;
   created_at: string;
   seller: { id: number; username: string; first_name: string; last_name: string };
@@ -59,11 +60,9 @@ export default async function ShopDetailPage({ params }: { params: Promise<{ id:
           <div className="lg:col-span-5">
             <div className="surface p-6">
               <div className="text-sm font-extrabold tracking-tight text-slate-900">Purchase</div>
-              <p className="mt-2 text-sm text-slate-600">Ödeme akışı daha sonra bağlanacak. Şimdilik dosya linki.</p>
+              <p className="mt-2 text-sm text-slate-600">Satın aldıktan sonra indirme açılır.</p>
               <div className="mt-5 grid gap-2">
-                <a href={m.file} className="btn-accent justify-center">
-                  Download
-                </a>
+                <PurchaseActions materialId={m.id} priceTry={m.price_try} />
                 <Link href="/contact" className="btn-outline justify-center">
                   Enquiry
                 </Link>
@@ -73,6 +72,135 @@ export default async function ShopDetailPage({ params }: { params: Promise<{ id:
         </div>
       </main>
       <SiteFooter />
+    </div>
+  );
+}
+
+function PurchaseActions({ materialId, priceTry }: { materialId: number; priceTry: number }) {
+  "use client";
+  const React = require("react") as typeof import("react");
+  const { useEffect, useState } = React;
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [canDownload, setCanDownload] = useState<boolean>(false);
+  const [authed, setAuthed] = useState<boolean>(true);
+
+  async function load() {
+    setLoading(true);
+    setMsg("");
+    try {
+      const res = await fetch(`/api/shop/materials/${materialId}/status`, { cache: "no-store" });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        setAuthed(false);
+        setCanDownload(false);
+        return;
+      }
+      if (!res.ok) {
+        setMsg(typeof (data as any).detail === "string" ? (data as any).detail : "Durum alınamadı.");
+        return;
+      }
+      setAuthed(true);
+      setCanDownload(!!(data as any).can_download);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [materialId]);
+
+  async function buy() {
+    setBusy(true);
+    setMsg("");
+    try {
+      const res = await fetch("/api/shop/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ material_id: materialId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 401) {
+          setAuthed(false);
+          setMsg("Giriş yapmalısın.");
+          return;
+        }
+        setMsg(typeof (data as any).detail === "string" ? (data as any).detail : "Checkout başlatılamadı.");
+        return;
+      }
+      if ((data as any).already_owned) {
+        setCanDownload(true);
+        setMsg("Zaten satın alınmış.");
+        return;
+      }
+      if ((data as any).free) {
+        setCanDownload(true);
+        setMsg("Ücretsiz — erişim verildi.");
+        return;
+      }
+      const url = (data as any).checkout_url as string | undefined;
+      if (!url) {
+        setMsg("Checkout URL alınamadı.");
+        return;
+      }
+      window.location.href = url;
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function download() {
+    setBusy(true);
+    setMsg("");
+    try {
+      const res = await fetch(`/api/shop/materials/${materialId}/download`, { cache: "no-store" });
+      const ct = res.headers.get("content-type") || "application/octet-stream";
+      if (res.status === 401) {
+        setAuthed(false);
+        setMsg("Giriş yapmalısın.");
+        return;
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setMsg(typeof (data as any).detail === "string" ? (data as any).detail : "İndirilemedi.");
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(new Blob([blob], { type: ct }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `material-${materialId}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="grid gap-2">
+      {msg ? <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">{msg}</div> : null}
+      {loading ? (
+        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">Loading…</div>
+      ) : !authed ? (
+        <Link className="btn-solid justify-center" href={`/login?next=${encodeURIComponent(`/shop/${materialId}`)}`}>
+          Sign in to purchase
+        </Link>
+      ) : canDownload ? (
+        <button className="btn-accent justify-center" type="button" onClick={() => void download()} disabled={busy}>
+          {busy ? "İndiriliyor…" : "Download"}
+        </button>
+      ) : (
+        <button className="btn-solid justify-center" type="button" onClick={() => void buy()} disabled={busy}>
+          {busy ? "Yönlendiriliyor…" : priceTry > 0 ? `Buy now (${priceTry} ₺)` : "Get free access"}
+        </button>
+      )}
     </div>
   );
 }
