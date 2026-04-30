@@ -36,7 +36,8 @@ class MaterialViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
     def download(self, request, pk=None):
-        m = self.get_queryset().filter(id=pk).first()
+        # IMPORTANT: allow buyers to download too (not only seller queryset)
+        m = Material.objects.select_related("seller").filter(id=pk, is_published=True).first()
         if m is None:
             return Response({"detail": "Material not found."}, status=404)
 
