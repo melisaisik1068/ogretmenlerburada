@@ -2,13 +2,13 @@ import Link from "next/link";
 
 import { SiteFooter } from "@/components/footer";
 import { TopNav } from "@/components/nav";
-import { RatingBadge } from "@/components/reviews/course-reviews";
-import { WishlistButton } from "@/components/wishlist/wishlist-button";
 import { getApiBaseUrl } from "@/lib/env";
 import type { CoursePublic } from "@/lib/types/api";
+import { ClassesResultsClient } from "./classes-results-client";
 
 type PageResp<T> = { count: number; next: string | null; previous: string | null; results: T[] };
 type Subject = { id: number; slug: string; title: string };
+type Teacher = { id: number; username: string; first_name?: string; last_name?: string };
 
 async function fetchSubjects(): Promise<Subject[]> {
   const base = getApiBaseUrl();
@@ -27,6 +27,25 @@ async function fetchSubjects(): Promise<Subject[]> {
     }
   }
   return out.sort((a, b) => a.title.localeCompare(b.title, "tr"));
+}
+
+async function fetchTeachers(): Promise<Teacher[]> {
+  const base = getApiBaseUrl();
+  const out: Teacher[] = [];
+  let next: string | null = `${base}/api/accounts/teachers/?page_size=60`;
+  for (let guard = 0; guard < 10 && next; guard++) {
+    try {
+      const res = await fetch(next, { next: { revalidate: 300 }, headers: { Accept: "application/json" } });
+      if (!res.ok) break;
+      const data = (await res.json()) as any;
+      const results = Array.isArray(data) ? data : (data.results ?? []);
+      for (const t of results) out.push(t);
+      next = Array.isArray(data) ? null : (data.next ?? null);
+    } catch {
+      break;
+    }
+  }
+  return out;
 }
 
 async function fetchCourses(params: Record<string, string | undefined>): Promise<PageResp<CoursePublic>> {
@@ -86,7 +105,7 @@ export default async function ClassesPage({
 
   const baseParams = { q, subject, teacher, level, price_min: priceMin, price_max: priceMax, duration_min: durationMin, duration_max: durationMax, page_size: pageSizeParam };
 
-  const [data, subjects] = await Promise.all([fetchCourses({ ...baseParams, sort, page }), fetchSubjects()]);
+  const [data, subjects, teachers] = await Promise.all([fetchCourses({ ...baseParams, sort, page }), fetchSubjects(), fetchTeachers()]);
   const sorted = data.results;
 
   const sortNewestHref = `/classes${buildQuery({ ...baseParams, sort: "newest", page: "1" })}`;
@@ -101,10 +120,20 @@ export default async function ClassesPage({
   const prevHref = currentPage > 1 ? `/classes${buildQuery({ ...baseParams, sort, page: String(currentPage - 1) })}` : null;
   const nextHref = currentPage < totalPages ? `/classes${buildQuery({ ...baseParams, sort, page: String(currentPage + 1) })}` : null;
 
-  const pageWindow = 2;
-  const startPage = Math.max(1, currentPage - pageWindow);
-  const endPage = Math.min(totalPages, currentPage + pageWindow);
-  const pageLinks = Array.from({ length: Math.max(0, endPage - startPage + 1) }, (_, i) => startPage + i);
+  const chips: Array<{ label: string; href: string }> = [];
+  const remove = (key: string) => {
+    const next = { ...baseParams, sort, page: "1" } as any;
+    delete next[key];
+    return `/classes${buildQuery(next)}`;
+  };
+  if (q) chips.push({ label: `q: ${q}`, href: remove("q") });
+  if (subject) chips.push({ label: `subject: ${subject}`, href: remove("subject") });
+  if (teacher) chips.push({ label: `teacher: ${teacher}`, href: remove("teacher") });
+  if (level) chips.push({ label: `level: ${level}`, href: remove("level") });
+  if (priceMin) chips.push({ label: `min ₺${priceMin}`, href: remove("price_min") });
+  if (priceMax) chips.push({ label: `max ₺${priceMax}`, href: remove("price_max") });
+  if (durationMin) chips.push({ label: `min ${durationMin}m`, href: remove("duration_min") });
+  if (durationMax) chips.push({ label: `max ${durationMax}m`, href: remove("duration_max") });
 
   return (
     <div className="relative min-h-dvh bg-white text-slate-900">
@@ -221,9 +250,24 @@ export default async function ClassesPage({
 
                 <div>
                   <label htmlFor="teacher" className="text-xs font-semibold text-slate-600">
-                    Teacher (username or id)
+                    Teacher
                   </label>
-                  <input id="teacher" name="teacher" defaultValue={teacher ?? ""} className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
+                  <select
+                    id="teacher"
+                    name="teacher"
+                    defaultValue={teacher ?? ""}
+                    className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
+                  >
+                    <option value="">All</option>
+                    {teachers.map((t) => {
+                      const label = [t.first_name, t.last_name].filter(Boolean).join(" ") || t.username;
+                      return (
+                        <option key={t.id} value={t.username}>
+                          {label}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
 
                 <div className="grid gap-2 sm:grid-cols-2">
@@ -276,51 +320,25 @@ export default async function ClassesPage({
               </div>
             </div>
 
-            <div id="courses" className="mt-5 grid gap-4 sm:grid-cols-2">
-              {sorted.length === 0 ? (
-                <div className="surface p-6 text-sm text-slate-600 sm:col-span-2">
-                  Sonuç bulunamadı. Filtreleri temizleyip tekrar deneyebilirsin.
-                </div>
-              ) : (
-                sorted.map((c) => (
-                  <article key={c.id} className="surface overflow-hidden">
-                    <div className="relative h-40 bg-slate-100">
-                      {/* cover_image_url boşsa gradient placeholder */}
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      {c.cover_image_url ? (
-                        <img src={c.cover_image_url} alt="" className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(26,115,232,0.18),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(255,182,6,0.20),transparent_55%)]" />
-                      )}
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{c.subject.title}</div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <RatingBadge ratingAvg={c.rating_avg} ratingCount={c.rating_count} />
-                          <span className="badge">{c.access_level?.toUpperCase?.() ?? "—"}</span>
-                        </div>
-                      </div>
-                      <h2 className="mt-2 text-lg font-extrabold tracking-tight text-slate-900">{c.title}</h2>
-                      <p className="mt-2 line-clamp-3 text-sm text-slate-600">{c.description || "—"}</p>
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-                        <div>
-                          Teacher:{" "}
-                          <span className="font-semibold text-slate-700">
-                            {[c.teacher.first_name, c.teacher.last_name].filter(Boolean).join(" ") || c.teacher.username}
-                          </span>
-                        </div>
-                    <div className="flex items-center gap-2">
-                      <WishlistButton kind="course" targetId={c.id} className="h-9 py-1.5" />
-                      <Link href={`/classes/${c.id}`} className="link-primary text-xs font-semibold">
-                        View →
-                      </Link>
-                    </div>
-                      </div>
-                    </div>
-                  </article>
-                ))
-              )}
+            {chips.length ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {chips.map((c) => (
+                  <Link key={c.label} href={c.href} className="badge hover:bg-slate-100">
+                    {c.label} ×
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+
+            <div id="courses" className="mt-5">
+              <ClassesResultsClient
+                key={JSON.stringify({ ...baseParams, sort })}
+                initial={data}
+                query={baseParams}
+                sort={sort}
+                pageSize={pageSize}
+                currentPage={currentPage}
+              />
             </div>
 
             <div className="mt-8 grid gap-3">
@@ -346,42 +364,6 @@ export default async function ClassesPage({
                   )}
                 </div>
               </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                {startPage > 1 ? (
-                  <>
-                    <Link href={`/classes${buildQuery({ ...baseParams, sort, page: "1" })}#courses`} className="badge hover:bg-slate-100">
-                      1
-                    </Link>
-                    <span className="text-xs text-slate-400">…</span>
-                  </>
-                ) : null}
-                {pageLinks.map((p) => {
-                  const href = `/classes${buildQuery({ ...baseParams, sort, page: String(p) })}#courses`;
-                  const cls = p === currentPage ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100";
-                  return (
-                    <Link key={p} href={href} className={cls}>
-                      {p}
-                    </Link>
-                  );
-                })}
-                {endPage < totalPages ? (
-                  <>
-                    <span className="text-xs text-slate-400">…</span>
-                    <Link href={`/classes${buildQuery({ ...baseParams, sort, page: String(totalPages) })}#courses`} className="badge hover:bg-slate-100">
-                      {totalPages}
-                    </Link>
-                  </>
-                ) : null}
-              </div>
-
-              {nextHref ? (
-                <div>
-                  <Link href={`${nextHref}#courses`} className="btn-accent w-full justify-center">
-                    Load more
-                  </Link>
-                </div>
-              ) : null}
             </div>
           </section>
         </div>

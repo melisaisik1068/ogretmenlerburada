@@ -6,18 +6,37 @@ import { getApiBaseUrl } from "@/lib/env";
 
 type SearchResult = {
   q: string;
-  courses: Array<{ id: number; title: string; subject?: { title?: string } }>;
-  posts: Array<{ slug: string; title: string }>;
-  events: Array<{ slug: string; title: string; location?: string }>;
-  materials: Array<{ id: number; title: string; type?: string; price_try?: number }>;
+  courses: Array<{ id: number; title: string; snippet?: string; subject?: { slug?: string; title?: string }; teacher?: { username?: string; name?: string } }>;
+  posts: Array<{ slug: string; title: string; snippet?: string }>;
+  events: Array<{ slug: string; title: string; snippet?: string; location?: string }>;
+  materials: Array<{ id: number; title: string; snippet?: string; type?: string; price_try?: number }>;
 };
 
-async function fetchSearch(q: string): Promise<SearchResult> {
+type Subject = { id: number; slug: string; title: string };
+
+async function fetchSubjects(): Promise<Subject[]> {
   const base = getApiBaseUrl().replace(/\/+$/, "");
-  const needle = q.trim();
+  try {
+    const res = await fetch(`${base}/api/lessons/subjects/?page_size=60`, { headers: { Accept: "application/json" }, next: { revalidate: 300 } });
+    if (!res.ok) return [];
+    const data = (await res.json()) as any;
+    const list = Array.isArray(data) ? data : (data.results ?? []);
+    return (list as Subject[]).slice().sort((a, b) => a.title.localeCompare(b.title, "tr"));
+  } catch {
+    return [];
+  }
+}
+
+async function fetchSearch(params: { q: string; subject?: string; type?: string; limit?: number }): Promise<SearchResult> {
+  const base = getApiBaseUrl().replace(/\/+$/, "");
+  const needle = params.q.trim();
   if (!needle) return { q: "", courses: [], posts: [], events: [], materials: [] };
   try {
-    const res = await fetch(`${base}/api/search/?q=${encodeURIComponent(needle)}`, { headers: { Accept: "application/json" }, next: { revalidate: 60 } });
+    const usp = new URLSearchParams({ q: needle });
+    if (params.subject) usp.set("subject", params.subject);
+    if (params.type) usp.set("type", params.type);
+    if (typeof params.limit === "number") usp.set("limit", String(params.limit));
+    const res = await fetch(`${base}/api/search/?${usp.toString()}`, { headers: { Accept: "application/json" }, next: { revalidate: 60 } });
     if (!res.ok) return { q: needle, courses: [], posts: [], events: [], materials: [] };
     return (await res.json()) as SearchResult;
   } catch {
@@ -61,7 +80,10 @@ export default async function SearchPage({
   const q = typeof searchParams?.q === "string" ? searchParams.q : "";
   const tabRaw = typeof searchParams?.tab === "string" ? searchParams.tab : "all";
   const tab = (["all", "courses", "shop", "blog", "events"] as const).includes(tabRaw as any) ? (tabRaw as any) : "all";
-  const data = await fetchSearch(q);
+  const subject = typeof searchParams?.subject === "string" ? searchParams.subject : "";
+  const type = typeof searchParams?.type === "string" ? searchParams.type : "";
+
+  const [data, subjects] = await Promise.all([fetchSearch({ q, subject: subject || undefined, type: type || undefined, limit: 16 }), fetchSubjects()]);
   const hasResults = data.courses.length + data.posts.length + data.events.length + data.materials.length > 0;
 
   const courses = [...data.courses].sort((a, b) => scoreTitle(b.title, q) - scoreTitle(a.title, q));
@@ -73,6 +95,8 @@ export default async function SearchPage({
   const qsBase = (extra: Record<string, string>) => {
     const usp = new URLSearchParams();
     if (q) usp.set("q", q);
+    if (subject) usp.set("subject", subject);
+    if (type) usp.set("type", type);
     for (const [k, v] of Object.entries(extra)) usp.set(k, v);
     const s = usp.toString();
     return s ? `/search?${s}` : "/search";
@@ -95,10 +119,51 @@ export default async function SearchPage({
             className="h-11 flex-1 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
           />
           <input type="hidden" name="tab" value={tab} />
+          <input type="hidden" name="subject" value={subject} />
+          <input type="hidden" name="type" value={type} />
           <button type="submit" className="btn-solid h-11 px-5">
             Ara
           </button>
         </form>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="surface p-4">
+            <label className="text-xs font-semibold text-slate-600">Subject</label>
+            <form action="/search" method="get" className="mt-2 flex gap-2">
+              <input type="hidden" name="q" value={q} />
+              <input type="hidden" name="tab" value={tab} />
+              <input type="hidden" name="type" value={type} />
+              <select name="subject" defaultValue={subject} className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300">
+                <option value="">All</option>
+                {subjects.map((s) => (
+                  <option key={s.id} value={s.slug}>
+                    {s.title}
+                  </option>
+                ))}
+              </select>
+              <button className="btn-outline h-11 px-4" type="submit">
+                Apply
+              </button>
+            </form>
+          </div>
+          <div className="surface p-4">
+            <label className="text-xs font-semibold text-slate-600">Material type</label>
+            <form action="/search" method="get" className="mt-2 flex gap-2">
+              <input type="hidden" name="q" value={q} />
+              <input type="hidden" name="tab" value={tab} />
+              <input type="hidden" name="subject" value={subject} />
+              <select name="type" defaultValue={type} className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300">
+                <option value="">All</option>
+                <option value="pdf">PDF</option>
+                <option value="video">Video</option>
+                <option value="other">Other</option>
+              </select>
+              <button className="btn-outline h-11 px-4" type="submit">
+                Apply
+              </button>
+            </form>
+          </div>
+        </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
           <Link href={qsBase({ tab: "all" })} className={tab === "all" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
@@ -131,8 +196,12 @@ export default async function SearchPage({
               ) : (
                 courses.map((c) => (
                   <div key={c.id} className="surface p-5">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{c.subject?.title ?? "Course"}</div>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{c.subject?.title ?? "Course"}</div>
+                      {c.teacher?.name || c.teacher?.username ? <div className="text-xs text-slate-500">{c.teacher?.name ?? c.teacher?.username}</div> : null}
+                    </div>
                     <div className="mt-1 text-base font-extrabold text-slate-900">{highlight(c.title, q)}</div>
+                    {c.snippet ? <div className="mt-2 text-sm text-slate-600">{highlight(c.snippet, q)}</div> : null}
                     <div className="mt-3">
                       <Link href={`/classes/${c.id}`} className="link-primary text-sm font-semibold">
                         Open →
@@ -157,6 +226,7 @@ export default async function SearchPage({
                       {typeof m.price_try === "number" ? <span className="badge">{m.price_try} ₺</span> : null}
                     </div>
                     <div className="mt-1 text-base font-extrabold text-slate-900">{highlight(m.title, q)}</div>
+                    {m.snippet ? <div className="mt-2 text-sm text-slate-600">{highlight(m.snippet, q)}</div> : null}
                     <div className="mt-3">
                       <Link href={`/shop/${m.id}`} className="link-primary text-sm font-semibold">
                         Details →
@@ -177,6 +247,7 @@ export default async function SearchPage({
                 posts.map((p) => (
                   <div key={p.slug} className="surface p-5">
                     <div className="mt-1 text-base font-extrabold text-slate-900">{highlight(p.title, q)}</div>
+                    {p.snippet ? <div className="mt-2 text-sm text-slate-600">{highlight(p.snippet, q)}</div> : null}
                     <div className="mt-3">
                       <Link href={`/blog/${p.slug}`} className="link-primary text-sm font-semibold">
                         Read →
@@ -198,6 +269,7 @@ export default async function SearchPage({
                   <div key={e.slug} className="surface p-5">
                     <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{e.location ?? "Event"}</div>
                     <div className="mt-1 text-base font-extrabold text-slate-900">{highlight(e.title, q)}</div>
+                    {e.snippet ? <div className="mt-2 text-sm text-slate-600">{highlight(e.snippet, q)}</div> : null}
                     <div className="mt-3">
                       <Link href={`/events/${e.slug}`} className="link-primary text-sm font-semibold">
                         Details →
