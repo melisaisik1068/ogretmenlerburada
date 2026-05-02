@@ -38,8 +38,12 @@ ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
+    "django.contrib.admin",
+    "django.contrib.auth",
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -69,6 +73,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -139,11 +144,17 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'tr-tr'
+# Django’nun gettext kataloğu Türkçe için "tr"; admin ve çeviri çıktısı buna bağlanır.
+LANGUAGE_CODE = "tr"
 
-TIME_ZONE = 'Europe/Istanbul'
+TIME_ZONE = "Europe/Istanbul"
 
 USE_I18N = True
+
+# Tek dil kullanılıyorsa ara yüz hep Türkçe kalır (Accept-Language ile İngilizce’ye kayma olmaz).
+LANGUAGES = [
+    ("tr", "Türkçe"),
+]
 
 USE_TZ = True
 
@@ -224,6 +235,24 @@ API_PUBLIC_URL = os.getenv("API_PUBLIC_URL", "").strip().rstrip("/")
 
 # Pazaryeri: satıcı hakediş komisyon yüzdesi (KDV/brüt netleştirmesi yapılmaz; basit model)
 MARKETPLACE_COMMISSION_PERCENT = int(os.getenv("MARKETPLACE_COMMISSION_PERCENT", "15"))
+
+# django-unfold: modern Django admin görünümü ve kenar çubuğu
+UNFOLD = {
+    "SITE_TITLE": "ÖğretmenlerBurada yönetimi",
+    "SITE_HEADER": "ÖğretmenlerBurada",
+    "SITE_SUBHEADER": "Yönetim paneli",
+    "SITE_URL": FRONTEND_PUBLIC_URL,
+    "SHOW_LANGUAGES": False,
+    "COMMAND": {
+        "search_models": True,
+        "show_history": True,
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "command_search": True,
+        "show_all_applications": True,
+    },
+}
 
 IYZICO_API_KEY = os.getenv("IYZICO_API_KEY", "").strip()
 IYZICO_SECRET_KEY = os.getenv("IYZICO_SECRET_KEY", "").strip()
