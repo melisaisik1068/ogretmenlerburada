@@ -34,18 +34,31 @@ export function SignupForm() {
           role,
         }),
       });
-      const data = (await res.json().catch(() => ({}))) as { detail?: string | Record<string, unknown>; registered?: boolean };
+      const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
       if (!res.ok) {
         const detail = data.detail;
-        const msg =
-          typeof detail === "string"
-            ? detail
-            : detail && typeof detail === "object"
-              ? Object.entries(detail)
-                  .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : String(v)}`)
-                  .join(" ")
-              : "Kayıt tamamlanamadı.";
-        setError(msg);
+        if (typeof detail === "string" && detail.trim()) {
+          setError(detail);
+          return;
+        }
+        // Django REST: çoğu validasyon { username: ["…"], email: ["…"] } şeklinde (detail yok)
+        const skip = new Set(["registered", "detail"]);
+        const parts: string[] = [];
+        for (const [k, v] of Object.entries(data)) {
+          if (skip.has(k)) continue;
+          if (v == null) continue;
+          const text = Array.isArray(v) ? v.map((x) => String(x)).join(", ") : String(v);
+          if (text.trim()) parts.push(`${k}: ${text}`);
+        }
+        if (typeof detail === "object" && detail !== null && !Array.isArray(detail)) {
+          for (const [k, v] of Object.entries(detail as Record<string, unknown>)) {
+            const text = Array.isArray(v) ? v.map((x) => String(x)).join(", ") : String(v);
+            if (text.trim()) parts.push(`${k}: ${text}`);
+          }
+        }
+        setError(
+          parts.length > 0 ? parts.join(" · ") : `Sunucu yanıtı: ${res.status}. Ağ / API adresi veya tekrarlı kayıt kontrol edin.`,
+        );
         return;
       }
       router.push("/dashboard");
