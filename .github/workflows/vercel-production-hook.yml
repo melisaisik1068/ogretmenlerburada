@@ -1,0 +1,26 @@
+# Vercel GitHub entegrasyonu bazen push sonrası deploy üretmez (izin, branch, proje bağlantısı).
+# Bunu yedeklemek için: Vercel → Project → Settings → Git → Deploy Hooks → Production için hook oluştur.
+# Hook URL'sini repo → Settings → Secrets → Actions → VERCEL_DEPLOY_HOOK_URL olarak ekle.
+
+name: Vercel production (deploy hook)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Vercel deploy hook ile üretimi tetikle
+        env:
+          HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK_URL" ]; then
+            echo "::notice::VERCEL_DEPLOY_HOOK_URL tanımlı değil; atlanıyor. Deploy için Vercel'de Deploy Hook oluşturun veya Deployments → Redeploy kullanın."
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK_URL"
+          echo "Deploy hook gönderildi."

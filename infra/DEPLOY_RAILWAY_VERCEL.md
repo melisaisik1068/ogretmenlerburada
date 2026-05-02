@@ -108,6 +108,15 @@ python manage.py createsuperuser
 
 - **Deployments → Redeploy** (isteğe bağlı **Clear build cache**).
 
+### Vercel deploy push sonrası tetiklenmiyorsa
+
+1. **Bağlı repo ve branch**: Vercel → Project → **Settings → Git** → doğru GitHub reposu mu, **Production Branch** `main` mi (repo `master` kullanmıyorsa `main` olmalı).
+2. **Kök dizin**: **Root Directory** = **`frontend`** (monorepo; kök `Dockerfile`/backend Vercel’i karıştırmaz ama yanlış root Next build’i bozar).
+3. **GitHub uygulama izni**: GitHub → **Settings → Applications → Installed GitHub Apps** → **Vercel** → bu repoya **erişim açık** mı (“Only select repositories” ise `ogretmenlerburada` seçili olmalı).
+4. **Otomatik dağıtım kapalı**: Aynı sayfada **Automatic deployments from Git** / benzeri seçenek kapatılmamalı.
+5. **Hızlı bypass**: **Deployments → … → Redeploy** ile elle üretim.
+6. **Yedek tetikleyici**: Vercel’de **Settings → Git → Deploy Hooks** ile Production hook oluştur; GitHub repo **Settings → Secrets and variables → Actions** içinde `VERCEL_DEPLOY_HOOK_URL` olarak yapıştır. Repoda **`.github/workflows/vercel-production-hook.yml`** `main` push’unda hook’u `curl` ile çağırır (secret yoksa sadece bilgi notu yazar, hata vermez).
+
 ### Adım B4 — CORS uyumu
 
 Ön yüz açılıyor ancak tarayıcı **CORS** hatası veriyorsa:
