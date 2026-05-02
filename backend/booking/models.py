@@ -21,7 +21,14 @@ class TeacherAvailability(models.Model):
 
     class Meta:
         ordering = ["weekday", "start_time"]
-        unique_together = [("teacher", "weekday", "start_time", "end_time")]
+        verbose_name = "Öğretmen müsaitliği"
+        verbose_name_plural = "Öğretmen müsaitlikleri"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("teacher", "weekday", "start_time", "end_time"),
+                name="booking_teacheravail_teacher_weekday_slot_uniq",
+            ),
+        ]
 
 
 class AppointmentStatus(models.TextChoices):
@@ -44,6 +51,8 @@ class Appointment(models.Model):
 
     class Meta:
         ordering = ["-starts_at"]
+        verbose_name = "Randevu"
+        verbose_name_plural = "Randevular"
         indexes = [
             models.Index(fields=["teacher", "starts_at"]),
             models.Index(fields=["student", "starts_at"]),

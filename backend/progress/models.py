@@ -13,7 +13,14 @@ class LessonProgress(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = [("user", "lesson")]
         indexes = [models.Index(fields=["user", "updated_at"])]
         ordering = ["-updated_at"]
+        verbose_name = "Ders ilerlemesi"
+        verbose_name_plural = "Ders ilerlemeleri"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("user", "lesson"),
+                name="progress_lessonprogress_user_lesson_uniq",
+            ),
+        ]
 

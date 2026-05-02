@@ -10,6 +10,8 @@ class CommunityCategory(models.Model):
 
     class Meta:
         ordering = ["title"]
+        verbose_name = "Topluluk kategorisi"
+        verbose_name_plural = "Topluluk kategorileri"
 
     def __str__(self) -> str:
         return self.title
@@ -47,6 +49,8 @@ class CommunityPost(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Topluluk gönderisi"
+        verbose_name_plural = "Topluluk gönderileri"
         indexes = [
             models.Index(fields=["status", "created_at"]),
             models.Index(fields=["category", "status", "created_at"]),
@@ -66,3 +70,5 @@ class CommunityAnswer(models.Model):
 
     class Meta:
         ordering = ["created_at"]
+        verbose_name = "Topluluk yanıtı"
+        verbose_name_plural = "Topluluk yanıtları"

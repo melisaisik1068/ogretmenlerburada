@@ -23,6 +23,11 @@ class Material(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Materyal"
+        verbose_name_plural = "Materyaller"
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class OrderStatus(models.TextChoices):
@@ -42,11 +47,19 @@ class Order(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "Sipariş"
+        verbose_name_plural = "Siparişler"
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     material = models.ForeignKey(Material, on_delete=models.PROTECT, related_name="order_items")
     unit_price_try = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = "Sipariş kalemi"
+        verbose_name_plural = "Sipariş kalemleri"
 
 
 class MaterialAccess(models.Model):
@@ -55,7 +68,14 @@ class MaterialAccess(models.Model):
     granted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = [("material", "user")]
+        verbose_name = "Materyal erişimi"
+        verbose_name_plural = "Materyal erişimleri"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("material", "user"),
+                name="marketplace_materialaccess_material_user_uniq",
+            ),
+        ]
 
 
 class SellerPayout(models.Model):
@@ -68,6 +88,8 @@ class SellerPayout(models.Model):
 
     class Meta:
         ordering = ["-paid_at"]
+        verbose_name = "Satıcı ödemesi"
+        verbose_name_plural = "Satıcı ödemeleri"
 
 
 class SellerEarning(models.Model):
@@ -84,6 +106,8 @@ class SellerEarning(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Satıcı hakedişi"
+        verbose_name_plural = "Satıcı hakedişleri"
         constraints = [
             models.UniqueConstraint(fields=["order", "material"], name="uniq_seller_earning_order_material"),
         ]

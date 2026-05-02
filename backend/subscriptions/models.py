@@ -37,6 +37,10 @@ class SubscriptionPlan(models.Model):
     stripe_price_id = models.CharField(max_length=120, blank=True, default="")
     iyzico_plan_reference = models.CharField(max_length=120, blank=True, default="")
 
+    class Meta:
+        verbose_name = "Abonelik planı"
+        verbose_name_plural = "Abonelik planları"
+
     def __str__(self) -> str:
         return f"{self.title} ({self.price_try}₺)"
 
@@ -59,6 +63,8 @@ class Subscription(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Abonelik"
+        verbose_name_plural = "Abonelikler"
         indexes = [
             models.Index(fields=["user", "status"]),
             models.Index(fields=["provider", "provider_subscription_id"]),

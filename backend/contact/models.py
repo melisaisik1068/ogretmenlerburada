@@ -9,6 +9,8 @@ class ContactMessage(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "İletişim mesajı"
+        verbose_name_plural = "İletişim mesajları"
 
 
 class NewsletterSubscriber(models.Model):
@@ -17,3 +19,5 @@ class NewsletterSubscriber(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Bülten abonesi"
+        verbose_name_plural = "Bülten aboneleri"

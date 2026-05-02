@@ -16,6 +16,8 @@ class BlogPost(models.Model):
 
     class Meta:
         ordering = ["-published_at", "-created_at"]
+        verbose_name = "Blog yazısı"
+        verbose_name_plural = "Blog yazıları"
         indexes = [
             models.Index(fields=["is_published", "published_at"]),
             models.Index(fields=["slug"]),

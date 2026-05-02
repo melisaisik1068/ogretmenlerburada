@@ -32,6 +32,10 @@ class User(AbstractUser):
     def is_teacher_verified(self) -> bool:
         return self.role == UserRole.TEACHER and self.teacher_verification_status == TeacherVerificationStatus.APPROVED
 
+    class Meta:
+        verbose_name = "Kullanıcı"
+        verbose_name_plural = "Kullanıcılar"
+
 
 class TeacherVerificationDocument(models.Model):
     teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="verification_documents")
@@ -41,3 +45,5 @@ class TeacherVerificationDocument(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Öğretmen doğrulama belgesi"
+        verbose_name_plural = "Öğretmen doğrulama belgeleri"

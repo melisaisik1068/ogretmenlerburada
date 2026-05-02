@@ -12,7 +12,14 @@ class CourseReview(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        unique_together = [("user", "course")]
+        verbose_name = "Kurs değerlendirmesi"
+        verbose_name_plural = "Kurs değerlendirmeleri"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("user", "course"),
+                name="reviews_coursereview_user_course_uniq",
+            ),
+        ]
         indexes = [
             models.Index(fields=["course", "created_at"]),
             models.Index(fields=["course", "rating"]),

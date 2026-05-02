@@ -9,7 +9,14 @@ class CourseWishlist(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        unique_together = [("user", "course")]
+        verbose_name = "Kurs istek kaydı"
+        verbose_name_plural = "Kurs istek kayıtları"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("user", "course"),
+                name="wishlist_course_user_course_uniq",
+            ),
+        ]
         indexes = [models.Index(fields=["user", "created_at"])]
 
 
@@ -20,6 +27,13 @@ class MaterialWishlist(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        unique_together = [("user", "material")]
+        verbose_name = "Materyal istek kaydı"
+        verbose_name_plural = "Materyal istek kayıtları"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("user", "material"),
+                name="wishlist_material_user_material_uniq",
+            ),
+        ]
         indexes = [models.Index(fields=["user", "created_at"])]
 

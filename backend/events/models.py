@@ -16,6 +16,8 @@ class Event(models.Model):
 
     class Meta:
         ordering = ["-starts_at", "-created_at"]
+        verbose_name = "Etkinlik"
+        verbose_name_plural = "Etkinlikler"
         indexes = [
             models.Index(fields=["is_published", "starts_at"]),
             models.Index(fields=["slug"]),
