@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { m, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -109,13 +109,14 @@ export function LandingMain() {
     <main>
       {/* Hero — tam ekran + parallax görsel */}
       <section ref={heroRef} className="relative min-h-screen w-full overflow-hidden">
-        <motion.div className="absolute inset-0 z-0" style={{ y: heroParallaxY }} aria-hidden>
+        <m.div className="absolute inset-0 z-0" style={{ y: heroParallaxY }} aria-hidden>
           <div className="absolute inset-0 scale-[1.12]">
             <Image
               src={heroImg}
               alt=""
               fill
               priority
+              quality={78}
               className="object-cover object-center"
               sizes="100vw"
               onError={() => {
@@ -127,27 +128,27 @@ export function LandingMain() {
               }}
             />
           </div>
-        </motion.div>
+        </m.div>
         <div
           className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-[#0f172a]/92 via-[#2563eb]/42 to-[#8b5cf6]/22"
           aria-hidden
         />
         <div className="relative z-[2] mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32 lg:px-8 lg:pt-36">
-          <motion.div
+          <m.div
             className="max-w-3xl"
             variants={reduce ? undefined : heroStagger}
             initial={reduce ? false : "hidden"}
             animate={reduce ? undefined : "show"}
           >
-            <motion.div
+            <m.div
               variants={reduce ? undefined : heroFadeUp}
               className="inline-flex rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white/90 backdrop-blur-md"
             >
               <span className="text-[var(--brand-amber-light)]">2026</span>
               <span className="mx-2 text-white/40">·</span>
               Güvenilir eğitim ağı
-            </motion.div>
-            <motion.h1
+            </m.div>
+            <m.h1
               variants={reduce ? undefined : heroFadeUp}
               className="mt-6 text-balance font-[family-name:var(--font-inter-display),system-ui,sans-serif] text-4xl font-extrabold leading-[1.08] tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl lg:text-7xl"
             >
@@ -155,18 +156,18 @@ export function LandingMain() {
                 ÖğretmenAğı
               </span>{" "}
               <span className="text-white/95">ile hedefin daha yakın.</span>
-            </motion.h1>
-            <motion.p
+            </m.h1>
+            <m.p
               variants={reduce ? undefined : heroFadeUp}
               className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-white/88 sm:text-lg md:text-xl"
             >
               Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planı.
-            </motion.p>
-            <motion.div
+            </m.p>
+            <m.div
               variants={reduce ? undefined : heroFadeUp}
               className="mt-10 flex flex-wrap gap-4"
             >
-              <motion.span
+              <m.span
                 className="inline-flex"
                 whileHover={reduce ? undefined : { scale: 1.05 }}
                 whileTap={reduce ? undefined : { scale: 0.98 }}
@@ -177,8 +178,8 @@ export function LandingMain() {
                     Keşfe Başlayın
                   </Link>
                 </RippleWrap>
-              </motion.span>
-              <motion.span
+              </m.span>
+              <m.span
                 className="inline-flex"
                 whileHover={reduce ? undefined : { scale: 1.05 }}
                 whileTap={reduce ? undefined : { scale: 0.98 }}
@@ -189,9 +190,9 @@ export function LandingMain() {
                     Ücretsiz Kayıt
                   </Link>
                 </RippleWrap>
-              </motion.span>
-            </motion.div>
-          </motion.div>
+              </m.span>
+            </m.div>
+          </m.div>
         </div>
       </section>
 
@@ -214,9 +215,9 @@ export function LandingMain() {
                   <RippleWrap className="w-full">
                     <Link href="/signup" className="group btn-accent w-full justify-center rounded-2xl">
                       <span>Hesap oluştur</span>
-                      <motion.span aria-hidden className="ml-2 inline-flex" whileHover={{ x: 5 }} transition={springInteract}>
+                      <m.span aria-hidden className="ml-2 inline-flex" whileHover={{ x: 5 }} transition={springInteract}>
                         <ArrowRight className="size-4" />
-                      </motion.span>
+                      </m.span>
                     </Link>
                   </RippleWrap>
                   <RippleWrap className="w-full">
@@ -255,14 +256,14 @@ export function LandingMain() {
                     <h3 className="text-xl font-bold tracking-tight text-[var(--brand-navy)]">{c.title}</h3>
                     <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">{c.desc}</p>
                   </div>
-                  <motion.span
+                  <m.span
                     className="inline-flex items-center gap-2 text-sm font-bold text-[var(--brand-blue)]"
                     whileHover={{ x: 6 }}
                     transition={springInteract}
                   >
                     Yol haritasını görün
                     <ArrowRight className="size-4" aria-hidden />
-                  </motion.span>
+                  </m.span>
                 </Link>
               </BentoCard>
             </RevealInView>
@@ -294,7 +295,7 @@ export function LandingMain() {
             ] satisfies Array<{ k: string; v: string; glow: BentoGlowTone }>
           ).map((x) => (
             <RevealInView key={x.k}>
-              <motion.article
+              <m.article
                 className={`rounded-3xl border border-white/20 bg-white/40 p-6 text-center backdrop-blur-xl ring-1 ring-white/25`}
                 style={reduce ? undefined : { boxShadow: bentoGlowRest(x.glow) }}
                 whileHover={reduce ? undefined : bentoGlowHover(x.glow)}
@@ -302,7 +303,7 @@ export function LandingMain() {
               >
                 <div className="text-3xl font-extrabold tracking-tight text-[var(--brand-navy)]">{x.v}</div>
                 <div className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-500">{x.k}</div>
-              </motion.article>
+              </m.article>
             </RevealInView>
           ))}
         </div>
@@ -312,7 +313,7 @@ export function LandingMain() {
       <section className="pb-16 pt-14">
         <div className="container-page grid gap-7 lg:grid-cols-12 lg:gap-10">
           <RevealInView className="lg:col-span-5 lg:sticky lg:top-24 lg:self-start">
-            <motion.div
+            <m.div
               className={`rounded-3xl border border-white/20 bg-gradient-to-br from-white/55 via-[#eef2ff]/80 to-[#fdf4ff]/60 p-7 shadow-[0_20px_50px_-12px_rgba(37,99,235,0.15)] backdrop-blur-xl ring-1 ring-white/30 sm:p-9`}
               whileHover={reduce ? undefined : { y: -4, transition: springInteract }}
               transition={springReveal}
@@ -330,7 +331,7 @@ export function LandingMain() {
                   Müfredata göz atın
                 </SpringLink>
               </div>
-            </motion.div>
+            </m.div>
           </RevealInView>
 
           <RevealInView className="lg:col-span-7">
@@ -376,7 +377,7 @@ export function LandingMain() {
                   { date: "09 Ağu", title: "Liderlik becerilerini nasıl parlatırsın?", tag: "Kariyer" },
                   { date: "03 Haz", title: "Üniversite bütçesini planlamak", tag: "Rehber" },
                 ].map((p, idx) => (
-                  <motion.article
+                  <m.article
                     key={p.title}
                     className="rounded-3xl border border-white/20 bg-white/35 p-6 backdrop-blur-lg ring-1 ring-white/20"
                     style={reduce ? undefined : { boxShadow: bentoGlowRest(idx === 0 ? "violet" : "blue") }}
@@ -395,11 +396,11 @@ export function LandingMain() {
                     <p className="mt-3 text-sm text-slate-600">İçerik bağlantısı yakında.</p>
                     <Link href="/blog" className="link-primary mt-5 inline-flex items-center gap-1 text-sm">
                       Yazıya git
-                      <motion.span whileHover={{ x: 4 }} transition={springInteract}>
+                      <m.span whileHover={{ x: 4 }} transition={springInteract}>
                         <ArrowRight className="size-4" />
-                      </motion.span>
+                      </m.span>
                     </Link>
-                  </motion.article>
+                  </m.article>
                 ))}
               </div>
             </div>
@@ -432,7 +433,7 @@ function StatMini({ label, value, tone }: { label: string; value: string; tone: 
         boxShadow: "0 24px 48px -8px rgba(37,99,235,0.45), 0 0 40px rgba(245,158,11,0.25)",
       };
   return (
-    <motion.div
+    <m.div
       className={`rounded-3xl border p-5 backdrop-blur-xl ${
         tone === "accent"
           ? "border-[color-mix(in_srgb,var(--brand-amber)_50%,transparent)] bg-gradient-to-br from-[#1d4ed8] via-[#2563eb] to-[#3b82f6] text-white ring-2 ring-[var(--brand-amber)]/40"
@@ -447,13 +448,13 @@ function StatMini({ label, value, tone }: { label: string; value: string; tone: 
         {label}
       </div>
       <div className={`mt-2 text-sm font-black ${tone === "accent" ? "text-white" : "text-[var(--brand-navy)]"}`}>{value}</div>
-    </motion.div>
+    </m.div>
   );
 }
 
 function StaggerBento({ grades, reduce }: { grades: string[]; reduce: boolean }) {
   return (
-    <motion.div
+    <m.div
       className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4"
       initial={reduce ? false : "hidden"}
       whileInView={reduce ? undefined : "show"}
@@ -465,7 +466,7 @@ function StaggerBento({ grades, reduce }: { grades: string[]; reduce: boolean })
       }
     >
       {grades.map((label) => (
-        <motion.div
+        <m.div
           key={label}
           variants={
             reduce
@@ -482,9 +483,9 @@ function StaggerBento({ grades, reduce }: { grades: string[]; reduce: boolean })
           >
             {label}
           </Link>
-        </motion.div>
+        </m.div>
       ))}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -501,9 +502,9 @@ function TopCoursesSection({ reduce }: { reduce: boolean }) {
           <RippleWrap>
             <Link href="/classes" className="group btn-solid h-11 px-6">
               Tümünü gör
-              <motion.span className="ml-2 inline-flex" whileHover={{ x: 6 }} transition={springInteract}>
+              <m.span className="ml-2 inline-flex" whileHover={{ x: 6 }} transition={springInteract}>
                 <ArrowRight className="size-4 text-white/90 group-hover:text-white" />
-              </motion.span>
+              </m.span>
             </Link>
           </RippleWrap>
         </RevealInView>
@@ -598,7 +599,7 @@ function TopCoursesClient({ reduce, tab }: { reduce: boolean; tab: "newest" | "o
 
   return (
     <>
-      <motion.div
+      <m.div
         className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         layout
         initial={reduce ? false : { opacity: 0, y: 22 }}
@@ -626,7 +627,7 @@ function TopCoursesClient({ reduce, tab }: { reduce: boolean; tab: "newest" | "o
           visible.map((c, idx) => {
             const glow = courseCardGlowTone(c, idx);
             return (
-            <motion.article
+            <m.article
               key={`${tab}-${c.id}`}
               className={`${bentoSurface} overflow-hidden`}
               style={reduce ? undefined : { boxShadow: bentoGlowRest(glow) }}
@@ -656,31 +657,31 @@ function TopCoursesClient({ reduce, tab }: { reduce: boolean; tab: "newest" | "o
                       {[c.teacher.first_name, c.teacher.last_name].filter(Boolean).join(" ") || c.teacher.username}
                     </strong>
                   </span>
-                  <motion.span whileHover={{ x: 4 }} transition={springInteract}>
+                  <m.span whileHover={{ x: 4 }} transition={springInteract}>
                     <Link href={`/classes/${c.id}`} className="link-primary inline-flex items-center gap-1 text-xs uppercase tracking-wide">
                       Derse bak
                       <ArrowRight className="size-3.5" />
                     </Link>
-                  </motion.span>
+                  </m.span>
                 </div>
               </div>
-            </motion.article>
+            </m.article>
             );
           })
         )}
-      </motion.div>
+      </m.div>
 
       {canLoadMore ? (
         <div className="mt-10 flex justify-center">
           <RippleWrap>
-            <motion.button
+            <m.button
               type="button"
               whileTap={{ scale: 0.985 }}
               onClick={() => setVisibleCount((n) => Math.min(n + 6, items.length))}
               className="btn-outline rounded-2xl px-10"
             >
               Daha fazla yükle
-            </motion.button>
+            </m.button>
           </RippleWrap>
         </div>
       ) : null}

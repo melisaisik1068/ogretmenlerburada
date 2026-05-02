@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 
 /** Etkileşim yayı — buton/link */
@@ -84,7 +84,7 @@ export function RevealInView({
 }) {
   const reduce = useReducedMotion();
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={reduce ? false : { opacity: 0, y: 32 }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
@@ -92,7 +92,7 @@ export function RevealInView({
       transition={reduce ? undefined : springReveal}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -108,7 +108,7 @@ export function BentoCard({
 }) {
   const reduce = useReducedMotion();
   return (
-    <motion.div
+    <m.div
       className={`${bentoSurface} overflow-hidden ${className}`}
       initial={reduce ? false : { opacity: 0, y: 36 }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
@@ -118,7 +118,7 @@ export function BentoCard({
       whileHover={reduce ? undefined : bentoGlowHover(glowTone)}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -132,18 +132,18 @@ export function SpringLink({
   children: ReactNode;
 }) {
   return (
-    <motion.span className="inline-flex" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} transition={springInteract}>
+    <m.span className="inline-flex" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} transition={springInteract}>
       <Link href={href} className={className}>
         {children}
       </Link>
-    </motion.span>
+    </m.span>
   );
 }
 
 export function Stagger({ children, className }: { children: ReactNode; className?: string }) {
   const reduce = useReducedMotion();
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={reduce ? false : "hidden"}
       whileInView={reduce ? undefined : "show"}
@@ -160,7 +160,7 @@ export function Stagger({ children, className }: { children: ReactNode; classNam
       }
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -182,7 +182,7 @@ export function GlassMotionCard({
       : glassCard;
   const gh = glowOnHover ?? "blue";
   return (
-    <motion.div
+    <m.div
       className={`${surface} ${className}`}
       variants={
         reduce
@@ -213,6 +213,6 @@ export function GlassMotionCard({
       transition={springInteract}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

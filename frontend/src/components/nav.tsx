@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, Languages, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -73,14 +73,14 @@ const navLinks = [
 
 function NavLinkMotion({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <motion.span className="inline-flex" whileHover={{ y: -1 }} transition={springInteract}>
+    <m.span className="inline-flex" whileHover={{ y: -1 }} transition={springInteract}>
       <Link
         href={href}
         className="relative text-sm font-medium text-slate-600 transition-colors duration-200 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-[var(--brand-blue)] after:transition-transform after:duration-200 hover:text-[var(--brand-navy)] hover:after:scale-x-100"
       >
         {children}
       </Link>
-    </motion.span>
+    </m.span>
   );
 }
 
@@ -99,7 +99,7 @@ export function TopNav() {
 
   return (
     <>
-    <motion.header
+    <m.header
       className="fixed inset-x-0 top-0 z-50 will-change-transform"
       initial={false}
       animate={{ y: navHidden ? "-100%" : 0 }}
@@ -107,13 +107,13 @@ export function TopNav() {
     >
       <TopBar />
       <div className="border-b border-white/35 bg-white/55 shadow-[0_8px_32px_-8px_rgba(37,99,235,0.12)] backdrop-blur-xl">
-        <motion.div
+        <m.div
           className="container-page flex h-14 items-center justify-between gap-3 sm:h-16"
           variants={listVars}
           initial={reduceNav ? "visible" : "hidden"}
           animate="visible"
         >
-        <motion.div className="flex items-center gap-3" variants={itemVars} whileHover={{ scale: 1.01 }} transition={springInteract}>
+        <m.div className="flex items-center gap-3" variants={itemVars} whileHover={{ scale: 1.01 }} transition={springInteract}>
           <Link href="/" className="flex items-center gap-2">
             <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[var(--brand-navy)] via-[var(--brand-blue-deep)] to-[var(--brand-blue)] text-[11px] font-black leading-none text-white shadow-[0_12px_28px_-6px_rgba(37,99,235,0.45)] ring-2 ring-[var(--brand-amber)]/25 sm:text-xs">
               ÖA
@@ -122,35 +122,35 @@ export function TopNav() {
               ÖğretmenAğı
             </span>
           </Link>
-        </motion.div>
+        </m.div>
 
         <nav className="hidden items-center gap-5 lg:gap-6 lg:flex xl:gap-7">
-          <motion.span variants={itemVars}>
+          <m.span variants={itemVars}>
             <NavLinkMotion href="/">Ana Sayfa</NavLinkMotion>
-          </motion.span>
-          <motion.span variants={itemVars}>
+          </m.span>
+          <m.span variants={itemVars}>
             <CoursesMegaDropdown />
-          </motion.span>
+          </m.span>
           {navLinks.slice(1).map((n) => (
-            <motion.span key={n.href} variants={itemVars}>
+            <m.span key={n.href} variants={itemVars}>
               <NavLinkMotion href={n.href}>
                 {n.label}
               </NavLinkMotion>
-            </motion.span>
+            </m.span>
           ))}
         </nav>
 
-        <motion.div className="hidden items-center gap-3 lg:flex" variants={itemVars}>
+        <m.div className="hidden items-center gap-3 lg:flex" variants={itemVars}>
           <AuthLinks />
-        </motion.div>
+        </m.div>
 
-        <motion.div className="flex items-center gap-2 lg:hidden" variants={itemVars}>
+        <m.div className="flex items-center gap-2 lg:hidden" variants={itemVars}>
           <AuthLinks />
           <MobileMenuDrawer />
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
       </div>
-    </motion.header>
+    </m.header>
     {/* Ana sayfa: hero tam ekran + navbar üzerine oturur; diğer sayfalar: içerik altına sığsın */}
     {spacerForUnderlap ? <div className="h-14 shrink-0 sm:h-[6.5rem]" aria-hidden /> : null}
     </>
@@ -272,7 +272,7 @@ function MobileMenuDrawer() {
 
   return (
     <>
-      <motion.button
+      <m.button
         type="button"
         aria-expanded={open}
         aria-controls="mobile-nav"
@@ -282,11 +282,11 @@ function MobileMenuDrawer() {
       >
         <Menu className="size-4" aria-hidden />
         Menü
-      </motion.button>
+      </m.button>
       <AnimatePresence>
         {open ? (
           <>
-            <motion.button
+            <m.button
               type="button"
               aria-label="Menüyü kapat"
               initial={{ opacity: 0 }}
@@ -295,7 +295,7 @@ function MobileMenuDrawer() {
               className="fixed inset-0 z-[60] bg-slate-900/35 backdrop-blur-[2px]"
               onClick={() => setOpen(false)}
             />
-            <motion.div
+            <m.div
               id="mobile-nav"
               role="dialog"
               aria-modal
@@ -312,11 +312,11 @@ function MobileMenuDrawer() {
                     <div className="text-xs font-bold text-[var(--brand-navy)]">{g.title}</div>
                     <div className="mt-2 grid gap-2">
                       {g.items.map((it) => (
-                        <motion.div key={it.href} whileHover={{ x: 3 }} transition={springInteract}>
+                        <m.div key={it.href} whileHover={{ x: 3 }} transition={springInteract}>
                           <Link href={it.href} onClick={() => setOpen(false)} className="block rounded-xl bg-[var(--surface-muted)] px-3 py-2 text-sm font-medium">
                             {it.label}
                           </Link>
-                        </motion.div>
+                        </m.div>
                       ))}
                     </div>
                   </div>
@@ -324,7 +324,7 @@ function MobileMenuDrawer() {
               </div>
               <div className="mt-5 grid gap-2 border-t border-slate-100 pt-5">
                 {navLinks.map((n) => (
-                  <motion.div key={n.href} whileHover={{ x: 3 }} transition={springInteract}>
+                  <m.div key={n.href} whileHover={{ x: 3 }} transition={springInteract}>
                     <Link
                       href={n.href}
                       onClick={() => setOpen(false)}
@@ -332,7 +332,7 @@ function MobileMenuDrawer() {
                     >
                       {n.label}
                     </Link>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
               <div className="mt-5 grid gap-3 border-t border-slate-100 pt-5 sm:grid-cols-2">
@@ -343,7 +343,7 @@ function MobileMenuDrawer() {
                   Ücretsiz Üye Ol
                 </Link>
               </div>
-            </motion.div>
+            </m.div>
           </>
         ) : null}
       </AnimatePresence>
