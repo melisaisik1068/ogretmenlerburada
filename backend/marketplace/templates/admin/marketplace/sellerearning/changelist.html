@@ -1,0 +1,7 @@
+{% extends "admin/change_list.html" %}
+{% block object-tools %}
+<div style="margin-bottom: 14px; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fffbeb; font-size: 12px; max-width: 900px;">
+  <code>payout</code> boş satırlar ödenmemiş hakediştir; ödeme yapıldığında ilgili <em>Seller payout</em> kaydını seçin.
+</div>
+{{ block.super }}
+{% endblock %}

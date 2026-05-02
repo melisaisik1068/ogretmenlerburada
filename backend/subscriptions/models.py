@@ -27,6 +27,10 @@ class SubscriptionPlan(models.Model):
     code = models.CharField(max_length=20, choices=SubscriptionPlanCode.choices, unique=True)
     title = models.CharField(max_length=50)
     price_try = models.PositiveIntegerField(help_text="Aylık ücret (₺) - gösterim amaçlı.")
+    billing_cycle_days = models.PositiveSmallIntegerField(
+        default=30,
+        help_text="İyzico/tekrarlayan olmayan tek sefer ödemede bir dönem süresi (gün).",
+    )
     is_active = models.BooleanField(default=True)
 
     # Provider ready: mapping

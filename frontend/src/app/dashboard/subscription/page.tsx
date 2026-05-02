@@ -31,7 +31,12 @@ async function loadSession(): Promise<{ user: UserMe; subscription: Subscription
 export default async function SubscriptionPage() {
   const { user, subscription } = await loadSession();
   const planTitle = (subscription as any)?.plan?.title ?? null;
+  const billingCycleDaysPlan = Number((subscription as any)?.plan?.billing_cycle_days) || null;
   const status = (subscription as any)?.status ?? null;
+  const provider =
+    subscription && typeof subscription === "object" && "provider" in subscription
+      ? String((subscription as { provider?: string }).provider ?? "")
+      : "";
   const cps = (subscription as any)?.current_period_start ?? null;
   const cpe = (subscription as any)?.current_period_end ?? null;
   const cancelAtPeriodEnd = !!(subscription as any)?.cancel_at_period_end;
@@ -43,7 +48,10 @@ export default async function SubscriptionPage() {
       <main className="container-page py-10 sm:py-12">
         <div className="section-eyebrow">Billing</div>
         <h1 className="section-title">My subscription</h1>
-        <p className="section-lead">Abonelik durumu ve yönetimi.</p>
+        <p className="section-lead">
+          Stripe kullanıcılarında otomatik yenileme ve müşteri portalı geçerlidir; İyzico ödemelerinde erişim, plandaki günlük
+          süreye göre tarihsel olarak biter — yenileme için tekrar ödeme gerekir.
+        </p>
 
         <div className="mt-6 flex flex-wrap gap-2">
           <Link href="/dashboard" className="btn-outline h-10 px-4">
@@ -77,6 +85,13 @@ export default async function SubscriptionPage() {
                 <div>
                   Cancel at period end: <span className="font-semibold text-slate-900">{String(cancelAtPeriodEnd)}</span>
                 </div>
+                {provider === "iyzico" ? (
+                  <div className="rounded-xl border border-sky-100 bg-sky-50/80 px-3 py-2 text-xs leading-relaxed text-sky-950">
+                    Bu üyelik <strong>İyzico tek çekimi</strong> ile açılmıştır. Plan tanımında{" "}
+                    <span className="font-mono">billing_cycle_days</span>:{" "}
+                    <strong>{billingCycleDaysPlan ?? "—"}</strong> gün (yenilemede süre sıfırlanır).
+                  </div>
+                ) : null}
               </div>
             </div>
           </section>
@@ -84,9 +99,15 @@ export default async function SubscriptionPage() {
           <section className="lg:col-span-5">
             <div className="surface p-6">
               <div className="text-sm font-extrabold tracking-tight text-slate-900">Manage</div>
-              <p className="mt-2 text-sm text-slate-600">İptal / devam ettir işlemleri Stripe aboneliğine uygulanır.</p>
+              <p className="mt-2 text-sm text-slate-600">
+                Stripe aboneliğinde iptal/portal; İyzico’da süre sonuna kadar manuel yönetim.
+              </p>
               <div className="mt-5">
-                <ManageButtons cancelAtPeriodEnd={cancelAtPeriodEnd} hasSubscription={!!planTitle} />
+                <ManageButtons
+                  cancelAtPeriodEnd={cancelAtPeriodEnd}
+                  hasSubscription={!!planTitle}
+                  provider={provider || null}
+                />
               </div>
             </div>
           </section>
@@ -97,11 +118,20 @@ export default async function SubscriptionPage() {
   );
 }
 
-function ManageButtons({ cancelAtPeriodEnd, hasSubscription }: { cancelAtPeriodEnd: boolean; hasSubscription: boolean }) {
+function ManageButtons({
+  cancelAtPeriodEnd,
+  hasSubscription,
+  provider,
+}: {
+  cancelAtPeriodEnd: boolean;
+  hasSubscription: boolean;
+  provider: string | null;
+}) {
   "use client";
   const React = require("react") as typeof import("react");
   const { useState } = React;
   const [loading, setLoading] = useState(false);
+  const [portalBusy, setPortalBusy] = useState(false);
   const [msg, setMsg] = useState("");
 
   async function call(action: "cancel" | "resume") {
@@ -125,6 +155,27 @@ function ManageButtons({ cancelAtPeriodEnd, hasSubscription }: { cancelAtPeriodE
     }
   }
 
+  async function openBillingPortal() {
+    setPortalBusy(true);
+    setMsg("");
+    try {
+      const res = await fetch("/api/subscriptions/billing-portal", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMsg(typeof (data as any).detail === "string" ? (data as any).detail : "Portal açılamadı.");
+        return;
+      }
+      const url = (data as any).url as string | undefined;
+      if (!url) {
+        setMsg("Portal URL alınamadı.");
+        return;
+      }
+      window.location.href = url;
+    } finally {
+      setPortalBusy(false);
+    }
+  }
+
   if (!hasSubscription) {
     return (
       <div className="text-sm text-slate-600">
@@ -136,15 +187,37 @@ function ManageButtons({ cancelAtPeriodEnd, hasSubscription }: { cancelAtPeriodE
   return (
     <div className="grid gap-2">
       {msg ? <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">{msg}</div> : null}
-      {!cancelAtPeriodEnd ? (
-        <button className="btn-outline h-11 justify-center border-red-200 text-red-700 hover:bg-red-50" type="button" disabled={loading} onClick={() => void call("cancel")}>
-          {loading ? "İşleniyor…" : "Cancel subscription"}
+      {provider === "stripe" ? (
+        <button
+          className="btn-outline h-11 justify-center"
+          type="button"
+          disabled={portalBusy}
+          onClick={() => void openBillingPortal()}
+        >
+          {portalBusy ? "Açılıyor…" : "Stripe müşteri portalı / faturalar"}
         </button>
-      ) : (
-        <button className="btn-solid h-11 justify-center" type="button" disabled={loading} onClick={() => void call("resume")}>
-          {loading ? "İşleniyor…" : "Resume subscription"}
-        </button>
-      )}
+      ) : null}
+      {provider === "stripe" ? (
+        !cancelAtPeriodEnd ? (
+          <button
+            className="btn-outline h-11 justify-center border-red-200 text-red-700 hover:bg-red-50"
+            type="button"
+            disabled={loading}
+            onClick={() => void call("cancel")}
+          >
+            {loading ? "İşleniyor…" : "Cancel subscription"}
+          </button>
+        ) : (
+          <button className="btn-solid h-11 justify-center" type="button" disabled={loading} onClick={() => void call("resume")}>
+            {loading ? "İşleniyor…" : "Resume subscription"}
+          </button>
+        )
+      ) : hasSubscription ? (
+        <p className="text-xs text-slate-600">
+          İyzico üyeliğinde iptal/yenileme yoktur: dönem biter veya süreyi yenilemek için /upgrade üzerinden yeni tek çekim
+          yapılır (kart otomatik çekilmez).
+        </p>
+      ) : null}
     </div>
   );
 }

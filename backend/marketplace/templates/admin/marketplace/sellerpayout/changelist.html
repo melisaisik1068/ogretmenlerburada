@@ -1,0 +1,10 @@
+{% extends "admin/change_list.html" %}
+{% block object-tools %}
+<div style="margin-bottom: 14px; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; font-size: 13px; line-height: 1.55; max-width: 960px;">
+  <strong>Öğretmen ödemesi (manuel havale)</strong><br/>
+  1) <em>Seller earning</em> listesinde ödenecek satırları filtreleyin (<code>payout</code> boş = bekleyen tutar).<br/>
+  2) Bu ekranda öğretmen için yeni bir payout kaydı oluşturun; dekont ve tutarı <code>reference_note</code> / <code>total_net_try</code> ile işleyin.<br/>
+  3) İlgili <em>Seller earning</em> kayıtlarında <code>payout</code> alanını bu payout’a bağlayarak kapatın.
+</div>
+{{ block.super }}
+{% endblock %}

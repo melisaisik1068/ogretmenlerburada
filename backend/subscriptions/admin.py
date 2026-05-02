@@ -5,7 +5,7 @@ from .models import Subscription, SubscriptionPlan
 
 @admin.register(SubscriptionPlan)
 class SubscriptionPlanAdmin(admin.ModelAdmin):
-    list_display = ["code", "title", "price_try", "is_active", "stripe_price_id"]
+    list_display = ["code", "title", "price_try", "billing_cycle_days", "is_active", "stripe_price_id"]
     list_filter = ["is_active", "code"]
     search_fields = ["code", "title", "stripe_price_id"]
 

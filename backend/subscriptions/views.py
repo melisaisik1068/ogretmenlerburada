@@ -6,6 +6,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from config.notify import notify_subscription_started
+
 from .models import PaymentProvider, Subscription, SubscriptionPlan, SubscriptionStatus
 from .serializers import SubscriptionPlanSerializer, SubscriptionSerializer
 
@@ -245,6 +247,16 @@ class StripeWebhookView(APIView):
                 try:
                     sub_remote = stripe.Subscription.retrieve(stripe_subscription_id)
                     _upsert_from_subscription(sub_remote, user_id_hint=user_id)
+                    lsub = (
+                        Subscription.objects.filter(
+                            provider=PaymentProvider.STRIPE,
+                            provider_subscription_id=stripe_subscription_id,
+                        )
+                        .select_related("plan")
+                        .first()
+                    )
+                    if lsub and lsub.status == SubscriptionStatus.ACTIVE and lsub.plan_id:
+                        notify_subscription_started(getattr(lsub.user, "email", None), plan_title=lsub.plan.title)
                 except Exception:
                     pass
 

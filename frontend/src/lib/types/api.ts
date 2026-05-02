@@ -14,6 +14,7 @@ export type SubscriptionPlanBrief = {
   code: string;
   title: string;
   price_try: number;
+  billing_cycle_days?: number;
 };
 
 export type SubscriptionPayload =

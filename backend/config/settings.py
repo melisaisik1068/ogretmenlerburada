@@ -205,3 +205,27 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
+
+# E-posta (üretimde SMTP; yerelde varsayılan console)
+DEFAULT_FROM_EMAIL = os.getenv("DJANGO_DEFAULT_FROM_EMAIL", "noreply@localhost").strip()
+EMAIL_BACKEND = os.getenv(
+    "DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+).strip()
+EMAIL_HOST = os.getenv("DJANGO_EMAIL_HOST", "").strip() or None
+EMAIL_PORT = int(os.getenv("DJANGO_EMAIL_PORT", "587") or "587")
+EMAIL_USE_TLS = os.getenv("DJANGO_EMAIL_USE_TLS", "1") == "1"
+EMAIL_HOST_USER = os.getenv("DJANGO_EMAIL_HOST_USER", "").strip() or None
+EMAIL_HOST_PASSWORD = os.getenv("DJANGO_EMAIL_HOST_PASSWORD", "").strip() or None
+
+FRONTEND_PUBLIC_URL = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
+# İyzico callback tam URL için API kökü (örn. https://xxxx.up.railway.app), sonunda '/' yok
+API_PUBLIC_URL = os.getenv("API_PUBLIC_URL", "").strip().rstrip("/")
+
+# Pazaryeri: satıcı hakediş komisyon yüzdesi (KDV/brüt netleştirmesi yapılmaz; basit model)
+MARKETPLACE_COMMISSION_PERCENT = int(os.getenv("MARKETPLACE_COMMISSION_PERCENT", "15"))
+
+IYZICO_API_KEY = os.getenv("IYZICO_API_KEY", "").strip()
+IYZICO_SECRET_KEY = os.getenv("IYZICO_SECRET_KEY", "").strip()
+IYZICO_BASE_URL = os.getenv("IYZICO_BASE_URL", "sandbox-api.iyzipay.com").strip()
+IYZICO_PLACEHOLDER_IDENTITY = os.getenv("IYZICO_PLACEHOLDER_IDENTITY", "11111111111").strip()
+IYZICO_PLACEHOLDER_GSM = os.getenv("IYZICO_PLACEHOLDER_GSM", "+905551112233").strip()

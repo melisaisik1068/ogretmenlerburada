@@ -47,8 +47,13 @@ Railway → API servisi → **Variables** ile örnek aşağıdaki gibi set edili
 | `DJANGO_ALLOWED_HOSTS` | `xxxxx.up.railway.app,.up.railway.app` | Tam host + Django’da **başında nokta** ile alt alan eşlemesi (`.up.railway.app` → tüm `*.up.railway.app`) |
 | `CORS_ALLOWED_ORIGINS` | `https://XXXX.vercel.app` | Vercel üretim (ve gerekiyorsa preview) adresleri virgülle |
 | `CSRF_TRUSTED_ORIGINS` | `https://XXXX.vercel.app` | Django admin / form güvenliği için aynı kökleri `https://` ile ekle |
+| `FRONTEND_URL` | `https://XXXX.vercel.app` | Stripe / e-posta sıfırlama linkleri için |
+| `API_PUBLIC_URL` | `https://<railway-domain>` | **İyzico callback** tam URL üretimi (sonunda `/` yok) |
+| Stripe / İyzico / SMTP | Bkz. `backend/.env.example` | Webhook sırları (3 ayrı Stripe secret), `MARKETPLACE_COMMISSION_PERCENT`, `DJANGO_EMAIL_*` |
 
 > `DATABASE_URL` PostgreSQL bağlantısından gelmeli — elle yazma.
+
+> **Stripe Billing Portal** müşteri kartı/fatura için Stripe Dashboard’da etkinleştirilmelidir; uç: `POST /api/subscriptions/billing-portal/`.
 
 ### Adım A5 — Deploy tetiklemesi ve log
 

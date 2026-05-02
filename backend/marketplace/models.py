@@ -56,3 +56,34 @@ class MaterialAccess(models.Model):
 
     class Meta:
         unique_together = [("material", "user")]
+
+
+class SellerPayout(models.Model):
+    """Öğretmenlere manuel/havale ödeme kaydı (otomatik banka entegrasyonu yok)."""
+
+    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="seller_payouts")
+    paid_at = models.DateTimeField(auto_now_add=True)
+    total_net_try = models.PositiveIntegerField(default=0, help_text="Bu ödemede yer alan net tutar (₺).")
+    reference_note = models.TextField(blank=True, default="", help_text="Dekont/havale referansı vb.")
+
+    class Meta:
+        ordering = ["-paid_at"]
+
+
+class SellerEarning(models.Model):
+    """Satıcı payı: brüt satış – platform komisyonu = net (havale ile kapatılır)."""
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="seller_earnings")
+    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="seller_earnings")
+    material = models.ForeignKey(Material, on_delete=models.PROTECT, related_name="seller_earnings")
+    gross_try = models.PositiveIntegerField()
+    commission_try = models.PositiveIntegerField()
+    net_try = models.PositiveIntegerField()
+    payout = models.ForeignKey(SellerPayout, null=True, blank=True, on_delete=models.SET_NULL, related_name="earnings")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["order", "material"], name="uniq_seller_earning_order_material"),
+        ]

@@ -1,5 +1,6 @@
 import os
 
+from django.contrib.auth import get_user_model
 from django.http import FileResponse
 from django.utils.encoding import iri_to_uri
 from django.utils import timezone
@@ -10,7 +11,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.permissions import IsVerifiedTeacher
+from config.notify import notify_shop_purchase
 
+from .earnings import record_seller_earnings_for_paid_order
 from .models import Material, MaterialAccess, Order, OrderItem, OrderStatus
 from .serializers import MaterialSerializer, OrderSerializer
 
@@ -204,6 +207,15 @@ class StripeShopWebhookView(APIView):
                     )
 
                 MaterialAccess.objects.get_or_create(material=m, user_id=uid)
+
+                record_seller_earnings_for_paid_order(order)
+
+                buyer = get_user_model().objects.filter(pk=uid).first()
+                notify_shop_purchase(
+                    getattr(buyer, "email", None) if buyer else None,
+                    material_title=m.title,
+                    amount_try=int(order.total_try),
+                )
 
                 # best effort: store payment_intent (if we used session id earlier)
                 if payment_intent and order.provider_payment_id != payment_intent:

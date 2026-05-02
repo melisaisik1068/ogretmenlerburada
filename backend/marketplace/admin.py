@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Material, MaterialAccess, Order, OrderItem
+from .models import Material, MaterialAccess, Order, OrderItem, SellerEarning, SellerPayout
 
 
 @admin.register(Material)
@@ -22,6 +22,22 @@ class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
     raw_id_fields = ["material"]
+
+
+@admin.register(SellerPayout)
+class SellerPayoutAdmin(admin.ModelAdmin):
+    change_list_template = "admin/marketplace/sellerpayout/changelist.html"
+    list_display = ["id", "seller", "total_net_try", "paid_at", "reference_note"]
+    raw_id_fields = ["seller"]
+
+
+@admin.register(SellerEarning)
+class SellerEarningAdmin(admin.ModelAdmin):
+    change_list_template = "admin/marketplace/sellerearning/changelist.html"
+    list_display = ["id", "seller", "material", "gross_try", "commission_try", "net_try", "payout_id", "created_at"]
+    list_filter = ["payout"]
+    raw_id_fields = ["order", "seller", "material", "payout"]
+    search_fields = ["seller__username", "material__title"]
 
 
 @admin.register(Order)

@@ -15,7 +15,8 @@ class Command(BaseCommand):
 
         for code, title, price in defaults:
             SubscriptionPlan.objects.update_or_create(
-                code=code, defaults={"title": title, "price_try": price, "is_active": True}
+                code=code,
+                defaults={"title": title, "price_try": price, "is_active": True, "billing_cycle_days": 30},
             )
 
         self.stdout.write(self.style.SUCCESS("Seeded subscription plans."))

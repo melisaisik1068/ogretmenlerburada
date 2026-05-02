@@ -86,5 +86,6 @@ Bu repoda klasör Workspace için varsayılan **UTF-8** ayarı vardır: **`.vsco
 
 ### Notlar
 - Öğretmen onayı admin panelinden `teacher_verification_status=approved` ile verilir; frontend rozet/etiket için `accounts/me/` endpoint’i kullanılabilir.
-- Stripe/iyzico gerçek entegrasyonu için webhook + ödeme flow’u eklenmelidir (schema alanları hazır).
+- **Ödeme**: Stripe (üyelik + shop) ve isteğe bağlı **İyzico** (CheckoutForm) uçları; Stripe Billing Portal; satıcı hakediş kayıtları admin’de.
+- **E-posta**: SMTP veya console backend; abonelik / shop / şifre sıfırlama bildirimleri (backend `config/notify.py`).
 

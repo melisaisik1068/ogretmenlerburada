@@ -69,6 +69,11 @@ export function LoginForm() {
       <button type="submit" disabled={loading} className="btn-solid mt-2 w-full disabled:opacity-60">
         {loading ? "Giriş yapılıyor…" : "Giriş Yap"}
       </button>
+      <div className="text-right text-xs">
+        <Link className="font-semibold text-sky-700 underline decoration-sky-300 underline-offset-4" href="/forgot-password">
+          Şifremi unuttum
+        </Link>
+      </div>
       <div className="mt-2 text-sm text-slate-600">
         Hesabın yok mu?{" "}
         <Link className="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-4" href="/signup">

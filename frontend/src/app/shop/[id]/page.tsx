@@ -61,6 +61,10 @@ export default async function ShopDetailPage({ params }: { params: Promise<{ id:
             <div className="surface p-6">
               <div className="text-sm font-extrabold tracking-tight text-slate-900">Purchase</div>
               <p className="mt-2 text-sm text-slate-600">Satın aldıktan sonra indirme açılır.</p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                <strong>Stripe</strong>: uluslararası kart. <strong>İyzico</strong>: yerel kart (CheckoutForm); aynı ürün ikisi için de geçerlidir,
+                doğrulanan ödemede erişiminiz tanımlanır.
+              </p>
               <div className="mt-5 grid gap-2">
                 <PurchaseActions materialId={m.id} priceTry={m.price_try} />
                 <Link href="/contact" className="btn-outline justify-center">
@@ -81,7 +85,7 @@ function PurchaseActions({ materialId, priceTry }: { materialId: number; priceTr
   const React = require("react") as typeof import("react");
   const { useEffect, useState } = React;
   const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<"" | "stripe" | "iyzico">("");
   const [msg, setMsg] = useState("");
   const [canDownload, setCanDownload] = useState<boolean>(false);
   const [authed, setAuthed] = useState<boolean>(true);
@@ -114,7 +118,7 @@ function PurchaseActions({ materialId, priceTry }: { materialId: number; priceTr
   }, [materialId]);
 
   async function buy() {
-    setBusy(true);
+    setBusy("stripe");
     setMsg("");
     try {
       const res = await fetch("/api/shop/checkout", {
@@ -149,12 +153,52 @@ function PurchaseActions({ materialId, priceTry }: { materialId: number; priceTr
       }
       window.location.href = url;
     } finally {
-      setBusy(false);
+      setBusy("");
+    }
+  }
+
+  async function buyIyzico() {
+    setBusy("iyzico");
+    setMsg("");
+    try {
+      const res = await fetch("/api/shop/checkout-iyzico", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ material_id: materialId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 401) {
+          setAuthed(false);
+          setMsg("Giriş yapmalısın.");
+          return;
+        }
+        setMsg(typeof (data as any).detail === "string" ? (data as any).detail : "İyzico başlatılamadı.");
+        return;
+      }
+      if ((data as any).already_owned) {
+        setCanDownload(true);
+        setMsg("Zaten satın alınmış.");
+        return;
+      }
+      if ((data as any).free) {
+        setCanDownload(true);
+        setMsg("Ücretsiz — erişim verildi.");
+        return;
+      }
+      const url = (data as any).payment_page_url as string | undefined;
+      if (!url) {
+        setMsg("Ödeme sayfası alınamadı.");
+        return;
+      }
+      window.location.href = url;
+    } finally {
+      setBusy("");
     }
   }
 
   async function download() {
-    setBusy(true);
+    setBusy("stripe");
     setMsg("");
     try {
       const res = await fetch(`/api/shop/materials/${materialId}/download`, { cache: "no-store" });
@@ -179,7 +223,7 @@ function PurchaseActions({ materialId, priceTry }: { materialId: number; priceTr
       a.remove();
       URL.revokeObjectURL(url);
     } finally {
-      setBusy(false);
+      setBusy("");
     }
   }
 
@@ -193,12 +237,31 @@ function PurchaseActions({ materialId, priceTry }: { materialId: number; priceTr
           Sign in to purchase
         </Link>
       ) : canDownload ? (
-        <button className="btn-accent justify-center" type="button" onClick={() => void download()} disabled={busy}>
-          {busy ? "İndiriliyor…" : "Download"}
+        <button className="btn-accent justify-center" type="button" onClick={() => void download()} disabled={busy !== ""}>
+          {busy === "stripe" ? "İndiriliyor…" : "Download"}
         </button>
+      ) : priceTry > 0 ? (
+        <div className="grid gap-2">
+          <button
+            className="btn-solid justify-center"
+            type="button"
+            onClick={() => void buy()}
+            disabled={busy !== ""}
+          >
+            {busy === "stripe" ? "Yönlendiriliyor…" : `Buy (Stripe) — ${priceTry} ₺`}
+          </button>
+          <button
+            className="btn-outline justify-center"
+            type="button"
+            onClick={() => void buyIyzico()}
+            disabled={busy !== ""}
+          >
+            {busy === "iyzico" ? "Yönlendiriliyor…" : `Öde (İyzico) — ${priceTry} ₺`}
+          </button>
+        </div>
       ) : (
-        <button className="btn-solid justify-center" type="button" onClick={() => void buy()} disabled={busy}>
-          {busy ? "Yönlendiriliyor…" : priceTry > 0 ? `Buy now (${priceTry} ₺)` : "Get free access"}
+        <button className="btn-solid justify-center" type="button" onClick={() => void buy()} disabled={busy !== ""}>
+          {busy === "stripe" ? "Yönlendiriliyor…" : "Get free access"}
         </button>
       )}
     </div>
