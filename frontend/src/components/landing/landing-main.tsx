@@ -12,6 +12,7 @@ import {
   SpringLink,
   springInteract,
   bentoSurface,
+  fadeInUpTransition,
 } from "@/components/motion/bento-motion";
 import { NewsletterForm } from "@/components/newsletter/newsletter-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -68,59 +69,105 @@ const categoryBento = [
   },
 ];
 
+const heroStagger = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.11, delayChildren: 0.15 },
+  },
+};
+
+const heroFadeUp = {
+  hidden: { opacity: 0, y: 36 },
+  show: { opacity: 1, y: 0, transition: fadeInUpTransition },
+};
+
 export function LandingMain() {
   const reduce = useReducedMotion() ?? false;
 
   return (
     <main>
-      <section className="container-page pb-10 pt-6 sm:pb-14 sm:pt-10">
-        <div className="grid gap-4 sm:gap-5 md:grid-cols-12 md:gap-6">
-          <RevealInView className="md:col-span-7 xl:col-span-8 md:min-h-[320px] xl:min-h-[380px]">
+      {/* Hero — tam ekran (min-h-screen) */}
+      <section className="relative min-h-screen w-full overflow-hidden">
+        <Image
+          src="/images/hero-classroom.jpg"
+          alt=""
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0f172a]/90 via-[#1e40af]/48 to-[#f59e0b]/12"
+          aria-hidden
+        />
+        <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32 lg:px-8 lg:pt-36">
+          <motion.div
+            className="max-w-3xl"
+            variants={reduce ? undefined : heroStagger}
+            initial={reduce ? false : "hidden"}
+            animate={reduce ? undefined : "show"}
+          >
             <motion.div
-              className={`relative isolate flex min-h-[280px] flex-col justify-end overflow-hidden p-8 sm:p-10 ${bentoSurface}`}
-              whileHover={reduce ? undefined : { scale: 1.01 }}
-              transition={springInteract}
+              variants={reduce ? undefined : heroFadeUp}
+              className="inline-flex rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white/90 backdrop-blur-md"
             >
-              <Image
-                src="/images/hero-classroom.jpg"
-                alt=""
-                fill
-                priority
-                className="-z-20 object-cover object-center"
-              />
-              <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[var(--brand-navy)]/92 via-[var(--brand-navy)]/55 to-transparent" />
-              <div className="max-w-xl text-white">
-                <div className="inline-flex rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur">
-                  Güvenilir eğitim ağı
-                </div>
-                <h1 className="mt-4 text-balance text-4xl font-extrabold tracking-tight text-white drop-shadow-sm sm:text-5xl xl:text-[3.35rem]">
-                  <span className="bg-gradient-to-r from-white to-[#c7d9ff] bg-clip-text text-transparent">
-                    ÖğretmenlerBurada
-                  </span>{" "}
-                  ile hedefin daha yakın.
-                </h1>
-                <p className="mt-4 max-w-xl text-pretty text-sm leading-relaxed text-white/85 sm:text-base">
-                  Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planıyla ilerlemenin en akıcı yolu burada başlıyor.
-                </p>
-                <div className="mt-7 flex flex-wrap gap-3">
-                  <SpringLink href="/classes" className="btn-accent">
-                    Keşfe başlayın
-                  </SpringLink>
-                  <SpringLink href="/signup" className="btn-outline bg-white/10 text-white ring-white/35 hover:bg-white/15 hover:text-white">
-                    Ücretsiz kayıt
-                  </SpringLink>
-                </div>
-              </div>
+              <span className="text-[var(--brand-amber-light)]">2026</span>
+              <span className="mx-2 text-white/40">·</span>
+              Güvenilir eğitim ağı
             </motion.div>
-          </RevealInView>
-
-          <div className="flex flex-col gap-4 md:col-span-5 xl:col-span-4">
-            <RevealInView>
-              <motion.div
-                className={`flex flex-1 flex-col justify-between p-6 sm:p-7 ${bentoSurface}`}
-                whileHover={reduce ? undefined : { scale: 1.02 }}
+            <motion.h1
+              variants={reduce ? undefined : heroFadeUp}
+              className="mt-6 text-balance font-[family-name:var(--font-inter-display),system-ui,sans-serif] text-4xl font-extrabold leading-[1.08] tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl lg:text-7xl"
+            >
+              <span className="bg-gradient-to-r from-white via-white to-[#dbeafe] bg-clip-text text-transparent">
+                ÖğretmenAğı
+              </span>{" "}
+              <span className="text-white/95">ile hedefin daha yakın.</span>
+            </motion.h1>
+            <motion.p
+              variants={reduce ? undefined : heroFadeUp}
+              className="mt-6 max-w-xl text-pretty text-base font-medium leading-relaxed text-white/88 sm:text-lg md:text-xl"
+            >
+              Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planı.
+            </motion.p>
+            <motion.div
+              variants={reduce ? undefined : heroFadeUp}
+              className="mt-10 flex flex-wrap gap-4"
+            >
+              <motion.span
+                className="inline-flex"
+                whileHover={reduce ? undefined : { scale: 1.05 }}
+                whileTap={reduce ? undefined : { scale: 0.98 }}
                 transition={springInteract}
               >
+                <Link href="/classes" className="hero-cta-solid">
+                  Keşfe Başlayın
+                </Link>
+              </motion.span>
+              <motion.span
+                className="inline-flex"
+                whileHover={reduce ? undefined : { scale: 1.05 }}
+                whileTap={reduce ? undefined : { scale: 0.98 }}
+                transition={springInteract}
+              >
+                <Link href="/signup" className="hero-cta-ghost">
+                  Ücretsiz Kayıt
+                </Link>
+              </motion.span>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Hızlı başlangıç + mini istatistik (hemen altında) */}
+      <section className="container-page pb-10 pt-10 sm:pb-14 sm:pt-12">
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-12 md:gap-6">
+          <RevealInView className="md:col-span-12 xl:col-span-7">
+            <motion.div
+              className={`flex flex-1 flex-col justify-between gap-6 p-6 sm:p-7 ${bentoSurface}`}
+              whileHover={reduce ? undefined : { scale: 1.02 }}
+              transition={springInteract}
+            >
                 <div>
                   <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Hızlı başlangıç</div>
                   <p className="mt-3 text-xl font-extrabold tracking-tight text-[var(--brand-navy)]">
@@ -145,20 +192,19 @@ export function LandingMain() {
                   </Link>
                 </div>
               </motion.div>
-            </RevealInView>
+          </RevealInView>
 
-            <RevealInView className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-2">
-              <StatMini label="Uzman içerik" value="Çok yakında" tone="accent" />
-              <StatMini label="Topluluk" value="Moderasyonlu" tone="muted" />
-            </RevealInView>
-          </div>
+          <RevealInView className="grid grid-cols-2 gap-3 md:col-span-12 xl:col-span-5 xl:gap-4">
+            <StatMini label="Uzman içerik" value="Çok yakında" tone="accent" />
+            <StatMini label="Topluluk" value="Moderasyonlu" tone="muted" />
+          </RevealInView>
         </div>
       </section>
 
       {/* Bento categories */}
       <section className="container-page pb-12 sm:pb-16">
         <RevealInView className="text-center">
-          <div className="section-eyebrow text-[var(--brand-blue)]">Programlar</div>
+          <div className="section-eyebrow text-[var(--brand-amber)]">Programlar</div>
           <div className="section-title mx-auto mt-2 text-[var(--brand-navy)]">Esnek bento düzeninde kategori vitrinleri</div>
           <p className="section-lead mx-auto mt-3 max-w-2xl font-medium">
             Her kutu mobilde tek sütun, masaüstünde farklı kolon genişlikleriyle profesyonel vitrin oluşturur.
@@ -330,8 +376,10 @@ export function LandingMain() {
 function StatMini({ label, value, tone }: { label: string; value: string; tone: "accent" | "muted" }) {
   return (
     <motion.div
-      className={`rounded-3xl border border-slate-200/90 p-5 shadow-sm ${
-        tone === "accent" ? "bg-gradient-to-br from-[var(--brand-navy)] to-[var(--brand-blue)] text-white" : "bg-white text-[var(--brand-navy)]"
+      className={`rounded-3xl border p-5 shadow-sm ${
+        tone === "accent"
+          ? "border-[color-mix(in_srgb,var(--brand-amber)_45%,transparent)] bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white ring-1 ring-[var(--brand-amber)]/35"
+          : "border border-slate-200/90 bg-white text-[var(--brand-navy)]"
       }`}
       initial={false}
       whileHover={{ scale: 1.02 }}
@@ -364,7 +412,7 @@ function StaggerBento({ grades, reduce }: { grades: string[]; reduce: boolean })
           variants={
             reduce
               ? { hidden: { opacity: 1, y: 0 }, show: { opacity: 1, y: 0 } }
-              : { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.42, ease: [0.22, 1, 0.36, 1] } } }
+              : { hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: fadeInUpTransition } }
           }
           whileHover={reduce ? undefined : { scale: 1.02 }}
           transition={springInteract}

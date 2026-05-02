@@ -1,4 +1,4 @@
-## ÖğretmenlerBurada · Full‑Stack Mimari (Django DRF + Next.js + PostgreSQL)
+## ÖğretmenAğı · Full‑Stack Mimari (Django DRF + Next.js + PostgreSQL)
 
 ### Monorepo yapı
 - `backend/`: Django REST Framework API (JWT, CORS, OpenAPI)

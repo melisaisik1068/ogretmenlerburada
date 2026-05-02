@@ -18,7 +18,7 @@ def notify_subscription_started(user_email: str | None, *, plan_title: str) -> N
     recipients = _recipients(user_email)
     if not recipients:
         return
-    subject = f"ÖğretmenlerBurada — abonelik aktif ({plan_title})"
+    subject = f"ÖğretmenAğı — abonelik aktif ({plan_title})"
     body = (
         f"Merhaba,\n\n{plan_title} aboneliğiniz oluşturuldu / güncellendi.\n\n"
         f"Yönetim: {settings.FRONTEND_PUBLIC_URL}/dashboard/subscription\n"
@@ -33,7 +33,7 @@ def notify_shop_purchase(user_email: str | None, *, material_title: str, amount_
     recipients = _recipients(user_email)
     if not recipients:
         return
-    subject = "ÖğretmenlerBurada — materyal satın alımı"
+    subject = "ÖğretmenAğı — materyal satın alımı"
     body = (
         f"Merhaba,\n\n'{material_title}' için {amount_try} ₺ ödemeniz alındı.\n\n"
         f"İndirme hesabınızdan: {settings.FRONTEND_PUBLIC_URL}/dashboard/orders\n"
@@ -45,7 +45,7 @@ def notify_shop_purchase(user_email: str | None, *, material_title: str, amount_
 
 
 def notify_password_reset(user_email: str, *, reset_link: str) -> None:
-    subject = "ÖğretmenlerBurada — şifre sıfırlama"
+    subject = "ÖğretmenAğı — şifre sıfırlama"
     body = (
         "Şifrenizi sıfırlamak için aşağıdaki bağlantıyı kullanın (süreli).\n\n"
         f"{reset_link}\n\n"

@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  /* Number One inspired: açık zemin + lacivert/mavi vurgu */
+  /* 2026 LMS: slate zemin + #1e40af + amber vurgu */
   --background: #f8fafc;
-  --foreground: #0c2340;
-  --brand-navy: #0c2340;
-  --brand-blue: #1e4db7;
-  --brand-blue-light: #3569e9;
+  --foreground: #0f172a;
+  --brand-navy: #0f172a;
+  --brand-blue: #1e40af;
+  --brand-blue-light: #2563eb;
+  --brand-amber: #f59e0b;
+  --brand-amber-light: #fbbf24;
   --surface: #ffffff;
   --surface-muted: #f1f5f9;
-  --border-subtle: rgba(12, 35, 64, 0.09);
+  --border-subtle: rgba(15, 23, 42, 0.09);
 
   --ms-primary: var(--brand-blue);
-  --ms-accent: var(--brand-blue-light);
+  --ms-accent: var(--brand-amber);
   --ms-muted: #64748b;
   --ms-surface: var(--surface);
   --ms-surface-2: var(--surface-muted);
@@ -52,9 +54,9 @@ body {
 .mesh-bg {
   background-color: var(--ms-surface-2);
   background-image:
-    radial-gradient(at 14% 8%, rgba(30, 77, 183, 0.11) 0px, transparent 52%),
-    radial-gradient(at 88% 12%, rgba(53, 105, 233, 0.09) 0px, transparent 48%),
-    radial-gradient(at 10% 88%, rgba(12, 35, 64, 0.05) 0px, transparent 55%);
+    radial-gradient(at 14% 8%, rgba(30, 64, 175, 0.12) 0px, transparent 52%),
+    radial-gradient(at 88% 12%, rgba(245, 158, 11, 0.07) 0px, transparent 48%),
+    radial-gradient(at 10% 88%, rgba(15, 23, 42, 0.045) 0px, transparent 55%);
   animation: mesh-float 28s ease-in-out infinite;
 }
 
@@ -125,8 +127,19 @@ body {
 .btn-accent {
   @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
   background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-light));
-  box-shadow: 0 14px 34px rgba(30, 77, 183, 0.28);
+  box-shadow: 0 14px 34px rgba(30, 64, 175, 0.28);
   @apply text-white hover:brightness-110 hover:-translate-y-px hover:shadow-lg active:scale-[0.99];
+}
+
+/* Ana hero CTA cam düğümü (+ Framer ile scale kullanılacak) */
+.hero-cta-solid {
+  @apply inline-flex h-12 items-center justify-center rounded-2xl px-8 text-sm font-bold tracking-tight text-white backdrop-blur-md;
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.92), rgba(37, 99, 235, 0.88));
+  box-shadow: 0 16px 40px rgba(30, 64, 175, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.hero-cta-ghost {
+  @apply inline-flex h-12 items-center justify-center rounded-2xl border border-white/40 bg-white/15 px-8 text-sm font-bold tracking-tight text-white backdrop-blur-md ring-1 ring-white/25;
 }
 
 .btn-ghost {
@@ -148,7 +161,7 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-light));
+  background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-light), var(--brand-amber));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

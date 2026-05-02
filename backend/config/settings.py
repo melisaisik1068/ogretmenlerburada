@@ -208,7 +208,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "ÖğretmenlerBurada API",
+    "TITLE": "ÖğretmenAğı API",
     "DESCRIPTION": "EdTech platformu API şeması.",
     "VERSION": "0.1.0",
 }
@@ -238,8 +238,8 @@ MARKETPLACE_COMMISSION_PERCENT = int(os.getenv("MARKETPLACE_COMMISSION_PERCENT",
 
 # django-unfold: modern Django admin görünümü ve kenar çubuğu
 UNFOLD = {
-    "SITE_TITLE": "ÖğretmenlerBurada yönetimi",
-    "SITE_HEADER": "ÖğretmenlerBurada",
+    "SITE_TITLE": "ÖğretmenAğı yönetimi",
+    "SITE_HEADER": "ÖğretmenAğı",
     "SITE_SUBHEADER": "Yönetim paneli",
     "SITE_URL": FRONTEND_PUBLIC_URL,
     "SHOW_LANGUAGES": False,

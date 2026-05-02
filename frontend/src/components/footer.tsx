@@ -24,7 +24,7 @@ export function SiteFooter() {
       <div className="container-page py-12 sm:py-16">
         <div className="grid gap-10 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-4">
-            <div className="text-lg font-extrabold tracking-tight text-white">ÖğretmenlerBurada</div>
+            <div className="text-lg font-extrabold tracking-tight text-white">ÖğretmenAğı</div>
             <div className="mt-2 text-sm text-white/70">Herkesin kazandığı öğrenme ligi.</div>
             <div className="mt-6 flex flex-col gap-3 text-sm text-white/70">
               <a
@@ -87,7 +87,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <div>Copyright © {new Date().getFullYear()} ÖğretmenlerBurada</div>
+          <div>Copyright © {new Date().getFullYear()} ÖğretmenAğı</div>
           <div className="flex flex-wrap gap-3">
             <Link className="text-white/60 transition hover:text-white" href="#">
               KVKK

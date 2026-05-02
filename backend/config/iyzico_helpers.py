@@ -37,6 +37,6 @@ def billing_address_simple(contact_name: str) -> dict:
         "contactName": contact_name[:90],
         "city": "Istanbul",
         "country": "Turkey",
-        "address": "ÖğretmenlerBurada digital",
+        "address": "ÖğretmenAğı digital",
         "zipCode": "34000",
     }

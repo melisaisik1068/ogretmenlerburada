@@ -20,7 +20,7 @@ class UserAdmin(ModelAdmin, DjangoUserAdmin):
     list_display = ("username", "email", "role", "teacher_verification_status", "is_active", "is_staff")
     list_filter = ("role", "teacher_verification_status", "is_active", "is_staff")
     fieldsets = DjangoUserAdmin.fieldsets + (
-        ("ÖğretmenlerBurada", {"fields": ("role", "bio", "avatar_url", "teacher_verification_status", "teacher_verified_at")}),
+        ("ÖğretmenAğı hesabı", {"fields": ("role", "bio", "avatar_url", "teacher_verification_status", "teacher_verified_at")}),
     )
 
 

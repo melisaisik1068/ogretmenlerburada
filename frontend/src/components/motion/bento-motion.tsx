@@ -7,6 +7,12 @@ import type { ReactNode } from "react";
 /** Spring physics per brief: stiffness 400, damping 15 */
 export const springInteract = { type: "spring" as const, stiffness: 400, damping: 15 };
 
+/** Scroll giriş: fade-in-up (2026 standart parlak yükseliş) */
+export const fadeInUpTransition = {
+  duration: 0.5,
+  ease: [0.22, 1, 0.36, 1] as const,
+};
+
 /** Bento / kart yüzeyi — rounded-3xl, ince kenarlık, hafif gölge */
 export const bentoSurface =
   "rounded-3xl border border-slate-200/90 bg-[var(--surface)] shadow-sm transition-[box-shadow,transform] duration-300 hover:shadow-md";
@@ -26,10 +32,10 @@ export function RevealInView({
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y: 20 }}
+      initial={reduce ? false : { opacity: 0, y: 28 }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-56px 0px -8px 0px" }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={fadeInUpTransition}
     >
       {children}
     </motion.div>
@@ -48,10 +54,10 @@ export function BentoCard({
   return (
     <motion.div
       className={`${bentoSurface} overflow-hidden ${className}`}
-      initial={reduce ? false : { opacity: 0, y: 20 }}
+      initial={reduce ? false : { opacity: 0, y: 28 }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-48px" }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={fadeInUpTransition}
       whileHover={reduce ? undefined : { scale: 1.02 }}
     >
       {children}
@@ -125,7 +131,7 @@ export function GlassMotionCard({
               show: { opacity: 1, y: 0, filter: "blur(0px)" },
             }
           : {
-              hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
+              hidden: { opacity: 0, y: 28, filter: "blur(10px)" },
               show: {
                 opacity: 1,
                 y: 0,

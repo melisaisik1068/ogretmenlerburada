@@ -4,9 +4,11 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, Languages, Menu } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { AuthLinks } from "@/components/auth/auth-links";
+import { useNavScrollHide } from "@/hooks/use-nav-scroll-hide";
 
 import { springInteract } from "./motion/bento-motion";
 
@@ -67,17 +69,28 @@ function NavLinkMotion({ href, children }: { href: string; children: React.React
 }
 
 export function TopNav() {
+  const navHidden = useNavScrollHide();
+  const pathname = usePathname();
+  const spacerForUnderlap = pathname !== "/";
+
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/90 bg-[var(--surface)]/90 shadow-sm backdrop-blur-md">
+    <>
+    <motion.header
+      className="fixed inset-x-0 top-0 z-50 will-change-transform"
+      initial={false}
+      animate={{ y: navHidden ? "-100%" : 0 }}
+      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+    >
       <TopBar />
-      <div className="container-page flex h-14 items-center justify-between gap-3 sm:h-16">
+      <div className="border-b border-slate-200/55 bg-white/70 shadow-sm backdrop-blur-lg">
+        <div className="container-page flex h-14 items-center justify-between gap-3 sm:h-16">
         <motion.div className="flex items-center gap-3" initial={false} whileHover={{ scale: 1.01 }} transition={springInteract}>
           <Link href="/" className="flex items-center gap-2">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[var(--brand-navy)] to-[var(--brand-blue)] text-sm font-black text-white shadow-md">
-              Ö
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[var(--brand-navy)] to-[var(--brand-blue)] text-[11px] font-black leading-none text-white shadow-md sm:text-xs">
+              ÖA
             </span>
             <span className="text-sm font-extrabold tracking-tight text-[var(--brand-navy)] sm:text-base">
-              ÖğretmenlerBurada
+              ÖğretmenAğı
             </span>
           </Link>
         </motion.div>
@@ -101,13 +114,17 @@ export function TopNav() {
           <MobileMenuDrawer />
         </div>
       </div>
-    </header>
+      </div>
+    </motion.header>
+    {/* Ana sayfa: hero tam ekran + navbar üzerine oturur; diğer sayfalar: içerik altına sığsın */}
+    {spacerForUnderlap ? <div className="h-14 shrink-0 sm:h-[6.5rem]" aria-hidden /> : null}
+    </>
   );
 }
 
 function TopBar() {
   return (
-    <div className="hidden border-b border-slate-200/90 bg-[var(--brand-navy)] text-white/85 sm:block">
+    <div className="hidden border-b border-white/15 bg-[#1e40af]/95 text-white/90 backdrop-blur-md sm:block">
       <div className="container-page flex h-10 items-center justify-between text-[11px] font-medium sm:text-xs">
         <div className="flex items-center gap-4 lg:gap-6">
           <span className="text-white/80">Pzt - Cmt 08:00 – 18:00</span>
@@ -240,7 +257,7 @@ function MobileMenuDrawer() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-slate-900/35 backdrop-blur-[2px]"
+              className="fixed inset-0 z-[60] bg-slate-900/35 backdrop-blur-[2px]"
               onClick={() => setOpen(false)}
             />
             <motion.div
@@ -251,7 +268,7 @@ function MobileMenuDrawer() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed left-3 right-3 top-[4.75rem] z-50 max-h-[min(80vh,calc(100dvh-5.5rem))] overflow-auto rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xl"
+              className="fixed left-3 right-3 top-20 z-[70] max-h-[min(80vh,calc(100dvh-6rem))] overflow-auto rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xl"
             >
               <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Kurslar</div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
