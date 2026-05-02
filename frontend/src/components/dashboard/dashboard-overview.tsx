@@ -38,7 +38,7 @@ export function DashboardOverview({ user, subscription }: Props) {
       </div>
 
       <Stagger className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <GlassMotionCard className="p-6">
+        <GlassMotionCard className="p-6" glowOnHover="blue">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">İçerik</div>
@@ -56,7 +56,7 @@ export function DashboardOverview({ user, subscription }: Props) {
           </div>
         </GlassMotionCard>
 
-        <GlassMotionCard className="p-6">
+        <GlassMotionCard className="p-6" glowOnHover="violet">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Performans</div>
@@ -76,7 +76,7 @@ export function DashboardOverview({ user, subscription }: Props) {
           </div>
         </GlassMotionCard>
 
-        <GlassMotionCard className="p-6 sm:col-span-2 lg:col-span-1">
+        <GlassMotionCard className="p-6 sm:col-span-2 lg:col-span-1" glowOnHover="amber">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Abonelik</div>

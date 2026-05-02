@@ -1,17 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  /* 2026 LMS: slate zemin + #1e40af + amber vurgu */
-  --background: #f8fafc;
+  /* Premium 2026: #2563EB çekirdek + amber; indigo/violet mesh */
+  --background: #f4f7ff;
   --foreground: #0f172a;
   --brand-navy: #0f172a;
-  --brand-blue: #1e40af;
-  --brand-blue-light: #2563eb;
+  --brand-blue: #2563eb;
+  --brand-blue-deep: #1d4ed8;
+  --brand-blue-light: #3b82f6;
+  --brand-indigo: #4f46e5;
+  --brand-violet: #8b5cf6;
+  --brand-violet-soft: #a78bfa;
   --brand-amber: #f59e0b;
   --brand-amber-light: #fbbf24;
-  --surface: #ffffff;
-  --surface-muted: #f1f5f9;
-  --border-subtle: rgba(15, 23, 42, 0.09);
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-muted: rgba(241, 245, 249, 0.55);
+  --border-subtle: rgba(15, 23, 42, 0.06);
+
+  --glow-blue: rgba(37, 99, 235, 0.45);
+  --glow-amber: rgba(245, 158, 11, 0.42);
+  --glow-violet: rgba(139, 92, 246, 0.4);
 
   --ms-primary: var(--brand-blue);
   --ms-accent: var(--brand-amber);
@@ -19,7 +27,7 @@
   --ms-surface: var(--surface);
   --ms-surface-2: var(--surface-muted);
   --ms-border: var(--border-subtle);
-  --ms-shadow: 0 10px 38px rgba(12, 35, 64, 0.07);
+  --ms-shadow: 0 12px 40px rgba(37, 99, 235, 0.09);
   --ms-radius: 1.25rem;
 }
 
@@ -50,32 +58,52 @@ body {
   @apply mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8;
 }
 
-/* Soft, subtle background (keep mesh but reduce prominence) */
+/* İndigo + soft violet dinamik mesh (hafif hareket) */
 .mesh-bg {
-  background-color: var(--ms-surface-2);
+  background-color: #eef2ff;
   background-image:
-    radial-gradient(at 14% 8%, rgba(30, 64, 175, 0.12) 0px, transparent 52%),
-    radial-gradient(at 88% 12%, rgba(245, 158, 11, 0.07) 0px, transparent 48%),
-    radial-gradient(at 10% 88%, rgba(15, 23, 42, 0.045) 0px, transparent 55%);
-  animation: mesh-float 28s ease-in-out infinite;
+    radial-gradient(ellipse 110% 80% at 8% -10%, rgba(79, 70, 229, 0.2) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 70% at 92% 6%, rgba(139, 92, 246, 0.16) 0%, transparent 52%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(37, 99, 235, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 18% 78%, rgba(167, 139, 250, 0.14) 0%, transparent 48%),
+    radial-gradient(ellipse 60% 45% at 85% 72%, rgba(245, 158, 11, 0.08) 0%, transparent 45%);
+  background-size: 120% 120%, 115% 115%, 100% 100%, 130% 130%, 110% 110%;
+  background-position: 0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%;
+  animation: mesh-drift 32s ease-in-out infinite;
 }
 
-@keyframes mesh-float {
+@keyframes mesh-drift {
   0%,
   100% {
     transform: scale(1) translate3d(0, 0, 0);
+    filter: hue-rotate(0deg);
   }
   33% {
-    transform: scale(1.03) translate3d(1.2%, -1%, 0);
+    transform: scale(1.025) translate3d(1.4%, -0.8%, 0);
+    filter: hue-rotate(4deg);
   }
   66% {
-    transform: scale(1.02) translate3d(-1%, 1%, 0);
+    transform: scale(1.02) translate3d(-1.2%, 1%, 0);
+    filter: hue-rotate(-3deg);
+  }
+}
+
+@keyframes ripple-wave {
+  0% {
+    transform: scale(0);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(28);
+    opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .mesh-bg {
     animation: none !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
 
@@ -114,8 +142,8 @@ body {
 
 .btn-solid {
   @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
-  background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
-  box-shadow: 0 14px 32px rgba(30, 77, 183, 0.22);
+  background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue), var(--brand-blue-light));
+  box-shadow: 0 16px 36px rgba(37, 99, 235, 0.32), 0 0 0 1px rgba(255, 255, 255, 0.12);
   @apply text-white hover:brightness-110 hover:shadow-lg active:scale-[0.99];
 }
 
@@ -126,16 +154,24 @@ body {
 
 .btn-accent {
   @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
-  background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-light));
-  box-shadow: 0 14px 34px rgba(30, 64, 175, 0.28);
+  background: linear-gradient(135deg, var(--brand-blue-deep), var(--brand-blue), var(--brand-blue-light));
+  box-shadow: 0 16px 38px rgba(37, 99, 235, 0.35), 0 0 24px rgba(37, 99, 235, 0.12);
   @apply text-white hover:brightness-110 hover:-translate-y-px hover:shadow-lg active:scale-[0.99];
 }
 
 /* Ana hero CTA cam düğümü (+ Framer ile scale kullanılacak) */
 .hero-cta-solid {
   @apply inline-flex h-12 items-center justify-center rounded-2xl px-8 text-sm font-bold tracking-tight text-white backdrop-blur-md;
-  background: linear-gradient(135deg, rgba(30, 64, 175, 0.92), rgba(37, 99, 235, 0.88));
-  box-shadow: 0 16px 40px rgba(30, 64, 175, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(29, 78, 216, 0.95),
+    rgba(37, 99, 235, 0.9),
+    rgba(245, 158, 11, 0.22)
+  );
+  box-shadow:
+    0 20px 48px rgba(37, 99, 235, 0.42),
+    0 0 36px rgba(139, 92, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .hero-cta-ghost {
@@ -150,7 +186,7 @@ body {
 .btn-primary {
   @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.99];
   background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-light));
-  box-shadow: 0 14px 30px rgba(30, 77, 183, 0.24);
+  box-shadow: 0 14px 32px rgba(37, 99, 235, 0.32);
   @apply hover:brightness-110;
 }
 

@@ -2,20 +2,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   BentoCard,
   RevealInView,
   SpringLink,
   springInteract,
+  springReveal,
   bentoSurface,
-  fadeInUpTransition,
+  bentoGlowHover,
+  bentoGlowRest,
+  type BentoGlowTone,
 } from "@/components/motion/bento-motion";
 import { NewsletterForm } from "@/components/newsletter/newsletter-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RippleWrap } from "@/components/ui/ripple-wrap";
 
 const grades = [
   "1. Sınıf",
@@ -42,30 +46,40 @@ type CoursePublic = {
   teacher: { id: number; username: string; first_name: string; last_name: string };
 };
 
-const categoryBento = [
+const categoryBento: Array<{
+  title: string;
+  desc: string;
+  href: string;
+  span: string;
+  glow: BentoGlowTone;
+}> = [
   {
     title: "STEM & doğa bilimleri",
     desc: "Fen · matematik · problem çözme",
     href: "/classes",
     span: "md:col-span-7",
+    glow: "blue",
   },
   {
     title: "Diller & iletişim",
     desc: "İngilizce · okuma yazma · sınav içerikleri",
     href: "/classes",
     span: "md:col-span-5",
+    glow: "violet",
   },
   {
     title: "Sosyal bilgiler",
     desc: "Tarih · coğrafya · güncel bağlantılar",
     href: "/classes",
     span: "md:col-span-5",
+    glow: "amber",
   },
   {
     title: "Profesyonel gelişim",
     desc: "BT · sunum · dijital okuryazarlık",
     href: "/classes",
     span: "md:col-span-7",
+    glow: "violet",
   },
 ];
 
@@ -77,30 +91,48 @@ const heroStagger = {
 };
 
 const heroFadeUp = {
-  hidden: { opacity: 0, y: 36 },
-  show: { opacity: 1, y: 0, transition: fadeInUpTransition },
+  hidden: { opacity: 0, y: 44 },
+  show: { opacity: 1, y: 0, transition: springReveal },
 };
 
 export function LandingMain() {
   const reduce = useReducedMotion() ?? false;
+  const heroRef = useRef<HTMLElement | null>(null);
+  const [heroImg, setHeroImg] = useState("/images/image_86ee84.jpg");
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroParallaxY = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["0%", "16%"]);
 
   return (
     <main>
-      {/* Hero — tam ekran (min-h-screen) */}
-      <section className="relative min-h-screen w-full overflow-hidden">
-        <Image
-          src="/images/hero-classroom.jpg"
-          alt=""
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="100vw"
-        />
+      {/* Hero — tam ekran + parallax görsel */}
+      <section ref={heroRef} className="relative min-h-screen w-full overflow-hidden">
+        <motion.div className="absolute inset-0 z-0" style={{ y: heroParallaxY }} aria-hidden>
+          <div className="absolute inset-0 scale-[1.12]">
+            <Image
+              src={heroImg}
+              alt=""
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="100vw"
+              onError={() => {
+                setHeroImg((prev) => {
+                  if (prev.endsWith("hero-classroom.jpg")) return prev;
+                  if (prev.includes("image_86ee84")) return "/images/hero-classroom.jpg";
+                  return prev;
+                });
+              }}
+            />
+          </div>
+        </motion.div>
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0f172a]/90 via-[#1e40af]/48 to-[#f59e0b]/12"
+          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-[#0f172a]/92 via-[#2563eb]/42 to-[#8b5cf6]/22"
           aria-hidden
         />
-        <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32 lg:px-8 lg:pt-36">
+        <div className="relative z-[2] mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32 lg:px-8 lg:pt-36">
           <motion.div
             className="max-w-3xl"
             variants={reduce ? undefined : heroStagger}
@@ -140,9 +172,11 @@ export function LandingMain() {
                 whileTap={reduce ? undefined : { scale: 0.98 }}
                 transition={springInteract}
               >
-                <Link href="/classes" className="hero-cta-solid">
-                  Keşfe Başlayın
-                </Link>
+                <RippleWrap className="max-w-none">
+                  <Link href="/classes" className="hero-cta-solid">
+                    Keşfe Başlayın
+                  </Link>
+                </RippleWrap>
               </motion.span>
               <motion.span
                 className="inline-flex"
@@ -150,9 +184,11 @@ export function LandingMain() {
                 whileTap={reduce ? undefined : { scale: 0.98 }}
                 transition={springInteract}
               >
-                <Link href="/signup" className="hero-cta-ghost">
-                  Ücretsiz Kayıt
-                </Link>
+                <RippleWrap className="max-w-none">
+                  <Link href="/signup" className="hero-cta-ghost">
+                    Ücretsiz Kayıt
+                  </Link>
+                </RippleWrap>
               </motion.span>
             </motion.div>
           </motion.div>
@@ -163,11 +199,8 @@ export function LandingMain() {
       <section className="container-page pb-10 pt-10 sm:pb-14 sm:pt-12">
         <div className="grid gap-4 sm:gap-5 md:grid-cols-12 md:gap-6">
           <RevealInView className="md:col-span-12 xl:col-span-7">
-            <motion.div
-              className={`flex flex-1 flex-col justify-between gap-6 p-6 sm:p-7 ${bentoSurface}`}
-              whileHover={reduce ? undefined : { scale: 1.02 }}
-              transition={springInteract}
-            >
+            <BentoCard glowTone="blue">
+              <div className="flex flex-1 flex-col justify-between gap-6 p-6 sm:p-7">
                 <div>
                   <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Hızlı başlangıç</div>
                   <p className="mt-3 text-xl font-extrabold tracking-tight text-[var(--brand-navy)]">
@@ -178,20 +211,22 @@ export function LandingMain() {
                   </p>
                 </div>
                 <div className="mt-6 grid gap-2">
-                  <Link
-                    href="/signup"
-                    className="group btn-accent justify-center rounded-2xl"
-                  >
-                    <span>Hesap oluştur</span>
-                    <motion.span aria-hidden className="ml-2 inline-flex" whileHover={{ x: 5 }} transition={springInteract}>
-                      <ArrowRight className="size-4" />
-                    </motion.span>
-                  </Link>
-                  <Link href="/login" className="btn-outline justify-center rounded-2xl">
-                    Giriş yap
-                  </Link>
+                  <RippleWrap className="w-full">
+                    <Link href="/signup" className="group btn-accent w-full justify-center rounded-2xl">
+                      <span>Hesap oluştur</span>
+                      <motion.span aria-hidden className="ml-2 inline-flex" whileHover={{ x: 5 }} transition={springInteract}>
+                        <ArrowRight className="size-4" />
+                      </motion.span>
+                    </Link>
+                  </RippleWrap>
+                  <RippleWrap className="w-full">
+                    <Link href="/login" className="btn-outline w-full justify-center rounded-2xl">
+                      Giriş yap
+                    </Link>
+                  </RippleWrap>
                 </div>
-              </motion.div>
+              </div>
+            </BentoCard>
           </RevealInView>
 
           <RevealInView className="grid grid-cols-2 gap-3 md:col-span-12 xl:col-span-5 xl:gap-4">
@@ -214,18 +249,22 @@ export function LandingMain() {
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-12">
           {categoryBento.map((c) => (
             <RevealInView key={c.title} className={c.span}>
-              <motion.div whileHover={{ scale: reduce ? 1 : 1.015 }} transition={springInteract}>
-                <Link href={c.href} className={`flex h-full flex-col justify-between gap-7 p-6 sm:p-7 ${bentoSurface} group`}>
+              <BentoCard glowTone={c.glow}>
+                <Link href={c.href} className="group flex h-full min-h-[200px] flex-col justify-between gap-7 p-6 sm:p-7">
                   <div className="text-left">
                     <h3 className="text-xl font-bold tracking-tight text-[var(--brand-navy)]">{c.title}</h3>
                     <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">{c.desc}</p>
                   </div>
-                  <motion.span className="inline-flex items-center gap-2 text-sm font-bold text-[var(--brand-blue)]" whileHover={{ x: 6 }} transition={springInteract}>
+                  <motion.span
+                    className="inline-flex items-center gap-2 text-sm font-bold text-[var(--brand-blue)]"
+                    whileHover={{ x: 6 }}
+                    transition={springInteract}
+                  >
                     Yol haritasını görün
                     <ArrowRight className="size-4" aria-hidden />
                   </motion.span>
                 </Link>
-              </motion.div>
+              </BentoCard>
             </RevealInView>
           ))}
         </div>
@@ -244,18 +283,21 @@ export function LandingMain() {
       <TopCoursesSection reduce={reduce} />
 
       {/* Stats */}
-      <section className="bg-[var(--surface-muted)] py-14 sm:py-20">
+      <section className="border-y border-white/20 bg-white/25 py-14 backdrop-blur-md sm:py-20">
         <div className="container-page grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { k: "Aktif eğitmen adayı", v: "100+" },
-            { k: "Video & PDF içeriği", v: "Günlük güncellenen" },
-            { k: "Öğrenen katılımcı", v: "Büyüyen topluluk" },
-            { k: "Kurumsal iş birliği", v: "Uygulanabilir süreç" },
-          ].map((x, i) => (
+          {(
+            [
+              { k: "Aktif eğitmen adayı", v: "100+", glow: "blue" as const },
+              { k: "Video & PDF içeriği", v: "Günlük güncellenen", glow: "violet" as const },
+              { k: "Öğrenen katılımcı", v: "Büyüyen topluluk", glow: "amber" as const },
+              { k: "Kurumsal iş birliği", v: "Uygulanabilir süreç", glow: "neutral" as const },
+            ] satisfies Array<{ k: string; v: string; glow: BentoGlowTone }>
+          ).map((x) => (
             <RevealInView key={x.k}>
               <motion.article
-                className={`rounded-3xl border border-slate-200/90 bg-[var(--surface)] p-6 text-center shadow-sm ${i === 0 ? "border-[var(--brand-blue)]/25" : ""}`}
-                whileHover={reduce ? undefined : { y: -3, scale: 1.01 }}
+                className={`rounded-3xl border border-white/20 bg-white/40 p-6 text-center backdrop-blur-xl ring-1 ring-white/25`}
+                style={reduce ? undefined : { boxShadow: bentoGlowRest(x.glow) }}
+                whileHover={reduce ? undefined : bentoGlowHover(x.glow)}
                 transition={springInteract}
               >
                 <div className="text-3xl font-extrabold tracking-tight text-[var(--brand-navy)]">{x.v}</div>
@@ -267,10 +309,14 @@ export function LandingMain() {
       </section>
 
       {/* Spotlight */}
-      <section className="bg-[var(--surface)] pb-16 pt-14">
+      <section className="pb-16 pt-14">
         <div className="container-page grid gap-7 lg:grid-cols-12 lg:gap-10">
           <RevealInView className="lg:col-span-5 lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-3xl border border-slate-200/90 bg-gradient-to-br from-[var(--surface-muted)] to-white p-7 shadow-sm sm:p-9">
+            <motion.div
+              className={`rounded-3xl border border-white/20 bg-gradient-to-br from-white/55 via-[#eef2ff]/80 to-[#fdf4ff]/60 p-7 shadow-[0_20px_50px_-12px_rgba(37,99,235,0.15)] backdrop-blur-xl ring-1 ring-white/30 sm:p-9`}
+              whileHover={reduce ? undefined : { y: -4, transition: springInteract }}
+              transition={springReveal}
+            >
               <div className="section-eyebrow text-[var(--brand-blue)]">Öne çıkan eğitmen</div>
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--brand-navy)]">Ayın yüz yüze motivasyonu</h2>
               <p className="mt-4 text-sm font-medium leading-relaxed text-slate-600">
@@ -284,11 +330,11 @@ export function LandingMain() {
                   Müfredata göz atın
                 </SpringLink>
               </div>
-            </div>
+            </motion.div>
           </RevealInView>
 
           <RevealInView className="lg:col-span-7">
-            <BentoCard className="">
+            <BentoCard glowTone="amber">
               <div className="grid gap-0 sm:grid-cols-5">
                 <div className="relative min-h-[260px] sm:col-span-2">
                   <Image src="/images/teacher.jpg" alt="Eğitmen" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 42vw" />
@@ -317,10 +363,10 @@ export function LandingMain() {
       </section>
 
       {/* Blog + newsletter bento */}
-      <section className="bg-[var(--surface-muted)] pb-20 pt-16">
+      <section className="border-t border-white/15 bg-white/20 pb-20 pt-16 backdrop-blur-sm">
         <div className="container-page grid gap-6 lg:grid-cols-12 lg:gap-8">
           <RevealInView className="lg:col-span-7">
-            <div className="rounded-3xl border border-slate-200/90 bg-[var(--surface)] p-7 shadow-sm sm:p-9">
+            <div className="rounded-3xl border border-white/20 bg-white/40 p-7 shadow-[0_14px_40px_-12px_rgba(79,70,229,0.12)] backdrop-blur-xl ring-1 ring-white/25 sm:p-9">
               <h2 className="text-2xl font-extrabold tracking-tight text-[var(--brand-navy)]">Blog & ilham köşesi</h2>
               <p className="mt-2 text-sm font-medium text-slate-600">
                 İçerik API’si hazır olduğunda bu alan otomatik dolacak; şimdilik tipografi ve geçişler test edilebilir.
@@ -329,11 +375,12 @@ export function LandingMain() {
                 {[
                   { date: "09 Ağu", title: "Liderlik becerilerini nasıl parlatırsın?", tag: "Kariyer" },
                   { date: "03 Haz", title: "Üniversite bütçesini planlamak", tag: "Rehber" },
-                ].map((p) => (
+                ].map((p, idx) => (
                   <motion.article
                     key={p.title}
-                    className={`rounded-3xl border border-slate-200/90 bg-[var(--surface-muted)]/50 p-6 shadow-sm`}
-                    whileHover={reduce ? undefined : { y: -4 }}
+                    className="rounded-3xl border border-white/20 bg-white/35 p-6 backdrop-blur-lg ring-1 ring-white/20"
+                    style={reduce ? undefined : { boxShadow: bentoGlowRest(idx === 0 ? "violet" : "blue") }}
+                    whileHover={reduce ? undefined : bentoGlowHover(idx === 0 ? "violet" : "blue")}
                     transition={springInteract}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -359,13 +406,15 @@ export function LandingMain() {
           </RevealInView>
 
           <RevealInView className="lg:col-span-5">
-            <div className={`flex h-full flex-col justify-between p-7 sm:p-9 ${bentoSurface}`}>
+            <BentoCard glowTone="violet" className="flex min-h-[280px] flex-col justify-between">
+              <div className="flex h-full flex-col justify-between p-7 sm:p-9">
               <div>
                 <h2 className="text-xl font-extrabold text-[var(--brand-navy)]">Bültenimize katılın</h2>
                 <p className="mt-2 text-sm font-medium text-slate-600">Yeni kurslar, etkinlikler ve platform özetleri.</p>
               </div>
               <NewsletterForm inputId="newsletterEmailHome" className="mt-7 grid gap-3" />
-            </div>
+              </div>
+            </BentoCard>
           </RevealInView>
         </div>
       </section>
@@ -374,15 +423,24 @@ export function LandingMain() {
 }
 
 function StatMini({ label, value, tone }: { label: string; value: string; tone: "accent" | "muted" }) {
+  const rm = !!useReducedMotion();
+  const hoverMuted = rm ? undefined : bentoGlowHover("violet");
+  const hoverAccent = rm
+    ? undefined
+    : {
+        scale: 1.02,
+        boxShadow: "0 24px 48px -8px rgba(37,99,235,0.45), 0 0 40px rgba(245,158,11,0.25)",
+      };
   return (
     <motion.div
-      className={`rounded-3xl border p-5 shadow-sm ${
+      className={`rounded-3xl border p-5 backdrop-blur-xl ${
         tone === "accent"
-          ? "border-[color-mix(in_srgb,var(--brand-amber)_45%,transparent)] bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white ring-1 ring-[var(--brand-amber)]/35"
-          : "border border-slate-200/90 bg-white text-[var(--brand-navy)]"
+          ? "border-[color-mix(in_srgb,var(--brand-amber)_50%,transparent)] bg-gradient-to-br from-[#1d4ed8] via-[#2563eb] to-[#3b82f6] text-white ring-2 ring-[var(--brand-amber)]/40"
+          : "border-white/20 bg-white/40 text-[var(--brand-navy)] ring-1 ring-white/25"
       }`}
+      style={tone === "muted" ? { boxShadow: bentoGlowRest("violet") } : undefined}
       initial={false}
-      whileHover={{ scale: 1.02 }}
+      whileHover={tone === "accent" ? hoverAccent : hoverMuted}
       transition={springInteract}
     >
       <div className={`text-[11px] font-bold uppercase tracking-wide ${tone === "accent" ? "text-white/70" : "text-slate-400"}`}>
@@ -412,14 +470,15 @@ function StaggerBento({ grades, reduce }: { grades: string[]; reduce: boolean })
           variants={
             reduce
               ? { hidden: { opacity: 1, y: 0 }, show: { opacity: 1, y: 0 } }
-              : { hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: fadeInUpTransition } }
+              : { hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0, transition: springReveal } }
           }
-          whileHover={reduce ? undefined : { scale: 1.02 }}
+          style={reduce ? undefined : { boxShadow: bentoGlowRest("neutral") }}
+          whileHover={reduce ? undefined : bentoGlowHover("blue")}
           transition={springInteract}
         >
           <Link
             href="/classes"
-            className={`flex min-h-[4.75rem] items-center justify-center p-5 text-center text-sm font-bold text-[var(--brand-navy)] ${bentoSurface} hover:bg-[var(--surface-muted)]/70`}
+            className={`flex min-h-[4.75rem] items-center justify-center p-5 text-center text-sm font-bold text-[var(--brand-navy)] ${bentoSurface}`}
           >
             {label}
           </Link>
@@ -431,7 +490,7 @@ function StaggerBento({ grades, reduce }: { grades: string[]; reduce: boolean })
 
 function TopCoursesSection({ reduce }: { reduce: boolean }) {
   return (
-    <section className="bg-[var(--surface)] pb-16 pt-6 sm:pt-10">
+    <section className="border-t border-white/15 bg-white/25 pb-16 pt-6 backdrop-blur-sm sm:pt-10">
       <div className="container-page">
         <RevealInView className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -439,12 +498,14 @@ function TopCoursesSection({ reduce }: { reduce: boolean }) {
             <h2 className="section-title text-[var(--brand-navy)]">Öne çıkan kurslar</h2>
             <p className="section-lead mt-2 max-w-xl font-medium">API’den canlı olarak gelen kartlar için Shadcn sekmeli filtre yapısı.</p>
           </div>
-          <Link href="/classes" className="group btn-solid h-11 px-6">
-            Tümünü gör
-            <motion.span className="ml-2 inline-flex" whileHover={{ x: 6 }} transition={springInteract}>
-              <ArrowRight className="size-4 text-white/90 group-hover:text-white" />
-            </motion.span>
-          </Link>
+          <RippleWrap>
+            <Link href="/classes" className="group btn-solid h-11 px-6">
+              Tümünü gör
+              <motion.span className="ml-2 inline-flex" whileHover={{ x: 6 }} transition={springInteract}>
+                <ArrowRight className="size-4 text-white/90 group-hover:text-white" />
+              </motion.span>
+            </Link>
+          </RippleWrap>
         </RevealInView>
 
         <TopCoursesContent reduce={reduce} />
@@ -479,6 +540,12 @@ function TopCoursesContent({ reduce }: { reduce: boolean }) {
       </TabsContent>
     </Tabs>
   );
+}
+
+function courseCardGlowTone(c: CoursePublic, index: number): BentoGlowTone {
+  if (c.cover_image_url) return "blue";
+  const tones: BentoGlowTone[] = ["violet", "amber", "blue"];
+  return tones[index % 3];
 }
 
 function TopCoursesClient({ reduce, tab }: { reduce: boolean; tab: "newest" | "oldest" | "rating" }) {
@@ -534,9 +601,9 @@ function TopCoursesClient({ reduce, tab }: { reduce: boolean; tab: "newest" | "o
       <motion.div
         className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         layout
-        initial={reduce ? false : { opacity: 0, y: 10 }}
+        initial={reduce ? false : { opacity: 0, y: 22 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
+        transition={reduce ? undefined : springReveal}
         key={`${tab}-${isLoading}`}
       >
         {isLoading ? (
@@ -556,18 +623,21 @@ function TopCoursesClient({ reduce, tab }: { reduce: boolean; tab: "newest" | "o
             {base ? "Henüz yayınlı kurs yok veya API’ye bağlanılamıyor." : "NEXT_PUBLIC_API_BASE_URL tanımlı değil."}
           </div>
         ) : (
-          visible.map((c) => (
+          visible.map((c, idx) => {
+            const glow = courseCardGlowTone(c, idx);
+            return (
             <motion.article
               key={`${tab}-${c.id}`}
               className={`${bentoSurface} overflow-hidden`}
-              whileHover={reduce ? undefined : { scale: 1.02 }}
+              style={reduce ? undefined : { boxShadow: bentoGlowRest(glow) }}
+              whileHover={reduce ? undefined : bentoGlowHover(glow)}
               transition={springInteract}
             >
               <div className="relative h-40 bg-[var(--surface-muted)]">
                 {c.cover_image_url ? (
                   <Image src={c.cover_image_url} alt="" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 33vw" />
                 ) : (
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(30,77,183,0.18),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(53,105,233,0.15),transparent_52%)]" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(37,99,235,0.22),transparent_55%),radial-gradient(circle_at_80%_40%,rgba(139,92,246,0.18),transparent_52%),radial-gradient(circle_at_50%_100%,rgba(245,158,11,0.12),transparent_45%)]" />
                 )}
               </div>
               <div className="p-5">
@@ -595,20 +665,23 @@ function TopCoursesClient({ reduce, tab }: { reduce: boolean; tab: "newest" | "o
                 </div>
               </div>
             </motion.article>
-          ))
+            );
+          })
         )}
       </motion.div>
 
       {canLoadMore ? (
         <div className="mt-10 flex justify-center">
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.985 }}
-            onClick={() => setVisibleCount((n) => Math.min(n + 6, items.length))}
-            className="btn-outline rounded-2xl px-10"
-          >
-            Daha fazla yükle
-          </motion.button>
+          <RippleWrap>
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.985 }}
+              onClick={() => setVisibleCount((n) => Math.min(n + 6, items.length))}
+              className="btn-outline rounded-2xl px-10"
+            >
+              Daha fazla yükle
+            </motion.button>
+          </RippleWrap>
         </div>
       ) : null}
     </>

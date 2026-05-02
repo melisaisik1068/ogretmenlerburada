@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, Languages, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -10,7 +10,23 @@ import { useState } from "react";
 import { AuthLinks } from "@/components/auth/auth-links";
 import { useNavScrollHide } from "@/hooks/use-nav-scroll-hide";
 
-import { springInteract } from "./motion/bento-motion";
+import { springInteract, springReveal } from "./motion/bento-motion";
+
+const navListVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.05, delayChildren: 0.12 },
+  },
+};
+
+const navItemVariants = {
+  hidden: { opacity: 0, y: -14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: springReveal,
+  },
+};
 
 const gradeGroups: Array<{ title: string; items: Array<{ label: string; href: string }> }> = [
   {
@@ -72,6 +88,14 @@ export function TopNav() {
   const navHidden = useNavScrollHide();
   const pathname = usePathname();
   const spacerForUnderlap = pathname !== "/";
+  const reduceNav = !!useReducedMotion();
+  const listVars = reduceNav ? { hidden: {}, visible: { transition: {} } } : navListVariants;
+  const itemVars = reduceNav
+    ? {
+        hidden: { opacity: 1, y: 0 },
+        visible: { opacity: 1, y: 0 },
+      }
+    : navItemVariants;
 
   return (
     <>
@@ -79,14 +103,19 @@ export function TopNav() {
       className="fixed inset-x-0 top-0 z-50 will-change-transform"
       initial={false}
       animate={{ y: navHidden ? "-100%" : 0 }}
-      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ type: "spring", stiffness: 320, damping: 32 }}
     >
       <TopBar />
-      <div className="border-b border-slate-200/55 bg-white/70 shadow-sm backdrop-blur-lg">
-        <div className="container-page flex h-14 items-center justify-between gap-3 sm:h-16">
-        <motion.div className="flex items-center gap-3" initial={false} whileHover={{ scale: 1.01 }} transition={springInteract}>
+      <div className="border-b border-white/35 bg-white/55 shadow-[0_8px_32px_-8px_rgba(37,99,235,0.12)] backdrop-blur-xl">
+        <motion.div
+          className="container-page flex h-14 items-center justify-between gap-3 sm:h-16"
+          variants={listVars}
+          initial={reduceNav ? "visible" : "hidden"}
+          animate="visible"
+        >
+        <motion.div className="flex items-center gap-3" variants={itemVars} whileHover={{ scale: 1.01 }} transition={springInteract}>
           <Link href="/" className="flex items-center gap-2">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[var(--brand-navy)] to-[var(--brand-blue)] text-[11px] font-black leading-none text-white shadow-md sm:text-xs">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[var(--brand-navy)] via-[var(--brand-blue-deep)] to-[var(--brand-blue)] text-[11px] font-black leading-none text-white shadow-[0_12px_28px_-6px_rgba(37,99,235,0.45)] ring-2 ring-[var(--brand-amber)]/25 sm:text-xs">
               ÖA
             </span>
             <span className="text-sm font-extrabold tracking-tight text-[var(--brand-navy)] sm:text-base">
@@ -96,24 +125,30 @@ export function TopNav() {
         </motion.div>
 
         <nav className="hidden items-center gap-5 lg:gap-6 lg:flex xl:gap-7">
-          <NavLinkMotion href="/">Ana Sayfa</NavLinkMotion>
-          <CoursesMegaDropdown />
+          <motion.span variants={itemVars}>
+            <NavLinkMotion href="/">Ana Sayfa</NavLinkMotion>
+          </motion.span>
+          <motion.span variants={itemVars}>
+            <CoursesMegaDropdown />
+          </motion.span>
           {navLinks.slice(1).map((n) => (
-            <NavLinkMotion key={n.href} href={n.href}>
-              {n.label}
-            </NavLinkMotion>
+            <motion.span key={n.href} variants={itemVars}>
+              <NavLinkMotion href={n.href}>
+                {n.label}
+              </NavLinkMotion>
+            </motion.span>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <motion.div className="hidden items-center gap-3 lg:flex" variants={itemVars}>
           <AuthLinks />
-        </div>
+        </motion.div>
 
-        <div className="flex items-center gap-2 lg:hidden">
+        <motion.div className="flex items-center gap-2 lg:hidden" variants={itemVars}>
           <AuthLinks />
           <MobileMenuDrawer />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
       </div>
     </motion.header>
     {/* Ana sayfa: hero tam ekran + navbar üzerine oturur; diğer sayfalar: içerik altına sığsın */}
@@ -124,7 +159,7 @@ export function TopNav() {
 
 function TopBar() {
   return (
-    <div className="hidden border-b border-white/15 bg-[#1e40af]/95 text-white/90 backdrop-blur-md sm:block">
+    <div className="hidden border-b border-white/10 bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#4f46e5] text-white/90 shadow-[0_4px_24px_rgba(37,99,235,0.25)] backdrop-blur-md sm:block">
       <div className="container-page flex h-10 items-center justify-between text-[11px] font-medium sm:text-xs">
         <div className="flex items-center gap-4 lg:gap-6">
           <span className="text-white/80">Pzt - Cmt 08:00 – 18:00</span>
