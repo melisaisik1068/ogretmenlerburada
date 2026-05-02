@@ -7,8 +7,57 @@ import type { ReactNode } from "react";
 /** Spring physics per brief: stiffness 400, damping 15 */
 export const springInteract = { type: "spring" as const, stiffness: 400, damping: 15 };
 
+/** Bento / kart yüzeyi — rounded-3xl, ince kenarlık, hafif gölge */
+export const bentoSurface =
+  "rounded-3xl border border-slate-200/90 bg-[var(--surface)] shadow-sm transition-[box-shadow,transform] duration-300 hover:shadow-md";
+
 export const glassCard =
   "rounded-3xl border border-white/20 bg-white/60 shadow-2xl shadow-blue-500/5 backdrop-blur-xl";
+
+/** Scroll’da görünürken opaklık ve y ekseni ile giriş */
+export function RevealInView({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className={className}
+      initial={reduce ? false : { opacity: 0, y: 20 }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-56px 0px -8px 0px" }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Bento hücre + hafif hover scale */
+export function BentoCard({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className={`${bentoSurface} overflow-hidden ${className}`}
+      initial={reduce ? false : { opacity: 0, y: 20 }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-48px" }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={reduce ? undefined : { scale: 1.02 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export function SpringLink({
   href,

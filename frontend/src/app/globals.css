@@ -1,30 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  /* Masterstudy-like palette (classic LMS) */
-  --background: #ffffff;
-  --foreground: #0f172a; /* slate-900 */
-  --ms-primary: #1a73e8; /* link / accents */
-  --ms-accent: #ffb606; /* highlight (yellow) */
-  --ms-muted: #64748b; /* slate-500 */
-  --ms-surface: #ffffff;
-  --ms-surface-2: #f8fafc; /* slate-50 */
-  --ms-border: rgba(15, 23, 42, 0.12);
-  --ms-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
-  --ms-radius: 18px;
+  /* Number One inspired: açık zemin + lacivert/mavi vurgu */
+  --background: #f8fafc;
+  --foreground: #0c2340;
+  --brand-navy: #0c2340;
+  --brand-blue: #1e4db7;
+  --brand-blue-light: #3569e9;
+  --surface: #ffffff;
+  --surface-muted: #f1f5f9;
+  --border-subtle: rgba(12, 35, 64, 0.09);
+
+  --ms-primary: var(--brand-blue);
+  --ms-accent: var(--brand-blue-light);
+  --ms-muted: #64748b;
+  --ms-surface: var(--surface);
+  --ms-surface-2: var(--surface-muted);
+  --ms-border: var(--border-subtle);
+  --ms-shadow: 0 10px 38px rgba(12, 35, 64, 0.07);
+  --ms-radius: 1.25rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-jakarta);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Platform eğitim sitesi hep açık tema; kullanıcı tercihi koyulaştığında zarif nötr kalır */
+    --background: #f8fafc;
+    --foreground: #0c2340;
   }
 }
 
@@ -44,9 +52,9 @@ body {
 .mesh-bg {
   background-color: var(--ms-surface-2);
   background-image:
-    radial-gradient(at 18% 10%, rgba(26, 115, 232, 0.12) 0px, transparent 54%),
-    radial-gradient(at 85% 18%, rgba(255, 182, 6, 0.12) 0px, transparent 48%),
-    radial-gradient(at 12% 78%, rgba(16, 185, 129, 0.08) 0px, transparent 56%);
+    radial-gradient(at 14% 8%, rgba(30, 77, 183, 0.11) 0px, transparent 52%),
+    radial-gradient(at 88% 12%, rgba(53, 105, 233, 0.09) 0px, transparent 48%),
+    radial-gradient(at 10% 88%, rgba(12, 35, 64, 0.05) 0px, transparent 55%);
   animation: mesh-float 28s ease-in-out infinite;
 }
 
@@ -70,12 +78,12 @@ body {
 }
 
 .link-muted {
-  @apply text-slate-600 transition hover:text-slate-900;
+  @apply font-medium text-slate-600 transition-colors duration-200 hover:text-[var(--brand-navy)];
 }
 
 .link-primary {
-  color: var(--ms-primary);
-  @apply transition hover:brightness-110;
+  color: var(--brand-blue);
+  @apply font-semibold transition-colors duration-200 hover:text-[var(--brand-blue-light)];
 }
 
 .section-eyebrow {
@@ -103,21 +111,22 @@ body {
 }
 
 .btn-solid {
-  @apply inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition;
-  @apply bg-slate-900 text-white hover:bg-slate-800;
+  @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
+  background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
+  box-shadow: 0 14px 32px rgba(30, 77, 183, 0.22);
+  @apply text-white hover:brightness-110 hover:shadow-lg active:scale-[0.99];
 }
 
 .btn-outline {
-  @apply inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition;
-  @apply bg-white text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50;
+  @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
+  @apply bg-white text-[var(--brand-navy)] ring-1 ring-slate-200/90 hover:-translate-y-px hover:bg-slate-50 hover:shadow-sm active:scale-[0.99];
 }
 
 .btn-accent {
-  @apply inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition;
-  @apply text-slate-950;
-  background: linear-gradient(90deg, var(--ms-accent), #ffd56a);
-  box-shadow: 0 16px 34px rgba(255, 182, 6, 0.22);
-  @apply hover:brightness-105;
+  @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
+  background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-light));
+  box-shadow: 0 14px 34px rgba(30, 77, 183, 0.28);
+  @apply text-white hover:brightness-110 hover:-translate-y-px hover:shadow-lg active:scale-[0.99];
 }
 
 .btn-ghost {
@@ -126,9 +135,9 @@ body {
 }
 
 .btn-primary {
-  @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-white transition;
-  background: linear-gradient(90deg, var(--ms-primary), #4c8df0);
-  box-shadow: 0 16px 34px rgba(26, 115, 232, 0.22);
+  @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.99];
+  background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-light));
+  box-shadow: 0 14px 30px rgba(30, 77, 183, 0.24);
   @apply hover:brightness-110;
 }
 
@@ -139,10 +148,64 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(90deg, var(--ms-primary), #22c55e);
+  background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-light));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-accordion-down,
+  .animate-accordion-up {
+    animation: none !important;
+  }
+}
+
+@keyframes nav-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+[data-radix-dropdown-menu-content][data-state="open"] {
+  animation: nav-sheet-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-radix-dropdown-menu-content][data-state="open"] {
+    animation: none !important;
+  }
 }
 
 @keyframes floaty {
