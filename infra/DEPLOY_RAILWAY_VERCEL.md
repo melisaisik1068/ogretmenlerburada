@@ -129,6 +129,9 @@ python manage.py createsuperuser
 
 ## Sık sorunlar
 
+0. **502 + logda sadece `migrate`**: Railway **Start Command** Dockerfile `CMD`’yi ezer. Yalnızca `python manage.py migrate` yazılıysa migration biter, **Gunicorn hiç çalışmaz** — boş bırakın (imajın CMD’si kalsın) veya repodaki gibi zincirleyin:  
+   `python manage.py migrate && exec gunicorn config.wsgi:application --bind 0.0.0.0:$PORT ...`  
+   Repoda **`railway.toml`** bu zinciri sabitler (köke bağlı Dockerfile senaryosu).
 1. **`DisallowedHost`**: `DJANGO_ALLOWED_HOSTS` Railway domain’ini içermiyor.
 2. **CORS**: `CORS_ALLOWED_ORIGINS` Vercel URL’sinin **şemalı** tam eşleniği değil.
 3. **CSRF**: Admin kullanılacaksa `CSRF_TRUSTED_ORIGINS` tanımlı olmalı.

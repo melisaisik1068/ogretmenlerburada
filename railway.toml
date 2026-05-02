@@ -1,0 +1,9 @@
+# Railway tek servisle repo kökündeki Dockerfile kullanıldığında geçerlidir.
+# Deploy → Custom Start Command yalnızca `migrate` ise process biter → 502. Bu yüzden tek satırda tam zincir:
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "/bin/sh -c \"python manage.py migrate && exec gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8080} --workers 2 --timeout 120\""
