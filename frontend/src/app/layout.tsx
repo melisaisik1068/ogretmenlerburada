@@ -32,6 +32,15 @@ export const metadata: Metadata = {
   title: "ÖğretmenAğı | Güvenilir Eğitim Ağı & Onaylı Eğitmenler",
   description:
     "Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planı. ÖğretmenAğı ile güvenilir dijital eğitim.",
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    siteName: "ÖğretmenAğı",
+    title: "ÖğretmenAğı | Güvenilir Eğitim Ağı & Onaylı Eğitmenler",
+    description:
+      "Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planı. ÖğretmenAğı ile güvenilir dijital eğitim.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 import { getApiBaseUrl } from "@/lib/env";
 

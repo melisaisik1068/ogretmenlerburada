@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 import { WishlistButton } from "@/components/wishlist/wishlist-button";
 import { getApiBaseUrl } from "@/lib/env";

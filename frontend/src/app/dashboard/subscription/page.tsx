@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 import { getApiBaseUrl } from "@/lib/env";
 import type { SubscriptionPayload, UserMe } from "@/lib/types/api";

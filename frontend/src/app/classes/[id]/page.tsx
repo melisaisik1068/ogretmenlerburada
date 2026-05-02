@@ -3,10 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 import { CourseReviews, RatingBadge } from "@/components/reviews/course-reviews";
 import { getApiBaseUrl } from "@/lib/env";
+import { IMG_COURSE_DETAIL_COVER } from "@/lib/image-sizes";
 import type { CourseDetail } from "@/lib/types/api";
 
 async function fetchCourse(id: string): Promise<{ ok: true; data: CourseDetail } | { ok: false; status: number }> {
@@ -146,7 +147,14 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
                 <div className="surface overflow-hidden">
                   <div className="relative aspect-4/3 bg-slate-100">
                     {res.data.cover_image_url ? (
-                      <Image src={res.data.cover_image_url} alt="" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 40vw" />
+                      <Image
+                        src={res.data.cover_image_url}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes={IMG_COURSE_DETAIL_COVER}
+                        priority
+                      />
                     ) : (
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(26,115,232,0.18),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(255,182,6,0.20),transparent_55%)]" />
                     )}

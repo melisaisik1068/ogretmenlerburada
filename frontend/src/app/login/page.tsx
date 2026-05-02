@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import { LoginForm } from "@/components/auth/login-form";
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 
 export default function LoginPage() {

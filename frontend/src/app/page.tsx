@@ -1,5 +1,5 @@
 import { LandingMain } from "@/components/landing/landing-main";
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 
 export default function Home() {

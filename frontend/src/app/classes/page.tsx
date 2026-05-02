@@ -1,10 +1,16 @@
+import dynamic from "next/dynamic";
 import Link from "next/link";
 
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
+import { ClassesResultsSkeleton } from "@/components/skeletons/classes-results-skeleton";
 import { getApiBaseUrl } from "@/lib/env";
 import type { CoursePublic } from "@/lib/types/api";
-import { ClassesResultsClient } from "./classes-results-client";
+
+const ClassesResultsLazy = dynamic(
+  () => import("./classes-results-client").then((m) => ({ default: m.ClassesResultsClient })),
+  { loading: () => <ClassesResultsSkeleton /> },
+);
 
 type PageResp<T> = { count: number; next: string | null; previous: string | null; results: T[] };
 type Subject = { id: number; slug: string; title: string };
@@ -331,7 +337,7 @@ export default async function ClassesPage({
             ) : null}
 
             <div id="courses" className="mt-5">
-              <ClassesResultsClient
+              <ClassesResultsLazy
                 key={JSON.stringify({ ...baseParams, sort })}
                 initial={data}
                 query={baseParams}

@@ -1,6 +1,12 @@
+import dynamic from "next/dynamic";
 import { cookies } from "next/headers";
 
-import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
+import { DashboardOverviewSkeleton } from "@/components/skeletons/dashboard-overview-skeleton";
+
+const DashboardOverviewLazy = dynamic(
+  () => import("@/components/dashboard/dashboard-overview").then((m) => ({ default: m.DashboardOverview })),
+  { loading: () => <DashboardOverviewSkeleton /> },
+);
 import { getApiBaseUrl } from "@/lib/env";
 import type { SubscriptionPayload, UserMe } from "@/lib/types/api";
 
@@ -26,5 +32,5 @@ async function loadSession(): Promise<{ user: UserMe | null; subscription: Subsc
 export default async function DashboardPage() {
   const { user, subscription } = await loadSession();
 
-  return <DashboardOverview user={user} subscription={subscription} />;
+  return <DashboardOverviewLazy user={user} subscription={subscription} />;
 }

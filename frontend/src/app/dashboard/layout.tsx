@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

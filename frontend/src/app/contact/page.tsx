@@ -1,5 +1,5 @@
 import { ContactForm } from "@/components/auth/contact-form";
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 
 export default function ContactPage() {

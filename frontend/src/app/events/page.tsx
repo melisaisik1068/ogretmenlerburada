@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 import { getApiBaseUrl } from "@/lib/env";
+import { IMG_CARD_GRID_3 } from "@/lib/image-sizes";
 
 type EventList = {
   id: number;
@@ -48,7 +49,7 @@ export default async function EventsPage() {
               <article key={e.slug} className="surface overflow-hidden">
                 <div className="relative h-40 bg-slate-100">
                   {e.cover_image_url ? (
-                    <Image src={e.cover_image_url} alt="" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 33vw" />
+                    <Image src={e.cover_image_url} alt="" fill className="object-cover" sizes={IMG_CARD_GRID_3} />
                   ) : (
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(26,115,232,0.18),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(255,182,6,0.20),transparent_55%)]" />
                   )}

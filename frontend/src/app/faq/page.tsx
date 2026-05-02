@@ -1,5 +1,11 @@
-import { FaqAccordion } from "@/components/faq/faq-accordion";
-import { SiteFooter } from "@/components/footer";
+import dynamic from "next/dynamic";
+import { SiteFooter } from "@/components/footer-dynamic";
+
+import { FaqAccordionSkeleton } from "@/components/skeletons/faq-accordion-skeleton";
+
+const FaqAccordionLazy = dynamic(() => import("@/components/faq/faq-accordion").then((m) => ({ default: m.FaqAccordion })), {
+  loading: () => <FaqAccordionSkeleton />,
+});
 import { TopNav } from "@/components/nav";
 
 export default function FaqPage() {
@@ -14,7 +20,7 @@ export default function FaqPage() {
           Shadcn / Radix tabanlı accordion ile akordeon oturması ve sekme hissiyatı daha akıcı hale gelir.
         </p>
         <div className="mt-10">
-          <FaqAccordion />
+          <FaqAccordionLazy />
         </div>
       </main>
       <SiteFooter />

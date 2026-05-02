@@ -1,4 +1,4 @@
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 import { SignupForm } from "@/components/auth/signup-form";
 

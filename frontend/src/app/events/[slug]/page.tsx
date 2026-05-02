@@ -2,9 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { SiteFooter } from "@/components/footer";
+import { SiteFooter } from "@/components/footer-dynamic";
 import { TopNav } from "@/components/nav";
 import { getApiBaseUrl } from "@/lib/env";
+import { IMG_ARTICLE_HERO } from "@/lib/image-sizes";
 
 type EventDetail = {
   id: number;
@@ -55,7 +56,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         <div className="mt-6 surface overflow-hidden">
           <div className="relative h-56 bg-slate-100 sm:h-72">
             {event.cover_image_url ? (
-              <Image src={event.cover_image_url} alt="" fill className="object-cover" sizes="100vw" />
+              <Image src={event.cover_image_url} alt="" fill className="object-cover" sizes={IMG_ARTICLE_HERO} priority />
             ) : (
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(26,115,232,0.18),transparent_55%),radial-gradient(circle_at_80%_30%,rgba(255,182,6,0.20),transparent_55%)]" />
             )}
