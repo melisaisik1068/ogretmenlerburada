@@ -12,6 +12,7 @@ User = get_user_model()
 
 
 class RegisterView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
 
