@@ -1,5 +1,7 @@
 ## ÖğretmenAğı · Full‑Stack Mimari (Django DRF + Next.js + PostgreSQL)
 
+Ticari dağıtım veya yeniden paketleme için: **[`docs/COMMERCIAL_SETUP.md`](docs/COMMERCIAL_SETUP.md)** (çevresel değişken tablosu, dağıtım, şeffaf sınırlar). Lisans: kök dizinde **`LICENSE`** (MIT). Güvenlik ilkeleri: **`SECURITY.md`**. Sürüm notları: **`CHANGELOG.md`**.
+
 ### Monorepo yapı
 - `backend/`: Django REST Framework API (JWT, CORS, OpenAPI)
 - `frontend/`: Next.js (App Router) + Tailwind (Bento/Glass UI) + TypeScript API client
@@ -41,7 +43,8 @@ API dokümantasyonu:
 ### Frontend (Next.js + Tailwind)
 Öne çıkanlar:
 - **Bento + Glassmorphism** landing (`/`)
-- **Topluluk ISR**: `/community` ve `/community/[id]` (SEO için revalidate=60)
+- **Yasal şablon sayfaları**: `/kvkk`, `/kullanim-kosullari`, `/gizlilik` (yayına almadan hukuki metin güncellenmelidir)
+- **Topluluk API’si**: Backend’de `community` modülü ve DRF uçları mevcuttur; Next tarafına özel liste/detay route’ları ihtiyaca göre eklenebilir (Swagger: `/api/docs/`)
 - **RBAC örneği**: `/dashboard/pro` sayfası middleware ile plan kontrolü yapar; plan yetmezse `/upgrade` sayfasına atar.
 
 Çalıştırma:

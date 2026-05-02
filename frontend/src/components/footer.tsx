@@ -89,13 +89,13 @@ export function SiteFooter() {
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
           <div>Copyright © {new Date().getFullYear()} ÖğretmenAğı</div>
           <div className="flex flex-wrap gap-3">
-            <Link className="text-white/60 transition hover:text-white" href="#">
+            <Link className="text-white/60 transition hover:text-white" href="/kvkk">
               KVKK
             </Link>
-            <Link className="text-white/60 transition hover:text-white" href="#">
+            <Link className="text-white/60 transition hover:text-white" href="/kullanim-kosullari">
               Kullanım Koşulları
             </Link>
-            <Link className="text-white/60 transition hover:text-white" href="#">
+            <Link className="text-white/60 transition hover:text-white" href="/gizlilik">
               Gizlilik
             </Link>
           </div>
