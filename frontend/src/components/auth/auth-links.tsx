@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { AuthModal } from "@/components/auth/auth-modal";
-
 type SessionUser = { username?: string; first_name?: string; last_name?: string };
 
 export function AuthLinks() {
@@ -61,7 +59,12 @@ export function AuthLinks() {
 
   return (
     <div className="hidden items-center gap-2 md:flex">
-      <AuthModal />
+      <Link href="/login" className="btn-outline h-10">
+        Giriş Yap
+      </Link>
+      <Link href="/signup" className="btn-accent h-10">
+        Ücretsiz Üye Ol
+      </Link>
     </div>
   );
 }
