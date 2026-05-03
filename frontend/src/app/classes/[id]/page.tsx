@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -23,6 +24,25 @@ async function fetchCourse(id: string): Promise<{ ok: true; data: CourseDetail }
   } catch {
     return { ok: false, status: 0 };
   }
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  if (!id) return { title: "Kurs | ÖğretmenAğı" };
+  const res = await fetchCourse(id);
+  if (!res.ok) return { title: "Kurs | ÖğretmenAğı", robots: { index: false, follow: true } };
+  const d = res.data;
+  const subject = d.subject?.title ?? "Ders";
+  const title = `${d.title} | ${subject} | ÖğretmenAğı`;
+  const rawDesc = (d.description ?? "").replace(/\s+/g, " ").trim();
+  const description =
+    rawDesc.length > 155 ? `${rawDesc.slice(0, 152)}…` : rawDesc || `${d.title} — ${subject} kursu, dersler ve materyaller.`;
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "website" },
+    twitter: { card: "summary_large_image", title, description },
+  };
 }
 
 type ProgressRow = { lesson_id: number; course_id: number; is_completed: boolean; progress_percent: number };

@@ -47,7 +47,7 @@ def reject_answers(modeladmin, request, queryset):
 
 @admin.register(CommunityAnswer)
 class CommunityAnswerAdmin(ModelAdmin):
-    list_display = ("post", "author", "status", "created_at")
+    list_display = ("post", "author", "status", "is_accepted", "created_at")
     search_fields = ("body", "author__username", "post__title")
-    list_filter = ("status",)
+    list_filter = ("status", "is_accepted")
     actions = [approve_answers, reject_answers]

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **Topluluk:** `CommunityAnswer.is_accepted` + veritabanı kısıtı (gönderi başına tek “en iyi cevap”); `POST /api/community/posts/{id}/accept-answer/`; `GET|POST /api/community/answers/` (`?post=` zorunlu).
+- **Frontend:** Web App Manifest (`/manifest.webmanifest`), `appleWebApp` + isteğe bağlı `NEXT_PUBLIC_SITE_URL` / `metadataBase`; kurs ve mağaza detay sayfalarında dinamik `generateMetadata`.
+
 ## 1.0.0 — 2026-05-01
 
 - Monorepo: Django REST API + Next.js App Router, PostgreSQL.

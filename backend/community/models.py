@@ -93,6 +93,11 @@ class CommunityAnswer(models.Model):
         verbose_name=_("Yazar"),
     )
     body = models.TextField(_("İçerik"))
+    is_accepted = models.BooleanField(
+        _("En iyi cevap"),
+        default=False,
+        help_text=_("Gönderi sahibi veya moderatör tarafından işaretlenir; soru başlığında tek olabilir."),
+    )
     status = models.CharField(
         _("Durum"),
         max_length=20,
@@ -114,3 +119,10 @@ class CommunityAnswer(models.Model):
         ordering = ["created_at"]
         verbose_name = _("Topluluk yanıtı")
         verbose_name_plural = _("Topluluk yanıtları")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["post"],
+                condition=models.Q(is_accepted=True),
+                name="community_answer_one_accepted_per_post",
+            ),
+        ]

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -26,6 +27,23 @@ async function fetchMaterial(id: string): Promise<Material | null> {
   } catch {
     return null;
   }
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  if (!id) return { title: "Materyal | ÖğretmenAğı" };
+  const m = await fetchMaterial(id);
+  if (!m) return { title: "Materyal | ÖğretmenAğı", robots: { index: false, follow: true } };
+  const title = `${m.title} | Mağaza | ÖğretmenAğı`;
+  const rawDesc = (m.description ?? "").replace(/\s+/g, " ").trim();
+  const description =
+    rawDesc.length > 155 ? `${rawDesc.slice(0, 152)}…` : rawDesc || `${m.title} — dijital materyal (${m.type}).`;
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "website" },
+    twitter: { card: "summary_large_image", title, description },
+  };
 }
 
 export default async function ShopDetailPage({ params }: { params: Promise<{ id: string }> }) {

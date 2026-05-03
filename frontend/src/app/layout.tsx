@@ -30,10 +30,23 @@ const geistMono = Geist_Mono({
   preload: false,
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
 export const metadata: Metadata = {
+  ...(siteUrl
+    ? {
+        metadataBase: new URL(siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl),
+      }
+    : {}),
   title: "ÖğretmenAğı | Güvenilir Eğitim Ağı & Onaylı Eğitmenler",
   description:
     "Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planı. ÖğretmenAğı ile güvenilir dijital eğitim.",
+  applicationName: "ÖğretmenAğı",
+  appleWebApp: {
+    capable: true,
+    title: "ÖğretmenAğı",
+    statusBarStyle: "default",
+  },
   openGraph: {
     type: "website",
     locale: "tr_TR",
