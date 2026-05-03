@@ -43,5 +43,6 @@ Tam liste: `backend/.env.example` ve `frontend/.env.local.example`.
 
 ## 7. Bilinen sınırlar (ürün olarak satarken şeffaflık)
 
+- **Randevu / canlı ders:** `/api/booking/` — öğretmen müsaitlikleri, herkese açık slot listesi (`…/availabilities/public-slots/?teacher=`), randevu oluşturma ve `meeting_url` ile güncelleme. Next: `/dashboard/teacher/appointments`, `/dashboard/appointments`.
 - Backend’de **topluluk** API’si vardır (`/api/community/…`): gönderiler, `?post=` ile cevap listesi, cevap oluşturma ve soru gönderisinde **en iyi cevap** (`POST …/posts/{id}/accept-answer/` + gövde `{"answer": <cevap_id>}`). Next.js tarafında `/community` arayüzü ihtiyaç halinde eklenebilir.
 - Hukuki sayfalar **şablondur**; KVKK ve sözleşme metni için hukuk danışmanlığı alınmalıdır.

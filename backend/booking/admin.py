@@ -14,7 +14,7 @@ class TeacherAvailabilityAdmin(ModelAdmin):
 
 @admin.register(Appointment)
 class AppointmentAdmin(ModelAdmin):
-    list_display = ("id", "teacher", "student", "starts_at", "ends_at", "status", "created_at")
+    list_display = ("id", "teacher", "student", "starts_at", "ends_at", "status", "meeting_url", "created_at")
     list_filter = ("status",)
     search_fields = ("teacher__username", "student__username", "note")
     raw_id_fields = ("teacher", "student")

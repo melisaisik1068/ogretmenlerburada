@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Booking / canlı ders:** `Appointment.meeting_url`; randevu `PATCH` (öğretmen onay/iptal/tamam + link; öğrenci iptal); `GET …/availabilities/public-slots/?teacher=`; Next: `/dashboard/teacher/appointments`, `/dashboard/appointments`, API proxy’ler ve `GET /api/public/teachers`.
 - **Topluluk:** `CommunityAnswer.is_accepted` + veritabanı kısıtı (gönderi başına tek “en iyi cevap”); `POST /api/community/posts/{id}/accept-answer/`; `GET|POST /api/community/answers/` (`?post=` zorunlu).
 - **Frontend:** Web App Manifest (`/manifest.webmanifest`), `appleWebApp` + isteğe bağlı `NEXT_PUBLIC_SITE_URL` / `metadataBase`; kurs ve mağaza detay sayfalarında dinamik `generateMetadata`.
 

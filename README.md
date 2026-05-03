@@ -45,6 +45,7 @@ API dokümantasyonu:
 - **Bento + Glassmorphism** landing (`/`)
 - **Yasal şablon sayfaları**: `/kvkk`, `/kullanim-kosullari`, `/gizlilik` (yayına almadan hukuki metin güncellenmelidir)
 - **Topluluk API’si**: `community` modülü; gönderi CRUD, `GET /api/community/answers/?post={id}` ile cevaplar, soru gönderisinde **en iyi cevap** için `POST /api/community/posts/{id}/accept-answer/` (`{"answer": ...}`). Next tarafında `/community` arayüzü ihtiyaca göre eklenebilir (Swagger: `/api/docs/`)
+- **Canlı ders / randevu (Next)**: Öğretmen `/dashboard/teacher/appointments` (müsaitlik + randevu onayı + Meet/Zoom linki); öğrenci `/dashboard/appointments` (talep + “Derse katıl”). API: `/api/booking/` (proxy: `/api/booking/…`).
 - **RBAC örneği**: `/dashboard/pro` sayfası middleware ile plan kontrolü yapar; plan yetmezse `/upgrade` sayfasına atar.
 
 Çalıştırma:

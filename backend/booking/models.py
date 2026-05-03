@@ -74,6 +74,13 @@ class Appointment(models.Model):
         default="",
         help_text=_("Tarafların görebileceği kısa açıklama."),
     )
+    meeting_url = models.URLField(
+        _("Canlı ders / toplantı linki"),
+        max_length=500,
+        blank=True,
+        default="",
+        help_text=_("Google Meet, Zoom, Jitsi veya başka bir canlı oturum adresi."),
+    )
     created_at = models.DateTimeField(_("Oluşturulma"), auto_now_add=True)
 
     class Meta:
