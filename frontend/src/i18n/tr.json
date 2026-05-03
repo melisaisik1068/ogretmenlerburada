@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "title": "ÖğretmenAğı | Güvenilir Eğitim Ağı & Onaylı Eğitmenler",
+    "description": "Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planı. ÖğretmenAğı ile güvenilir dijital eğitim.",
+    "ogLocale": "tr_TR"
+  },
+  "nav": {
+    "brand": "ÖğretmenAğı",
+    "home": "Ana Sayfa",
+    "courses": "Kurslar",
+    "blog": "Blog",
+    "events": "Etkinlikler",
+    "shop": "Mağaza",
+    "search": "Ara",
+    "wishlist": "İstek listesi",
+    "schools": "Okullar",
+    "upgrade": "Üyelik",
+    "faq": "SSS",
+    "contact": "İletişim",
+    "allCourses": "Tüm kurslar",
+    "lgs": "LGS",
+    "yks": "YKS",
+    "mobileMenu": "Menü",
+    "closeMenu": "Menüyü kapat",
+    "mobileCourses": "Kurslar",
+    "langAria": "Dil seçin",
+    "langTr": "Türkçe",
+    "langEn": "English",
+    "langDe": "Deutsch",
+    "sectionPrimary": "İlkokul",
+    "sectionMiddle": "Ortaokul",
+    "sectionHigh": "Lise",
+    "class1": "1. Sınıf",
+    "class2": "2. Sınıf",
+    "class3": "3. Sınıf",
+    "class4": "4. Sınıf",
+    "class5": "5. Sınıf",
+    "class6": "6. Sınıf",
+    "class7": "7. Sınıf",
+    "class8": "8. Sınıf (LGS)",
+    "class9": "9. Sınıf",
+    "class10": "10. Sınıf",
+    "class11": "11. Sınıf",
+    "class12": "12. Sınıf (YKS)"
+  },
+  "topbar": {
+    "hours": "Pzt - Cmt 08:00 – 18:00",
+    "region": "Türkiye · İstanbul"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "signup": "Ücretsiz Üye Ol",
+    "panel": "Panel",
+    "logout": "Çıkış"
+  },
+  "footer": {
+    "tagline": "Herkesin kazandığı öğrenme ligi.",
+    "corporate": "Kurumsal",
+    "gradesTitle": "Sınıflar",
+    "newsTitle": "Bültene abone ol",
+    "newsDesc": "Duyurular ve yeni kurslardan haberdar ol.",
+    "copyright": "Telif hakkı",
+    "kvkk": "KVKK",
+    "terms": "Kullanım Koşulları",
+    "privacy": "Gizlilik",
+    "whatsappCaption": "0530 766 29 75 — Yazılım satın almak için WhatsApp"
+  },
+  "newsletter": {
+    "placeholder": "E-posta adresin",
+    "submit": "Abone ol",
+    "success": "Teşekkürler! Kaydın alındı.",
+    "alreadyRegistered": "Zaten kayıtlısın.",
+    "errorGeneric": "Abonelik başarısız. Lütfen tekrar dene.",
+    "networkError": "Ağ hatası. Lütfen tekrar dene.",
+    "aria": "Bülten e-postası"
+  },
+  "whatsappFab": {
+    "label": "Yazılım için WhatsApp",
+    "aria": "WhatsApp üzerinden yazılım satın almak için iletişime geç"
+  }
+}

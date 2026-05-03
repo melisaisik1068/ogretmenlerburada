@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "title": "ÖğretmenAğı | Trusted learning network & verified tutors",
+    "description": "Grade-specific content, verified educators, and a clear learning path. Reliable digital education with ÖğretmenAğı.",
+    "ogLocale": "en_US"
+  },
+  "nav": {
+    "brand": "ÖğretmenAğı",
+    "home": "Home",
+    "courses": "Courses",
+    "blog": "Blog",
+    "events": "Events",
+    "shop": "Shop",
+    "search": "Search",
+    "wishlist": "Wishlist",
+    "schools": "Schools",
+    "upgrade": "Membership",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "allCourses": "All courses",
+    "lgs": "LGS",
+    "yks": "YKS",
+    "mobileMenu": "Menu",
+    "closeMenu": "Close menu",
+    "mobileCourses": "Courses",
+    "langAria": "Choose language",
+    "langTr": "Türkçe",
+    "langEn": "English",
+    "langDe": "Deutsch",
+    "sectionPrimary": "Primary",
+    "sectionMiddle": "Middle school",
+    "sectionHigh": "High school",
+    "class1": "Grade 1",
+    "class2": "Grade 2",
+    "class3": "Grade 3",
+    "class4": "Grade 4",
+    "class5": "Grade 5",
+    "class6": "Grade 6",
+    "class7": "Grade 7",
+    "class8": "Grade 8 (LGS)",
+    "class9": "Grade 9",
+    "class10": "Grade 10",
+    "class11": "Grade 11",
+    "class12": "Grade 12 (YKS)"
+  },
+  "topbar": {
+    "hours": "Mon–Sat 08:00 – 18:00",
+    "region": "Türkiye · Istanbul"
+  },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up free",
+    "panel": "Dashboard",
+    "logout": "Log out"
+  },
+  "footer": {
+    "tagline": "The learning league where everyone wins.",
+    "corporate": "Company",
+    "gradesTitle": "Grades",
+    "newsTitle": "Subscribe to our newsletter",
+    "newsDesc": "Stay informed about announcements and new courses.",
+    "copyright": "Copyright",
+    "kvkk": "Privacy notice (KVKK)",
+    "terms": "Terms of use",
+    "privacy": "Privacy",
+    "whatsappCaption": "0530 766 29 75 — WhatsApp to buy the software"
+  },
+  "newsletter": {
+    "placeholder": "Your email",
+    "submit": "Subscribe",
+    "success": "Thanks! You’re subscribed.",
+    "alreadyRegistered": "You’re already subscribed.",
+    "errorGeneric": "Subscription failed. Please try again.",
+    "networkError": "Network error. Please try again.",
+    "aria": "Newsletter email"
+  },
+  "whatsappFab": {
+    "label": "WhatsApp for software",
+    "aria": "Contact via WhatsApp to purchase the software"
+  }
+}

@@ -42,6 +42,7 @@ API dokümantasyonu:
 
 ### Frontend (Next.js + Tailwind)
 Öne çıkanlar:
+- **Çoklu dil (TR / EN / DE):** Çerez `ob_locale` (`tr` \| `en` \| `de`); üst bardaki dil seçici metinleri günceller (navigasyon, footer, giriş/kayıt, bülten formu, WhatsApp FAB). `src/i18n/*.json` dosyalarına anahtar ekleyerek genişletilir.
 - **Bento + Glassmorphism** landing (`/`)
 - **Yasal şablon sayfaları**: `/kvkk`, `/kullanim-kosullari`, `/gizlilik` (yayına almadan hukuki metin güncellenmelidir)
 - **Topluluk API’si**: `community` modülü; gönderi CRUD, `GET /api/community/answers/?post={id}` ile cevaplar, soru gönderisinde **en iyi cevap** için `POST /api/community/posts/{id}/accept-answer/` (`{"answer": ...}`). Next tarafında `/community` arayüzü ihtiyaca göre eklenebilir (Swagger: `/api/docs/`)

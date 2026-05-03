@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
+import { LocaleProvider } from "@/contexts/locale-context";
 import { WhatsAppPurchaseFab } from "@/components/whatsapp-purchase-fab";
+import { dictionaries, LOCALE_COOKIE, parseLocale } from "@/i18n";
 
 import { MotionProvider } from "./motion-provider";
 
@@ -32,31 +35,37 @@ const geistMono = Geist_Mono({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
-export const metadata: Metadata = {
-  ...(siteUrl
-    ? {
-        metadataBase: new URL(siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl),
-      }
-    : {}),
-  title: "ÖğretmenAğı | Güvenilir Eğitim Ağı & Onaylı Eğitmenler",
-  description:
-    "Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planı. ÖğretmenAğı ile güvenilir dijital eğitim.",
-  applicationName: "ÖğretmenAğı",
-  appleWebApp: {
-    capable: true,
-    title: "ÖğretmenAğı",
-    statusBarStyle: "default",
-  },
-  openGraph: {
-    type: "website",
-    locale: "tr_TR",
-    siteName: "ÖğretmenAğı",
-    title: "ÖğretmenAğı | Güvenilir Eğitim Ağı & Onaylı Eğitmenler",
-    description:
-      "Sınıfa özel içerikler, onaylı eğitmenler ve eksiksiz bir öğrenme planı. ÖğretmenAğı ile güvenilir dijital eğitim.",
-  },
-  robots: { index: true, follow: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const locale = parseLocale(cookieStore.get(LOCALE_COOKIE)?.value);
+  const dict = dictionaries[locale];
+  const meta = dict.meta;
+  const brand = dict.nav.brand;
+
+  return {
+    ...(siteUrl
+      ? {
+          metadataBase: new URL(siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl),
+        }
+      : {}),
+    title: meta.title,
+    description: meta.description,
+    applicationName: brand,
+    appleWebApp: {
+      capable: true,
+      title: brand,
+      statusBarStyle: "default",
+    },
+    openGraph: {
+      type: "website",
+      locale: meta.ogLocale,
+      siteName: brand,
+      title: meta.title,
+      description: meta.description,
+    },
+    robots: { index: true, follow: true },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: [
@@ -77,16 +86,18 @@ function apiPreconnectOrigin(): string | null {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const apiOrigin = apiPreconnectOrigin();
+  const cookieStore = await cookies();
+  const locale = parseLocale(cookieStore.get(LOCALE_COOKIE)?.value);
 
   return (
     <html
-      lang="tr"
+      lang={locale}
       className={`${interDisplay.variable} ${jakarta.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
@@ -98,8 +109,10 @@ export default function RootLayout({
         ) : null}
       </head>
       <body className="min-h-full flex flex-col bg-[var(--background)]">
-        <MotionProvider>{children}</MotionProvider>
-        <WhatsAppPurchaseFab />
+        <LocaleProvider initialLocale={locale}>
+          <MotionProvider>{children}</MotionProvider>
+          <WhatsAppPurchaseFab />
+        </LocaleProvider>
       </body>
     </html>
   );

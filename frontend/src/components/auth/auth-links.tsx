@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { useI18n } from "@/contexts/locale-context";
+
 type SessionUser = { username?: string; first_name?: string; last_name?: string };
 
 export function AuthLinks() {
+  const { t } = useI18n();
   const router = useRouter();
   const [user, setUser] = useState<SessionUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,10 +51,10 @@ export function AuthLinks() {
     return (
       <div className="hidden items-center gap-2 md:flex">
         <Link className="btn-outline h-10 px-3 text-xs font-semibold sm:text-sm" href="/dashboard" title={label}>
-          Panel
+          {t("auth.panel")}
         </Link>
         <button type="button" className="btn-solid h-10 px-3 text-xs font-semibold sm:text-sm" onClick={() => void logout()}>
-          Çıkış
+          {t("auth.logout")}
         </button>
       </div>
     );
@@ -60,10 +63,10 @@ export function AuthLinks() {
   return (
     <div className="hidden items-center gap-2 md:flex">
       <Link href="/login" className="btn-outline h-10">
-        Giriş Yap
+        {t("auth.login")}
       </Link>
       <Link href="/signup" className="btn-accent h-10">
-        Ücretsiz Üye Ol
+        {t("auth.signup")}
       </Link>
     </div>
   );

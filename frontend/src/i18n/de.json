@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "title": "ÖğretmenAğı | Verlässliches Lernnetzwerk & geprüfte Lehrkräfte",
+    "description": "Klassenpassende Inhalte, geprüfte Lehrpersonen und ein klarer Lernplan. Verlässliche digitale Bildung mit ÖğretmenAğı.",
+    "ogLocale": "de_DE"
+  },
+  "nav": {
+    "brand": "ÖğretmenAğı",
+    "home": "Start",
+    "courses": "Kurse",
+    "blog": "Blog",
+    "events": "Veranstaltungen",
+    "shop": "Shop",
+    "search": "Suche",
+    "wishlist": "Merkliste",
+    "schools": "Schulen",
+    "upgrade": "Mitgliedschaft",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "allCourses": "Alle Kurse",
+    "lgs": "LGS",
+    "yks": "YKS",
+    "mobileMenu": "Menü",
+    "closeMenu": "Menü schließen",
+    "mobileCourses": "Kurse",
+    "langAria": "Sprache wählen",
+    "langTr": "Türkçe",
+    "langEn": "English",
+    "langDe": "Deutsch",
+    "sectionPrimary": "Grundschule",
+    "sectionMiddle": "Mittelstufe",
+    "sectionHigh": "Oberstufe",
+    "class1": "Klasse 1",
+    "class2": "Klasse 2",
+    "class3": "Klasse 3",
+    "class4": "Klasse 4",
+    "class5": "Klasse 5",
+    "class6": "Klasse 6",
+    "class7": "Klasse 7",
+    "class8": "Klasse 8 (LGS)",
+    "class9": "Klasse 9",
+    "class10": "Klasse 10",
+    "class11": "Klasse 11",
+    "class12": "Klasse 12 (YKS)"
+  },
+  "topbar": {
+    "hours": "Mo–Sa 08:00 – 18:00",
+    "region": "Türkei · Istanbul"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signup": "Kostenlos registrieren",
+    "panel": "Dashboard",
+    "logout": "Abmelden"
+  },
+  "footer": {
+    "tagline": "Die Lernliga, in der alle gewinnen.",
+    "corporate": "Unternehmen",
+    "gradesTitle": "Klassen",
+    "newsTitle": "Newsletter abonnieren",
+    "newsDesc": "Bleiben Sie über Neuigkeiten und neue Kurse informiert.",
+    "copyright": "Urheberrecht",
+    "kvkk": "Datenhinweis (KVKK)",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutz",
+    "whatsappCaption": "0530 766 29 75 — WhatsApp zum Softwarekauf"
+  },
+  "newsletter": {
+    "placeholder": "Ihre E-Mail",
+    "submit": "Abonnieren",
+    "success": "Danke! Sie sind angemeldet.",
+    "alreadyRegistered": "Sie sind bereits angemeldet.",
+    "errorGeneric": "Abonnement fehlgeschlagen. Bitte erneut versuchen.",
+    "networkError": "Netzwerkfehler. Bitte erneut versuchen.",
+    "aria": "Newsletter-E-Mail"
+  },
+  "whatsappFab": {
+    "label": "WhatsApp für Software",
+    "aria": "Kontakt per WhatsApp zum Kauf der Software"
+  }
+}

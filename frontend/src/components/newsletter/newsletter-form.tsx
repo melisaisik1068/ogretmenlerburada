@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { useI18n } from "@/contexts/locale-context";
+
 type Props = {
   className?: string;
   tone?: "light" | "dark";
@@ -9,6 +11,7 @@ type Props = {
 };
 
 export function NewsletterForm({ className = "", tone = "light", inputId }: Props) {
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [message, setMessage] = useState<string>("");
@@ -33,15 +36,15 @@ export function NewsletterForm({ className = "", tone = "light", inputId }: Prop
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; created?: boolean; detail?: string };
       if (!res.ok) {
         setStatus("error");
-        setMessage(data.detail || "Abonelik başarısız. Lütfen tekrar dene.");
+        setMessage(data.detail || t("newsletter.errorGeneric"));
         return;
       }
       setStatus("ok");
       setEmail("");
-      setMessage(data.created === false ? "Zaten kayıtlısın." : "Kaydın alındı. Teşekkürler!");
+      setMessage(data.created === false ? t("newsletter.alreadyRegistered") : t("newsletter.success"));
     } catch {
       setStatus("error");
-      setMessage("Ağ hatası. Lütfen tekrar dene.");
+      setMessage(t("newsletter.networkError"));
     }
   }
 
@@ -53,16 +56,16 @@ export function NewsletterForm({ className = "", tone = "light", inputId }: Prop
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="you@example.com"
+        placeholder={t("newsletter.placeholder")}
         className={inputClass}
-        aria-label="Newsletter email"
+        aria-label={t("newsletter.aria")}
       />
       <button
         type="submit"
         disabled={status === "loading"}
         className={tone === "dark" ? "btn-accent h-11 justify-center disabled:opacity-60" : "btn-accent justify-center disabled:opacity-60"}
       >
-        {status === "loading" ? "..." : "Subscribe"}
+        {status === "loading" ? "…" : t("newsletter.submit")}
       </button>
       {message ? (
         <div className={tone === "dark" ? "text-xs text-white/60" : "text-xs text-slate-500"}>{message}</div>
@@ -70,4 +73,3 @@ export function NewsletterForm({ className = "", tone = "light", inputId }: Prop
     </form>
   );
 }
-
