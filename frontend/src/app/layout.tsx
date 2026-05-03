@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
+import { WhatsAppPurchaseFab } from "@/components/whatsapp-purchase-fab";
+
 import { MotionProvider } from "./motion-provider";
 
 const interDisplay = Inter({
@@ -84,6 +86,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-[var(--background)]">
         <MotionProvider>{children}</MotionProvider>
+        <WhatsAppPurchaseFab />
       </body>
     </html>
   );

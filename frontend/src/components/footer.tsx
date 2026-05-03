@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Mail, MapPin, MessageCircle } from "lucide-react";
 
 import { NewsletterForm } from "@/components/newsletter/newsletter-form";
+import { whatsAppPurchaseHref } from "@/lib/whatsapp-purchase";
 
 const gradeLinks = [
   { label: "1. Sınıf", href: "/classes/1" },
@@ -34,10 +35,15 @@ export function SiteFooter() {
                 <Mail className="h-4 w-4 shrink-0 text-[var(--brand-blue-light)] transition-transform duration-200 group-hover:scale-105" aria-hidden />
                 <span className="font-medium text-white">destek@ogretmenlerburada.com</span>
               </a>
-              <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
-                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-white/70" aria-hidden />
-                <span>+90 212 000 00 00</span>
-              </div>
+              <a
+                href={whatsAppPurchaseHref()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/15 px-3 py-2 transition hover:bg-emerald-500/25"
+              >
+                <MessageCircle className="h-4 w-4 shrink-0 text-[#4ade80] transition-transform duration-200 group-hover:scale-105" aria-hidden />
+                <span className="font-medium text-white">0530 766 29 75 — Yazılım satın almak için WhatsApp</span>
+              </a>
               <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-white/70" aria-hidden />
                 <span>Türkiye · İstanbul</span>
