@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import generics, viewsets
+from rest_framework.exceptions import NotFound
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -58,3 +59,18 @@ class PublicTeachersView(generics.ListAPIView):
                 | Q(last_name__icontains=q)
             )
         return qs
+
+
+class PublicTeacherByUsernameView(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserPublicSerializer
+    lookup_url_kwarg = "username"
+
+    def get_object(self):
+        username = (self.kwargs.get("username") or "").strip()
+        if not username:
+            self.permission_denied(self.request, message="Kullanıcı adı zorunludur.")
+        try:
+            return User.objects.get(role="teacher", teacher_verification_status="approved", username__iexact=username)
+        except User.DoesNotExist:
+            raise NotFound("Öğretmen bulunamadı.")

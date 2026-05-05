@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .password_views import PasswordResetConfirmView, PasswordResetRequestView
-from .views import MeView, PublicTeachersView, RegisterView, TeacherVerificationDocumentViewSet
+from .views import MeView, PublicTeacherByUsernameView, PublicTeachersView, RegisterView, TeacherVerificationDocumentViewSet
 
 router = DefaultRouter()
 router.register("teacher-documents", TeacherVerificationDocumentViewSet, basename="teacher-documents")
@@ -13,6 +13,7 @@ urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
     path("me/", MeView.as_view(), name="me"),
     path("teachers/", PublicTeachersView.as_view(), name="teachers"),
+    path("teachers/by-username/<str:username>/", PublicTeacherByUsernameView.as_view(), name="teacher-by-username"),
     path("", include(router.urls)),
 ]
 

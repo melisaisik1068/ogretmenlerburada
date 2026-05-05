@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import type { Appointment, TeacherAvailability } from "@/lib/types/booking";
@@ -20,6 +21,7 @@ function formatRange(isoStart: string, isoEnd: string) {
 type TeacherBrief = Pick<UserMe, "id" | "username" | "first_name" | "last_name">;
 
 export default function StudentAppointmentsPage() {
+  const sp = useSearchParams();
   const [me, setMe] = useState<UserMe | null>(null);
   const [teachers, setTeachers] = useState<TeacherBrief[]>([]);
   const [slots, setSlots] = useState<TeacherAvailability[]>([]);
@@ -59,6 +61,14 @@ export default function StudentAppointmentsPage() {
     void loadTeachers();
     void loadAppts();
   }, [me, loadTeachers, loadAppts]);
+
+  // Optional preselect teacher by username in query (?teacher=username)
+  useEffect(() => {
+    const teacher = (sp.get("teacher") ?? "").trim();
+    if (!teacher || !teachers.length) return;
+    const match = teachers.find((t) => (t.username ?? "").toLowerCase() === teacher.toLowerCase());
+    if (match) setTeacherId(String(match.id));
+  }, [sp, teachers]);
 
   useEffect(() => {
     if (!teacherId) {
