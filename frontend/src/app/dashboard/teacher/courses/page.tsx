@@ -30,6 +30,9 @@ export default async function TeacherCoursesPage() {
           <Link href="/dashboard/teacher/materials" className="btn-solid h-10 px-4">
             Materials
           </Link>
+          <Link href="/dashboard/teacher/verification" className="btn-outline h-10 px-4">
+            Belge yükle / Doğrulama
+          </Link>
         </div>
 
         <div className="mt-8">
