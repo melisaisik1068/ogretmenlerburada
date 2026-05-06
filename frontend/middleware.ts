@@ -7,6 +7,9 @@ const TENANT_BASE_DOMAIN = (process.env.NEXT_PUBLIC_TENANT_BASE_DOMAIN ?? "").tr
 function extractSubdomain(host: string): string | null {
   const h = host.toLowerCase();
   if (!TENANT_BASE_DOMAIN) return null;
+  // Never treat Vercel deployment domains as tenant subdomains.
+  // On Vercel, the host is typically "<project>.vercel.app" which would otherwise look like a subdomain.
+  if (h.endsWith(".vercel.app") || TENANT_BASE_DOMAIN === "vercel.app") return null;
   if (!h.endsWith(`.${TENANT_BASE_DOMAIN}`)) return null;
   const prefix = h.slice(0, -(TENANT_BASE_DOMAIN.length + 1)); // remove ".base"
   if (!prefix) return null;
