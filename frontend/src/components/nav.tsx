@@ -90,14 +90,14 @@ export function TopNav() {
         transition={{ type: "spring", stiffness: 320, damping: 32 }}
       >
         <TopBar />
-        <div className="border-b border-white/35 bg-white/55 shadow-[0_8px_32px_-8px_rgba(37,99,235,0.12)] backdrop-blur-xl">
+        <div className="border-b border-white/35 bg-white/55 shadow-[0_8px_32px_-8px_rgba(255,59,149,0.10)] backdrop-blur-xl">
           <m.div
             className="container-page flex h-14 items-center justify-between gap-3 sm:h-16"
             variants={listVars}
             initial={reduceNav ? "visible" : "hidden"}
             animate="visible"
           >
-            <m.div className="flex items-center gap-3" variants={itemVars} whileHover={{ scale: 1.01 }} transition={springInteract}>
+            <m.div className="-ml-2 flex items-center gap-3 sm:-ml-3" variants={itemVars} whileHover={{ scale: 1.01 }} transition={springInteract}>
               <Link href="/" className="flex items-center gap-2">
                 <Image
                   src="/logo.png"
@@ -151,7 +151,7 @@ export function TopNav() {
 function TopBar() {
   const { t } = useI18n();
   return (
-    <div className="hidden border-b border-white/10 bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#4f46e5] text-white/90 shadow-[0_4px_24px_rgba(37,99,235,0.25)] backdrop-blur-md sm:block">
+    <div className="hidden border-b border-white/10 bg-linear-to-r from-[#d81b78] via-[#ff3b95] to-[#7c3aed] text-white/90 shadow-[0_4px_24px_rgba(255,59,149,0.20)] backdrop-blur-md sm:block">
       <div className="container-page flex h-10 items-center justify-between text-[11px] font-medium sm:text-xs">
         <div className="flex items-center gap-4 lg:gap-6">
           <span className="text-white/80">{t("topbar.hours")}</span>

@@ -66,7 +66,7 @@ export function DashboardOverview({ user, subscription }: Props) {
               <div className="mt-2 text-lg font-extrabold text-slate-900">Derslerim</div>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">Yayında olan kursları keşfet ve kayıtlı içeriklerini takip et.</p>
             </div>
-            <span className="grid h-11 w-11 place-items-center rounded-2xl border border-blue-200/60 bg-blue-500/10 text-blue-700">
+            <span className="grid h-11 w-11 place-items-center rounded-2xl border border-[var(--brand-blue)]/20 bg-[var(--brand-blue)]/10 text-[var(--brand-blue-deep)]">
               <BookOpen className="h-5 w-5" aria-hidden />
             </span>
           </div>
@@ -106,7 +106,7 @@ export function DashboardOverview({ user, subscription }: Props) {
                 Pro özellikleri için plan yükseltmesi yapabilir veya bizimle iletişime geçebilirsin.
               </p>
             </div>
-            <span className="grid h-11 w-11 place-items-center rounded-2xl border border-indigo-200/60 bg-indigo-500/10 text-indigo-700">
+            <span className="grid h-11 w-11 place-items-center rounded-2xl border border-[var(--brand-amber)]/25 bg-[var(--brand-amber)]/12 text-[var(--brand-navy)]">
               <MessageSquare className="h-5 w-5" aria-hidden />
             </span>
           </div>

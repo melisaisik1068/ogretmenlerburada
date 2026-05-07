@@ -4,7 +4,8 @@
   /* Öğretmenler Burada: logo uyumlu (pembe + lacivert + altın) */
   --background: #f7f7ff;
   --foreground: #0f172a;
-  --brand-navy: #0f172a;
+  /* Burada: siyah değil, gece mavisi */
+  --brand-navy: #0b1f3a;
   --brand-blue: #ff3b95; /* primary pink */
   --brand-blue-deep: #d81b78;
   --brand-blue-light: #ff6bb8;
@@ -27,7 +28,7 @@
   --ms-surface: var(--surface);
   --ms-surface-2: var(--surface-muted);
   --ms-border: var(--border-subtle);
-  --ms-shadow: 0 12px 40px rgba(37, 99, 235, 0.09);
+  --ms-shadow: 0 12px 40px rgba(11, 31, 58, 0.08);
   --ms-radius: 1.25rem;
 }
 
@@ -180,13 +181,13 @@ body {
   @apply inline-flex h-12 items-center justify-center rounded-2xl px-8 text-sm font-bold tracking-tight text-white backdrop-blur-md;
   background: linear-gradient(
     135deg,
-    rgba(29, 78, 216, 0.95),
-    rgba(37, 99, 235, 0.9),
-    rgba(245, 158, 11, 0.22)
+    rgba(216, 27, 120, 0.92),
+    rgba(255, 59, 149, 0.88),
+    rgba(246, 195, 67, 0.22)
   );
   box-shadow:
-    0 20px 48px rgba(37, 99, 235, 0.42),
-    0 0 36px rgba(139, 92, 246, 0.15),
+    0 20px 48px rgba(255, 59, 149, 0.32),
+    0 0 36px rgba(124, 58, 237, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
@@ -202,7 +203,7 @@ body {
 .btn-primary {
   @apply inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.99];
   background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-light));
-  box-shadow: 0 14px 32px rgba(37, 99, 235, 0.32);
+  box-shadow: 0 14px 32px rgba(255, 59, 149, 0.22);
   @apply hover:brightness-110;
 }
 
