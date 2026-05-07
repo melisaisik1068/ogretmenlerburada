@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { m, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
@@ -8,6 +9,7 @@ import { useRef } from "react";
 import { springInteract, springReveal } from "@/components/motion/bento-motion";
 import { HomeBelowFoldSkeleton } from "@/components/skeletons/home-below-fold-skeleton";
 import { RippleWrap } from "@/components/ui/ripple-wrap";
+import { IMG_HERO_FULL } from "@/lib/image-sizes";
 
 const LandingBelowFoldLazy = dynamic(
   () => import("./landing-below-fold").then((mod) => ({ default: mod.LandingBelowFold })),
@@ -42,10 +44,29 @@ export function LandingMain() {
     <main>
       <section ref={heroRef} className="relative min-h-screen w-full overflow-hidden">
         <m.div className="absolute inset-0 z-0" style={{ y: heroParallaxY }} aria-hidden>
-          <div className="absolute inset-0 scale-[1.08] mesh-bg" />
-          <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_25%_20%,rgba(255,59,149,0.28),transparent_55%),radial-gradient(700px_circle_at_85%_15%,rgba(124,58,237,0.20),transparent_55%),radial-gradient(800px_circle_at_60%_95%,rgba(246,195,67,0.18),transparent_55%)]" />
+          <div className="absolute inset-0 scale-[1.04]">
+            <Image
+              src="/images/hero-classroom.png"
+              alt=""
+              fill
+              priority
+              fetchPriority="high"
+              decoding="async"
+              quality={80}
+              className="object-cover object-center"
+              sizes={IMG_HERO_FULL}
+            />
+          </div>
         </m.div>
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-[#0b1f3a]/82 via-[#0b1f3a]/45 to-transparent" aria-hidden />
+        {/* Left-heavy overlay like screenshot: soft pink/purple + navy for readability */}
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(11,31,58,0.72)_0%,rgba(124,58,237,0.30)_42%,rgba(255,59,149,0.16)_68%,rgba(0,0,0,0)_100%)]"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(700px_circle_at_20%_35%,rgba(124,58,237,0.22),transparent_55%),radial-gradient(700px_circle_at_35%_65%,rgba(255,59,149,0.18),transparent_55%)]"
+          aria-hidden
+        />
         <div className="relative z-[2] mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32 lg:px-8 lg:pt-36">
           <m.div
             className="max-w-3xl"
