@@ -89,12 +89,7 @@ export function TopNav() {
         animate={{ y: navHidden ? "-100%" : 0 }}
         transition={{ type: "spring", stiffness: 320, damping: 32 }}
       >
-        <TopBar />
-        <div className="relative border-b border-white/25 bg-linear-to-r from-white/35 via-white/20 to-white/30 shadow-[0_8px_32px_-10px_rgba(124,58,237,0.22)] backdrop-blur-xl">
-          <div
-            className="pointer-events-none absolute inset-x-0 top-9 h-[calc(100%-2.25rem)] bg-linear-to-r from-[#ff3b95]/55 via-[#a855f7]/40 to-[#7c3aed]/35 opacity-65 sm:top-10 sm:h-[calc(100%-2.5rem)]"
-            aria-hidden
-          />
+        <div className="relative border-b border-white/15 bg-white/10 shadow-[0_10px_40px_-16px_rgba(11,31,58,0.35)] backdrop-blur-2xl">
           <m.div
             className="container-page relative flex h-14 items-center justify-between gap-3 sm:h-16"
             variants={listVars}
@@ -136,37 +131,21 @@ export function TopNav() {
               ))}
             </nav>
 
-            <m.div className="hidden items-center gap-3 lg:flex" variants={itemVars}>
+            <m.div className="hidden items-center gap-2 lg:flex" variants={itemVars}>
+              <LangDropdown />
               <AuthLinks />
             </m.div>
 
             <m.div className="flex items-center gap-2 lg:hidden" variants={itemVars}>
+              <LangDropdown />
               <AuthLinks />
               <MobileMenuDrawer gradeGroups={gradeGroups} navLinks={navLinks} />
             </m.div>
           </m.div>
         </div>
       </m.header>
-      {spacerForUnderlap ? <div className="h-14 shrink-0 sm:h-[6.5rem]" aria-hidden /> : null}
+      {spacerForUnderlap ? <div className="h-14 shrink-0 sm:h-16" aria-hidden /> : null}
     </>
-  );
-}
-
-function TopBar() {
-  const { t } = useI18n();
-  return (
-    <div className="border-b border-white/10 bg-linear-to-r from-[#d81b78] via-[#ff3b95] to-[#7c3aed] text-white/90 shadow-[0_4px_24px_rgba(255,59,149,0.20)] backdrop-blur-md">
-      <div className="container-page flex h-9 items-center justify-between text-[11px] font-medium sm:h-10 sm:text-xs">
-        <div className="flex items-center gap-4 lg:gap-6">
-          <span className="text-white/80">{t("topbar.hours")}</span>
-          <span className="hidden text-white/60 lg:inline">{t("topbar.region")}</span>
-          <a className="text-white transition hover:text-white" href="tel:+902120000000">
-            +90 212 000 00 00
-          </a>
-        </div>
-        <LangDropdown />
-      </div>
-    </div>
   );
 }
 
@@ -179,12 +158,12 @@ function LangDropdown() {
       <DropdownMenu.Trigger asChild>
         <button
           type="button"
-          className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-white transition hover:bg-white/15"
+          className="inline-flex h-10 items-center gap-1 rounded-full border border-white/25 bg-white/10 px-3 text-[13px] font-semibold text-[var(--brand-navy)] shadow-sm transition hover:bg-white/15"
           aria-label={t("nav.langAria")}
         >
           <Languages className="size-3.5" aria-hidden />
           {flag}
-          <ChevronDown className="size-3 opacity-75" aria-hidden />
+          <ChevronDown className="size-3 opacity-70" aria-hidden />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
