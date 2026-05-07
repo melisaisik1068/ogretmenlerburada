@@ -15,6 +15,7 @@ export type SubscriptionPlanBrief = {
   title: string;
   price_try: number;
   billing_cycle_days?: number;
+  trial_days?: number;
 };
 
 export type SubscriptionPayload =
@@ -23,6 +24,10 @@ export type SubscriptionPayload =
       plan: SubscriptionPlanBrief | null;
       provider?: string;
       status?: string;
+      current_period_start?: string | null;
+      current_period_end?: string | null;
+      trial_ends_at?: string | null;
+      cancel_at_period_end?: boolean;
     }
   | {
       subscription: null;

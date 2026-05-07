@@ -14,6 +14,15 @@ type TeacherPublic = {
   avatar_url?: string;
 };
 
+type MaterialCard = {
+  id: number;
+  title: string;
+  description: string;
+  type: string;
+  price_try: number;
+  created_at: string;
+};
+
 type CourseCard = {
   id: number;
   title: string;
@@ -56,13 +65,29 @@ async function fetchTeacherCourses(username: string): Promise<CourseCard[]> {
   }
 }
 
+async function fetchTeacherMaterials(teacherId: number): Promise<MaterialCard[]> {
+  const base = getApiBaseUrl();
+  try {
+    const url = new URL(`${base}/api/marketplace/materials/`);
+    url.searchParams.set("seller", String(teacherId));
+    const res = await fetch(url.toString(), { next: { revalidate: 120 }, headers: { Accept: "application/json" } });
+    if (!res.ok) return [];
+    const data = (await res.json().catch(() => ({}))) as { results?: MaterialCard[] } | MaterialCard[];
+    if (Array.isArray(data)) return data;
+    return data.results ?? [];
+  } catch {
+    return [];
+  }
+}
+
 export default async function TeacherSubdomainPage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   const u = (username ?? "").trim();
   if (!u) return notFound();
 
-  const [teacher, courses] = await Promise.all([fetchTeacher(u), fetchTeacherCourses(u)]);
+  const teacher = await fetchTeacher(u);
   if (!teacher) return notFound();
+  const [courses, materials] = await Promise.all([fetchTeacherCourses(u), fetchTeacherMaterials(teacher.id)]);
 
   const name = [teacher.first_name, teacher.last_name].filter(Boolean).join(" ").trim() || teacher.username;
 
@@ -81,6 +106,9 @@ export default async function TeacherSubdomainPage({ params }: { params: Promise
             </Link>
             <Link href={`/classes?teacher=${encodeURIComponent(teacher.username)}`} className="btn-outline">
               Tüm kurslar
+            </Link>
+            <Link href={`/shop?seller=${teacher.id}`} className="btn-outline">
+              Mağaza ürünleri
             </Link>
           </div>
         </div>
@@ -112,6 +140,33 @@ export default async function TeacherSubdomainPage({ params }: { params: Promise
               </Link>
             ))}
             {!courses.length ? <div className="text-sm text-slate-600">Henüz yayınlı kurs yok.</div> : null}
+          </div>
+        </div>
+
+        <div className="mt-10">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <div className="section-eyebrow">Shop</div>
+              <h2 className="section-title mt-1">Materyaller</h2>
+              <p className="section-lead">Bu öğretmenin yayınladığı ürünler.</p>
+            </div>
+            <Link className="btn-outline h-10 px-4" href={`/shop?seller=${teacher.id}`}>
+              Hepsini gör
+            </Link>
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {materials.map((m) => (
+              <Link key={m.id} href={`/shop/${m.id}`} className="surface group p-6 hover:shadow-md">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="badge">{m.type?.toUpperCase?.() ?? "—"}</span>
+                  <span className="badge">{m.price_try} ₺</span>
+                </div>
+                <div className="mt-3 text-lg font-extrabold tracking-tight text-slate-900 group-hover:text-(--brand-navy)">{m.title}</div>
+                <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600">{m.description || "—"}</p>
+              </Link>
+            ))}
+            {!materials.length ? <div className="text-sm text-slate-600">Henüz ürün yok.</div> : null}
           </div>
         </div>
       </main>

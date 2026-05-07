@@ -11,10 +11,23 @@ type Props = {
   subscription: SubscriptionPayload | null;
 };
 
+function parseDate(value?: string | null): Date | null {
+  if (!value) return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
 export function DashboardOverview({ user, subscription }: Props) {
   const displayName = [user?.first_name, user?.last_name].filter(Boolean).join(" ").trim();
   const greeting = displayName || user?.username || "Üye";
   const planCode = subscriptionPlanCode(subscription);
+  const trialEndsAt = subscription && typeof subscription === "object" && "trial_ends_at" in subscription ? parseDate(subscription.trial_ends_at ?? null) : null;
+  const periodEnd = subscription && typeof subscription === "object" && "current_period_end" in subscription ? parseDate(subscription.current_period_end ?? null) : null;
+  const now = new Date();
+  const hasActiveTrial = !!(trialEndsAt && trialEndsAt > now);
+  const hasActivePeriod = !!(periodEnd && periodEnd > now);
+  const hasAnyAccess = Boolean(planCode) && (hasActiveTrial || hasActivePeriod || (subscription as any)?.status === "active");
+  const missingAccess = user && !hasAnyAccess;
 
   return (
     <main className="container-page py-8 sm:py-12">
@@ -36,6 +49,14 @@ export function DashboardOverview({ user, subscription }: Props) {
           Özet görünüm — backend ile bağlı oturumun burada. Ders katalogları ve abonelik API üzerinden güncellenir.
         </p>
       </div>
+
+      {user ? (
+        <TrialUpsellBanner
+          missingAccess={missingAccess}
+          hasActiveTrial={hasActiveTrial}
+          trialEndsAt={trialEndsAt}
+        />
+      ) : null}
 
       <Stagger className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <GlassMotionCard className="p-6" glowOnHover="blue">
@@ -121,5 +142,68 @@ export function DashboardOverview({ user, subscription }: Props) {
         </GlassMotionCard>
       </Stagger>
     </main>
+  );
+}
+
+function TrialUpsellBanner({
+  missingAccess,
+  hasActiveTrial,
+  trialEndsAt,
+}: {
+  missingAccess: boolean;
+  hasActiveTrial: boolean;
+  trialEndsAt: Date | null;
+}) {
+  const React = require("react") as typeof import("react");
+  const { useState } = React;
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  async function startTrial() {
+    setBusy(true);
+    setMsg("");
+    try {
+      const res = await fetch("/api/subscriptions/start-trial", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMsg(typeof (data as any).detail === "string" ? (data as any).detail : "Deneme başlatılamadı.");
+        return;
+      }
+      window.location.reload();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!missingAccess && !hasActiveTrial) return null;
+
+  return (
+    <div className="mt-6 rounded-3xl border border-amber-200/80 bg-white/70 p-5 shadow-sm backdrop-blur">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="text-sm font-extrabold tracking-tight text-slate-900">
+            {hasActiveTrial ? "Ücretsiz denemen aktif" : "Ücretsiz deneme bitti / plan gerekli"}
+          </div>
+          <div className="mt-1 text-sm text-slate-600">
+            {hasActiveTrial && trialEndsAt ? (
+              <>Deneme bitiş: <span className="font-semibold text-slate-900">{trialEndsAt.toLocaleString("tr-TR")}</span></>
+            ) : (
+              "7 gün ücretsiz deneme başlatabilir veya planını yükseltebilirsin."
+            )}
+          </div>
+          {msg ? <div className="mt-2 text-sm text-rose-700">{msg}</div> : null}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {!hasActiveTrial ? (
+            <button className="btn-accent h-11" type="button" disabled={busy} onClick={() => void startTrial()}>
+              {busy ? "Başlatılıyor…" : "7 gün dene"}
+            </button>
+          ) : null}
+          <SpringLink href="/upgrade" className="btn-outline h-11">
+            Planları gör
+          </SpringLink>
+        </div>
+      </div>
+    </div>
   );
 }
