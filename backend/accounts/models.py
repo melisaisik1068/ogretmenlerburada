@@ -38,6 +38,14 @@ class User(AbstractUser):
         help_text=_("Harici barındırılan profil fotoğrafı bağlantısı."),
     )
 
+    phone = models.CharField(
+        _("Telefon"),
+        max_length=32,
+        blank=True,
+        default="",
+        help_text=_("E.164 formatı önerilir (örn. +905xxxxxxxxx). Aynı telefonla ikinci kayıt açılmaz."),
+    )
+
     teacher_verification_status = models.CharField(
         _("Öğretmen doğrulama durumu"),
         max_length=20,
@@ -59,6 +67,10 @@ class User(AbstractUser):
     class Meta:
         verbose_name = _("Kullanıcı")
         verbose_name_plural = _("Kullanıcılar")
+        indexes = [
+            models.Index(fields=["phone"]),
+            models.Index(fields=["email"]),
+        ]
 
 
 class TeacherVerificationDocument(models.Model):

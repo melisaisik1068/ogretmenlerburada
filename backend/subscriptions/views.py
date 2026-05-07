@@ -36,6 +36,43 @@ class MySubscriptionView(APIView):
         return Response(SubscriptionSerializer(sub).data)
 
 
+class StartTrialView(APIView):
+    """Kullanıcı başına bir kez 7 günlük deneme (plan: BASIC)."""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # Active subscription or active trial exists → block
+        latest = (
+            Subscription.objects.filter(user=request.user)
+            .select_related("plan")
+            .order_by("-created_at")
+            .first()
+        )
+        if latest and latest.is_active:
+            return Response({"detail": "Zaten aktif aboneliğin/denemen var."}, status=400)
+
+        plan = SubscriptionPlan.objects.filter(is_active=True, code="basic").first()
+        if plan is None:
+            return Response({"detail": "Temel plan bulunamadı."}, status=500)
+
+        now = timezone.now()
+        from datetime import timedelta
+
+        trial_end = now + timedelta(days=int(plan.trial_days or 7))
+        sub = Subscription.objects.create(
+            user=request.user,
+            plan=plan,
+            provider=PaymentProvider.MANUAL,
+            status=SubscriptionStatus.ACTIVE,
+            current_period_start=now,
+            current_period_end=trial_end,
+            trial_ends_at=trial_end,
+        )
+        notify_subscription_started(getattr(request.user, "email", None), plan_title=f"{plan.title} (Deneme)")
+        return Response({"ok": True, "subscription": SubscriptionSerializer(sub).data})
+
+
 class CheckoutView(APIView):
     """Stripe Checkout Session oluşturur ve URL döner.
 

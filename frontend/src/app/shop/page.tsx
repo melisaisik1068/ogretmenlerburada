@@ -17,10 +17,14 @@ type Material = {
   seller: { id: number; username: string; first_name: string; last_name: string };
 };
 
-async function fetchMaterials(): Promise<Material[]> {
+async function fetchMaterials(sellerId?: string): Promise<Material[]> {
   const base = getApiBaseUrl();
   try {
-    const res = await fetch(`${base}/api/marketplace/materials/`, { next: { revalidate: 120 }, headers: { Accept: "application/json" } });
+    const qs = sellerId ? `?seller=${encodeURIComponent(sellerId)}` : "";
+    const res = await fetch(`${base}/api/marketplace/materials/${qs}`, {
+      next: { revalidate: 120 },
+      headers: { Accept: "application/json" },
+    });
     if (!res.ok) return [];
     const data = (await res.json()) as Material[] | { results?: Material[] };
     return Array.isArray(data) ? data : (data.results ?? []);
@@ -29,8 +33,10 @@ async function fetchMaterials(): Promise<Material[]> {
   }
 }
 
-export default async function ShopPage() {
-  const materials = await fetchMaterials();
+export default async function ShopPage({ searchParams }: { searchParams: Promise<{ seller?: string }> }) {
+  const sp = await searchParams;
+  const seller = (sp.seller || "").trim();
+  const materials = await fetchMaterials(seller || undefined);
   return (
     <div className="relative min-h-dvh bg-white text-slate-900">
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
@@ -54,9 +60,12 @@ export default async function ShopPage() {
                 <p className="mt-2 line-clamp-3 text-sm text-slate-600">{m.description || "—"}</p>
                 <div className="mt-4 text-xs text-slate-500">
                   Seller:{" "}
-                  <span className="font-semibold text-slate-700">
+                  <Link
+                    className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-2 hover:text-[var(--brand-navy)]"
+                    href={`/shop?seller=${m.seller.id}`}
+                  >
                     {[m.seller.first_name, m.seller.last_name].filter(Boolean).join(" ") || m.seller.username}
-                  </span>
+                  </Link>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-2">
                   <Link href={`/shop/${m.id}`} className="btn-solid h-10 px-4">

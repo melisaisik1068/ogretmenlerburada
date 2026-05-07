@@ -42,6 +42,11 @@ class SubscriptionPlan(models.Model):
         default=30,
         help_text=_("Tek sefer ödeme ile dönem uzunluğu (örn. 30 gün erişim)."),
     )
+    trial_days = models.PositiveSmallIntegerField(
+        _("Ücretsiz deneme (gün)"),
+        default=7,
+        help_text=_("İlk kayıt için ücretsiz deneme süresi (gün)."),
+    )
     is_active = models.BooleanField(_("Aktif satış"), default=True, help_text=_("Pasif planlar seçim ekranında çıkmaz."))
 
     stripe_price_id = models.CharField(
@@ -111,6 +116,7 @@ class Subscription(models.Model):
     )
     current_period_start = models.DateTimeField(_("Dönem başlangıcı"), null=True, blank=True)
     current_period_end = models.DateTimeField(_("Dönem bitişi"), null=True, blank=True)
+    trial_ends_at = models.DateTimeField(_("Deneme bitişi"), null=True, blank=True)
     cancel_at_period_end = models.BooleanField(
         _("Dönem sonunda iptal"),
         default=False,
@@ -131,6 +137,7 @@ class Subscription(models.Model):
 
     @property
     def is_active(self) -> bool:
-        return self.status == SubscriptionStatus.ACTIVE and (
-            self.current_period_end is None or self.current_period_end > timezone.now()
-        )
+        now = timezone.now()
+        if self.trial_ends_at and self.trial_ends_at > now:
+            return True
+        return self.status == SubscriptionStatus.ACTIVE and (self.current_period_end is None or self.current_period_end > now)

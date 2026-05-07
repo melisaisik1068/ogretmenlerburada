@@ -31,7 +31,11 @@ class MaterialViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         qs = Material.objects.select_related("seller").order_by("-created_at")
         if self.action in ["list", "retrieve"]:
-            return qs.filter(is_published=True)
+            qs = qs.filter(is_published=True)
+            seller_id = (self.request.query_params.get("seller") or "").strip()
+            if seller_id.isdigit():
+                qs = qs.filter(seller_id=int(seller_id))
+            return qs
         return qs.filter(seller=self.request.user)
 
     def perform_create(self, serializer):

@@ -6,7 +6,7 @@ from .models import Subscription, SubscriptionPlan
 class SubscriptionPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubscriptionPlan
-        fields = ["code", "title", "price_try", "billing_cycle_days", "is_active"]
+        fields = ["code", "title", "price_try", "billing_cycle_days", "trial_days", "is_active"]
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -21,6 +21,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
             "status",
             "current_period_start",
             "current_period_end",
+            "trial_ends_at",
             "cancel_at_period_end",
         ]
 
