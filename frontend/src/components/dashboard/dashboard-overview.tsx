@@ -27,7 +27,7 @@ export function DashboardOverview({ user, subscription }: Props) {
   const hasActiveTrial = !!(trialEndsAt && trialEndsAt > now);
   const hasActivePeriod = !!(periodEnd && periodEnd > now);
   const hasAnyAccess = Boolean(planCode) && (hasActiveTrial || hasActivePeriod || (subscription as any)?.status === "active");
-  const missingAccess = user && !hasAnyAccess;
+  const missingAccess = Boolean(user && !hasAnyAccess);
 
   return (
     <main className="container-page py-8 sm:py-12">
