@@ -65,6 +65,9 @@ export function TopNav() {
   const { t } = useI18n();
   const gradeGroups = useMemo(() => buildGradeGroups(t), [t]);
   const navLinks = useMemo(() => buildNavLinks(t), [t]);
+  const brand = t("nav.brand");
+  const [brandPrimary, ...brandRest] = brand.split(" ");
+  const brandSecondary = brandRest.join(" ");
 
   const navHidden = useNavScrollHide();
   const pathname = usePathname();
@@ -99,11 +102,19 @@ export function TopNav() {
                 <Image
                   src="/logo.png"
                   alt="Öğretmenler Burada"
-                  width={220}
+                  width={64}
                   height={64}
                   priority
-                  className="h-12 w-auto sm:h-14"
+                  className="h-12 w-12 object-contain sm:h-14 sm:w-14"
                 />
+                <span className="leading-none">
+                  <span className="block text-xl font-extrabold tracking-tight text-[#ff3b95] sm:text-2xl">
+                    {brandPrimary}
+                  </span>
+                  <span className="block text-xl font-extrabold tracking-tight text-[var(--brand-navy)] sm:text-2xl">
+                    {brandSecondary}
+                  </span>
+                </span>
               </Link>
             </m.div>
 
