@@ -50,10 +50,14 @@ export function AuthLinks() {
     const label = [user.first_name, user.last_name].filter(Boolean).join(" ").trim() || user.username || "Hesap";
     return (
       <div className="hidden items-center gap-2 md:flex">
-        <Link className="btn-outline h-10 px-3 text-xs font-semibold sm:text-sm" href="/dashboard" title={label}>
+        <Link className="btn-outline h-10 rounded-full px-4 text-xs font-semibold sm:text-sm" href="/dashboard" title={label}>
           {t("auth.panel")}
         </Link>
-        <button type="button" className="btn-solid h-10 px-3 text-xs font-semibold sm:text-sm" onClick={() => void logout()}>
+        <button
+          type="button"
+          className="btn-solid h-10 rounded-full px-4 text-xs font-semibold sm:text-sm"
+          onClick={() => void logout()}
+        >
           {t("auth.logout")}
         </button>
       </div>
@@ -62,10 +66,10 @@ export function AuthLinks() {
 
   return (
     <div className="hidden items-center gap-2 md:flex">
-      <Link href="/login" className="btn-outline h-10">
+      <Link href="/login" className="btn-outline h-10 rounded-full px-4">
         {t("auth.login")}
       </Link>
-      <Link href="/signup" className="btn-accent h-10">
+      <Link href="/signup" className="btn-accent h-10 rounded-full px-4">
         {t("auth.signup")}
       </Link>
     </div>
