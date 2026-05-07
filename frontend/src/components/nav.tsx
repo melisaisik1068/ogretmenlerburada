@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, Languages, Menu } from "lucide-react";
@@ -95,8 +96,8 @@ export function TopNav() {
           >
             <m.div className="flex items-center gap-3" variants={itemVars} whileHover={{ scale: 1.01 }} transition={springInteract}>
               <Link href="/" className="flex items-center gap-2">
-                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[var(--brand-navy)] via-[var(--brand-blue-deep)] to-[var(--brand-blue)] text-[11px] font-black leading-none text-white shadow-[0_12px_28px_-6px_rgba(37,99,235,0.45)] ring-2 ring-[var(--brand-amber)]/25 sm:text-xs">
-                  ÖA
+                <span className="relative h-10 w-10 overflow-hidden rounded-2xl bg-white/70 shadow-[0_12px_28px_-6px_rgba(37,99,235,0.25)] ring-2 ring-[var(--brand-amber)]/25">
+                  <Image src="/logo.png" alt="Öğretmenler Burada logosu" fill className="object-contain p-1.5" priority />
                 </span>
                 <span className="text-sm font-extrabold tracking-tight text-[var(--brand-navy)] sm:text-base">{t("nav.brand")}</span>
               </Link>
