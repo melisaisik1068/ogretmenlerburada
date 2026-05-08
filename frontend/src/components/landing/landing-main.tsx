@@ -52,7 +52,7 @@ export function LandingMain() {
               priority
               fetchPriority="high"
               decoding="async"
-              quality={80}
+              quality={75}
               className="object-cover object-center"
               sizes={IMG_HERO_FULL}
             />
