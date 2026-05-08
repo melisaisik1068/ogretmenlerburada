@@ -36,13 +36,18 @@ type NavItem = { label: string; href: string };
 function buildNavLinks(t: (path: string) => string): NavItem[] {
   return [
     { label: t("nav.home"), href: "/" },
+    { label: t("nav.shop"), href: "/shop" },
+    { label: t("nav.upgrade"), href: "/upgrade" },
+  ];
+}
+
+function buildMoreLinks(t: (path: string) => string): NavItem[] {
+  return [
     { label: t("nav.blog"), href: "/blog" },
     { label: t("nav.events"), href: "/events" },
-    { label: t("nav.shop"), href: "/shop" },
     { label: t("nav.search"), href: "/search" },
     { label: t("nav.wishlist"), href: "/wishlist" },
     { label: t("nav.schools"), href: "/schools" },
-    { label: t("nav.upgrade"), href: "/upgrade" },
     { label: t("nav.faq"), href: "/faq" },
     { label: t("nav.contact"), href: "/contact" },
   ];
@@ -65,6 +70,7 @@ export function TopNav() {
   const { t } = useI18n();
   const gradeGroups = useMemo(() => buildGradeGroups(t), [t]);
   const navLinks = useMemo(() => buildNavLinks(t), [t]);
+  const moreLinks = useMemo(() => buildMoreLinks(t), [t]);
   const brand = t("nav.brand");
   const [brandPrimary, ...brandRest] = brand.split(" ");
   const brandSecondary = brandRest.join(" ");
@@ -130,6 +136,9 @@ export function TopNav() {
                   <NavLinkMotion href={n.href}>{n.label}</NavLinkMotion>
                 </m.span>
               ))}
+              <m.span variants={itemVars}>
+                <MoreDropdown items={moreLinks} />
+              </m.span>
             </nav>
 
             <m.div className="hidden items-center gap-2 lg:flex" variants={itemVars}>
@@ -249,6 +258,33 @@ function CoursesMegaDropdown({ gradeGroups }: { gradeGroups: GradeGroup[] }) {
               </span>
             </Link>
           </div>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
+}
+
+function MoreDropdown({ items }: { items: NavItem[] }) {
+  const { t } = useI18n();
+  return (
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger className="group inline-flex items-center gap-1.5 rounded-full px-0 py-1 text-sm font-medium text-slate-600 outline-none ring-offset-2 ring-[var(--brand-blue)] transition-colors hover:text-[var(--brand-navy)] focus-visible:ring-2">
+        {t("nav.more")}
+        <ChevronDown className="size-4 text-slate-400 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          sideOffset={10}
+          align="start"
+          className="z-50 w-56 overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-1.5 shadow-xl outline-none ring-1 ring-slate-200/70"
+        >
+          {items.map((it) => (
+            <DropdownMenu.Item key={it.href} className="select-none rounded-xl px-0 outline-none focus:bg-transparent" asChild>
+              <Link href={it.href} className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-[var(--surface-muted)]">
+                {it.label}
+              </Link>
+            </DropdownMenu.Item>
+          ))}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>

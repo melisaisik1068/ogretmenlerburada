@@ -7,7 +7,9 @@ import { Turnstile } from "@/components/security/turnstile";
 export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [kvkkConsent, setKvkkConsent] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message, turnstile_token: turnstileToken }),
+        body: JSON.stringify({ name, email, phone, message, kvkk_consent: kvkkConsent, turnstile_token: turnstileToken }),
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { detail?: string };
@@ -30,6 +32,8 @@ export function ContactForm() {
       }
       setStatus("done");
       setMessage("");
+      setPhone("");
+      setKvkkConsent(false);
       setTurnstileToken("");
     } catch {
       setError("Ağ hatası.");
@@ -70,6 +74,16 @@ export function ContactForm() {
         />
       </label>
       <label className="grid gap-1">
+        <span className="text-xs font-semibold text-slate-700">Telefon (opsiyonel)</span>
+        <input
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="+90 5xx xxx xx xx"
+          className="h-11 rounded-xl bg-white px-4 text-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-sky-200"
+        />
+      </label>
+      <label className="grid gap-1">
         <span className="text-xs font-semibold text-slate-700">Mesaj</span>
         <textarea
           value={message}
@@ -78,6 +92,25 @@ export function ContactForm() {
           rows={5}
           className="rounded-xl bg-white px-4 py-3 text-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-sky-200"
         />
+      </label>
+      <label className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700">
+        <input
+          type="checkbox"
+          checked={kvkkConsent}
+          onChange={(e) => setKvkkConsent(e.target.checked)}
+          className="mt-0.5 size-4 rounded border-slate-300"
+          required
+        />
+        <span>
+          KVKK metnini okudum, onaylıyorum.{" "}
+          <a className="link-primary" href="/kvkk" target="_blank" rel="noreferrer">
+            KVKK
+          </a>
+          {" · "}
+          <a className="link-primary" href="/gizlilik" target="_blank" rel="noreferrer">
+            Gizlilik
+          </a>
+        </span>
       </label>
       <Turnstile onToken={(tok) => setTurnstileToken(tok)} theme="light" size="compact" />
       <button type="submit" disabled={status === "loading"} className="btn-accent w-full max-w-xs disabled:opacity-60">

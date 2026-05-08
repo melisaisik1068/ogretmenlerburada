@@ -5,7 +5,9 @@ from django.utils.translation import gettext_lazy as _
 class ContactMessage(models.Model):
     name = models.CharField(_("Ad Soyad"), max_length=120)
     email = models.EmailField(_("E-posta"))
+    phone = models.CharField(_("Telefon"), max_length=32, blank=True, default="")
     message = models.TextField(_("Mesaj"))
+    kvkk_consent = models.BooleanField(_("KVKK onayı"), default=False)
     created_at = models.DateTimeField(_("Gönderim zamanı"), auto_now_add=True)
 
     class Meta:

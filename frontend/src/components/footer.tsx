@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { ArrowRight, Mail, MapPin, MessageCircle } from "lucide-react";
+import { ArrowRight, Mail, MapPin } from "lucide-react";
 
 import { NewsletterForm } from "@/components/newsletter/newsletter-form";
 import { useI18n } from "@/contexts/locale-context";
 import { buildGradeGroups } from "@/i18n/nav-builders";
-import { whatsAppPurchaseHref } from "@/lib/whatsapp-purchase";
 
 export function SiteFooter() {
   const { t } = useI18n();
@@ -25,17 +24,8 @@ export function SiteFooter() {
                 href="mailto:destek@ogretmenlerburada.com"
                 className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 transition hover:bg-white/10"
               >
-                <Mail className="h-4 w-4 shrink-0 text-[var(--brand-blue-light)] transition-transform duration-200 group-hover:scale-105" aria-hidden />
+                <Mail className="h-4 w-4 shrink-0 text-(--brand-blue-light) transition-transform duration-200 group-hover:scale-105" aria-hidden />
                 <span className="font-medium text-white">destek@ogretmenlerburada.com</span>
-              </a>
-              <a
-                href={whatsAppPurchaseHref()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/15 px-3 py-2 transition hover:bg-emerald-500/25"
-              >
-                <MessageCircle className="h-4 w-4 shrink-0 text-[#4ade80] transition-transform duration-200 group-hover:scale-105" aria-hidden />
-                <span className="font-medium text-white">{t("footer.whatsappCaption")}</span>
               </a>
               <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-white/70" aria-hidden />

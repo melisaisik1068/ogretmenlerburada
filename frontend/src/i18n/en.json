@@ -17,6 +17,7 @@
     "upgrade": "Membership",
     "faq": "FAQ",
     "contact": "Contact",
+    "more": "More",
     "allCourses": "All courses",
     "lgs": "LGS",
     "yks": "YKS",
@@ -63,7 +64,7 @@
     "kvkk": "Privacy notice (KVKK)",
     "terms": "Terms of use",
     "privacy": "Privacy",
-    "whatsappCaption": "0530 766 29 75 — WhatsApp to buy the software"
+    "whatsappCaption": "0530 766 29 75 — WhatsApp to purchase"
   },
   "newsletter": {
     "placeholder": "Your email",
@@ -75,7 +76,7 @@
     "aria": "Newsletter email"
   },
   "whatsappFab": {
-    "label": "WhatsApp for software",
-    "aria": "Contact via WhatsApp to purchase the software"
+    "label": "Purchase · WhatsApp",
+    "aria": "Contact via WhatsApp to purchase"
   }
 }
