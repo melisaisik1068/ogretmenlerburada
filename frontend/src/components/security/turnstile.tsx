@@ -1,7 +1,7 @@
-\"use client\";
+"use client";
 
-import Script from \"next/script\";
-import { useEffect, useId, useMemo, useState } from \"react\";
+import Script from "next/script";
+import { useEffect, useId, useMemo, useState } from "react";
 
 declare global {
   interface Window {
@@ -25,12 +25,12 @@ declare global {
 type Props = {
   onToken: (token: string) => void;
   className?: string;
-  theme?: \"light\" | \"dark\" | \"auto\";
-  size?: \"normal\" | \"compact\";
+  theme?: "light" | "dark" | "auto";
+  size?: "normal" | "compact";
 };
 
-export function Turnstile({ onToken, className = \"\", theme = \"auto\", size = \"compact\" }: Props) {
-  const siteKey = (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || \"\").trim();
+export function Turnstile({ onToken, className = "", theme = "auto", size = "compact" }: Props) {
+  const siteKey = (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "").trim();
   const containerId = useId();
   const [widgetId, setWidgetId] = useState<string | null>(null);
 
@@ -49,8 +49,8 @@ export function Turnstile({ onToken, className = \"\", theme = \"auto\", size = 
       theme,
       size,
       callback: (token) => onToken(token),
-      \"expired-callback\": () => onToken(\"\"),
-      \"error-callback\": () => onToken(\"\"),
+      "expired-callback": () => onToken(""),
+      "error-callback": () => onToken(""),
     });
     setWidgetId(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,7 +60,7 @@ export function Turnstile({ onToken, className = \"\", theme = \"auto\", size = 
 
   return (
     <div className={className}>
-      <Script src=\"https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit\" strategy=\"afterInteractive\" />
+      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" strategy="afterInteractive" />
       <div id={elementId} />
     </div>
   );
