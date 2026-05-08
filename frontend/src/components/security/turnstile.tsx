@@ -11,10 +11,10 @@ declare global {
         opts: {
           sitekey: string;
           callback?: (token: string) => void;
-          \"error-callback\"?: () => void;
-          \"expired-callback\"?: () => void;
-          theme?: \"light\" | \"dark\" | \"auto\";
-          size?: \"normal\" | \"compact\";
+          "error-callback"?: () => void;
+          "expired-callback"?: () => void;
+          theme?: "light" | "dark" | "auto";
+          size?: "normal" | "compact";
         },
       ) => string;
       reset?: (widgetId?: string) => void;
