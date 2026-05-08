@@ -382,7 +382,7 @@ function TopCoursesSection({ reduce }: { reduce: boolean }) {
           <div>
             <div className="section-eyebrow text-[var(--brand-blue)]">Koleksiyon</div>
             <h2 className="section-title text-[var(--brand-navy)]">Öne çıkan kurslar</h2>
-            <p className="section-lead mt-2 max-w-xl font-medium">API’den canlı olarak gelen kartlar için Shadcn sekmeli filtre yapısı.</p>
+            <p className="section-lead mt-2 max-w-xl font-medium">En çok ilgi gören kursları buradan keşfedebilirsin.</p>
           </div>
           <RippleWrap>
             <Link href="/classes" className="group btn-solid h-11 px-6">
@@ -506,7 +506,7 @@ function TopCoursesClient({ reduce, tab }: { reduce: boolean; tab: "newest" | "o
           ))
         ) : items.length === 0 ? (
           <div className={`rounded-3xl border border-dashed border-slate-300/70 p-10 text-center text-sm font-medium text-slate-600 sm:col-span-2 lg:col-span-3`}>
-            {base ? "Henüz yayınlı kurs yok veya API’ye bağlanılamıyor." : "NEXT_PUBLIC_API_BASE_URL tanımlı değil."}
+            Şu an gösterilecek kurs bulunamadı. Yakında yeni içerikler eklenecek.
           </div>
         ) : (
           visible.map((c, idx) => {

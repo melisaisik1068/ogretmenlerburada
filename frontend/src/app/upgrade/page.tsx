@@ -30,21 +30,17 @@ export default async function UpgradePage() {
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
       <TopNav />
       <main className="container-page py-12">
-        <div className="section-eyebrow">Pricing</div>
-        <h1 className="section-title">Memberships</h1>
+        <div className="section-eyebrow">Üyelik</div>
+        <h1 className="section-title">Üyelik Paketleri</h1>
         <p className="section-lead">
           İki ödeme yolu vardır: <strong>Stripe</strong> ile karttan otomatik yenilenen üyelik; <strong>İyzico</strong> ile
           tek çekimde, planda tanımlı süre için erişim (otomatik kart yenilemesi yok).
         </p>
-        <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50/90 px-4 py-3 text-sm text-amber-950">
-          İyzico satırında gösterilen gün sayısı, Django planındaki <span className="font-mono text-xs">billing_cycle_days</span>{" "}
-          alanından gelir (varsayılan 30).
-        </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {plans.length === 0 ? (
             <div className="surface p-6 text-sm text-slate-600 md:col-span-3">
-              Planlar yüklenemedi veya henüz tanımlı değil. Django admin üzerinden abonelik planları ekleyebilirsin.
+              Şu an paketler görüntülenemiyor. Lütfen biraz sonra tekrar deneyin.
             </div>
           ) : (
             plans.map((p) => (
@@ -146,7 +142,7 @@ function CheckoutButtons({ planCode, billingCycleDays }: { planCode: string; bil
         onClick={() => void goStripe()}
         disabled={loading !== ""}
       >
-        {loading === "stripe" ? "Yönlendiriliyor…" : "Subscribe (Stripe)"}
+        {loading === "stripe" ? "Yönlendiriliyor…" : "Satın Al (Kart)"}
       </button>
       <p className="text-xs leading-relaxed text-slate-500">
         İyzico: tek ödeme ile yaklaşık <strong>{billingCycleDays}</strong> günlük erişim; süre bitince yenilemek için tekrar

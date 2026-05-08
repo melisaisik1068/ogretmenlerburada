@@ -17,7 +17,7 @@ export default function FaqPage() {
         <div className="section-eyebrow text-[var(--brand-blue)]">SSS</div>
         <h1 className="section-title text-[var(--brand-navy)]">Sıkça sorulan sorular</h1>
         <p className="section-lead mt-3 max-w-2xl font-medium">
-          Shadcn / Radix tabanlı accordion ile akordeon oturması ve sekme hissiyatı daha akıcı hale gelir.
+          Platformu hızlıca kullanabilmen için en çok sorulan soruları derledik.
         </p>
         <div className="mt-10">
           <FaqAccordionLazy />

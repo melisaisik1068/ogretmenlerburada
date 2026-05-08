@@ -148,11 +148,9 @@ export default async function ClassesPage({
       <main className="container-page py-10 sm:py-12">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="section-eyebrow">Courses</div>
+            <div className="section-eyebrow">Kurslar</div>
             <h1 className="section-title">Sınıflar & kurslar</h1>
-            <p className="section-lead">
-              Yayında olan kurslar backend&apos;den gelir (<span className="font-mono text-xs">GET /api/lessons/courses/</span>).
-            </p>
+            <p className="section-lead">Sınıf, ders ve öğretmene göre filtreleyerek kursları keşfet.</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link href="/classes" className="btn-solid h-10 px-4">
@@ -165,14 +163,14 @@ export default async function ClassesPage({
           {/* Sidebar */}
           <aside className="lg:col-span-4">
             <div className="surface p-5">
-              <div className="text-sm font-extrabold tracking-tight text-slate-900">Filter courses</div>
+              <div className="text-sm font-extrabold tracking-tight text-slate-900">Filtrele</div>
               <form className="mt-4 grid gap-4" action="/classes" method="get">
                 <input type="hidden" name="sort" value={sort} />
                 <input type="hidden" name="page" value="1" />
 
                 <div>
                   <label htmlFor="q" className="text-xs font-semibold text-slate-600">
-                    Search
+                    Arama
                   </label>
                   <input
                     id="q"
@@ -185,7 +183,7 @@ export default async function ClassesPage({
 
                 <div>
                   <label htmlFor="subject" className="text-xs font-semibold text-slate-600">
-                    Subject
+                    Ders
                   </label>
                   <select
                     id="subject"
@@ -193,7 +191,7 @@ export default async function ClassesPage({
                     defaultValue={subject ?? ""}
                     className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
                   >
-                    <option value="">All</option>
+                    <option value="">Tümü</option>
                     {subjects.map((s) => (
                       <option key={s.id} value={s.slug}>
                         {s.title}
@@ -204,7 +202,7 @@ export default async function ClassesPage({
 
                 <div>
                   <label htmlFor="level" className="text-xs font-semibold text-slate-600">
-                    Level
+                    Seviye
                   </label>
                   <select
                     id="level"
@@ -212,33 +210,33 @@ export default async function ClassesPage({
                     defaultValue={level ?? ""}
                     className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
                   >
-                    <option value="">All</option>
-                    <option value="free">free</option>
-                    <option value="basic">basic</option>
-                    <option value="pro">pro</option>
-                    <option value="enterprise">enterprise</option>
+                    <option value="">Tümü</option>
+                    <option value="free">Ücretsiz</option>
+                    <option value="basic">Temel</option>
+                    <option value="pro">Pro</option>
+                    <option value="enterprise">Kurumsal</option>
                   </select>
                 </div>
 
                 <div>
-                  <div className="text-xs font-semibold text-slate-600">Price range (TRY)</div>
+                  <div className="text-xs font-semibold text-slate-600">Fiyat aralığı (₺)</div>
                   <div className="mt-2 grid gap-2 sm:grid-cols-2">
                     <input name="price_min" defaultValue={priceMin ?? ""} placeholder="Min" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
-                    <input name="price_max" defaultValue={priceMax ?? ""} placeholder="Max" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
+                    <input name="price_max" defaultValue={priceMax ?? ""} placeholder="Maks" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
                   </div>
                 </div>
 
                 <div>
-                  <div className="text-xs font-semibold text-slate-600">Duration range (min)</div>
+                  <div className="text-xs font-semibold text-slate-600">Süre aralığı (dk)</div>
                   <div className="mt-2 grid gap-2 sm:grid-cols-2">
                     <input name="duration_min" defaultValue={durationMin ?? ""} placeholder="Min" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
-                    <input name="duration_max" defaultValue={durationMax ?? ""} placeholder="Max" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
+                    <input name="duration_max" defaultValue={durationMax ?? ""} placeholder="Maks" className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300" />
                   </div>
                 </div>
 
                 <div>
                   <label htmlFor="page_size" className="text-xs font-semibold text-slate-600">
-                    Page size
+                    Sayfa boyutu
                   </label>
                   <select
                     id="page_size"
@@ -248,7 +246,7 @@ export default async function ClassesPage({
                   >
                     {[12, 24, 36, 48, 60].map((n) => (
                       <option key={n} value={String(n)}>
-                        {n} / page
+                        {n} / sayfa
                       </option>
                     ))}
                   </select>
@@ -256,7 +254,7 @@ export default async function ClassesPage({
 
                 <div>
                   <label htmlFor="teacher" className="text-xs font-semibold text-slate-600">
-                    Teacher
+                    Öğretmen
                   </label>
                   <select
                     id="teacher"
@@ -264,7 +262,7 @@ export default async function ClassesPage({
                     defaultValue={teacher ?? ""}
                     className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
                   >
-                    <option value="">All</option>
+                    <option value="">Tümü</option>
                     {teachers.map((t) => {
                       const label = [t.first_name, t.last_name].filter(Boolean).join(" ") || t.username;
                       return (
@@ -278,15 +276,15 @@ export default async function ClassesPage({
 
                 <div className="grid gap-2 sm:grid-cols-2">
                   <button type="submit" className="btn-accent justify-center">
-                    Apply
+                    Uygula
                   </button>
                   <Link href="/classes" className="btn-outline justify-center">
-                    Clear
+                    Temizle
                   </Link>
                 </div>
 
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600">
-                  Results: <span className="font-semibold text-slate-900">{data.count}</span> · Page {currentPage}/{totalPages}
+                  Sonuç: <span className="font-semibold text-slate-900">{data.count}</span> · Sayfa {currentPage}/{totalPages}
                 </div>
               </form>
             </div>
@@ -296,32 +294,32 @@ export default async function ClassesPage({
           <section className="lg:col-span-8">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="text-sm text-slate-600">
-                Showing <span className="font-semibold text-slate-900">{sorted.length}</span> courses
+                Gösterilen: <span className="font-semibold text-slate-900">{sorted.length}</span> kurs
               </div>
               <div className="flex flex-wrap gap-2">
                 <Link
                   href={sortNewestHref}
                   className={sort === "newest" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}
                 >
-                  Newest
+                  En yeni
                 </Link>
                 <Link
                   href={sortOldestHref}
                   className={sort === "oldest" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}
                 >
-                  Oldest
+                  En eski
                 </Link>
                 <Link
                   href={sortDurationHref}
                   className={sort === "duration_desc" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}
                 >
-                  Duration
+                  Süre
                 </Link>
                 <Link href={sortPriceAscHref} className={sort === "price_asc" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
-                  Price ↑
+                  Fiyat ↑
                 </Link>
                 <Link href={sortPriceDescHref} className={sort === "price_desc" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
-                  Price ↓
+                  Fiyat ↓
                 </Link>
               </div>
             </div>
@@ -350,23 +348,23 @@ export default async function ClassesPage({
             <div className="mt-8 grid gap-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="text-xs text-slate-500">
-                  Total: <span className="font-semibold text-slate-900">{data.count}</span> · Page size:{" "}
+                  Toplam: <span className="font-semibold text-slate-900">{data.count}</span> · Sayfa boyutu:{" "}
                   <span className="font-semibold text-slate-900">{pageSize}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   {prevHref ? (
                     <Link href={`${prevHref}#courses`} className="btn-outline h-10 px-4">
-                      ← Prev
+                      ← Önceki
                     </Link>
                   ) : (
-                    <span className="btn-outline h-10 px-4 opacity-50">← Prev</span>
+                    <span className="btn-outline h-10 px-4 opacity-50">← Önceki</span>
                   )}
                   {nextHref ? (
                     <Link href={`${nextHref}#courses`} className="btn-outline h-10 px-4">
-                      Next →
+                      Sonraki →
                     </Link>
                   ) : (
-                    <span className="btn-outline h-10 px-4 opacity-50">Next →</span>
+                    <span className="btn-outline h-10 px-4 opacity-50">Sonraki →</span>
                   )}
                 </div>
               </div>
@@ -375,10 +373,10 @@ export default async function ClassesPage({
         </div>
 
         <div className="mt-10 flex flex-wrap gap-2">
-          <Link className="btn-outline" href="/classes/8">
+          <Link className="btn-outline" href="/classes">
             8. Sınıf (LGS)
           </Link>
-          <Link className="btn-outline" href="/classes/12">
+          <Link className="btn-outline" href="/classes">
             12. Sınıf (YKS)
           </Link>
         </div>

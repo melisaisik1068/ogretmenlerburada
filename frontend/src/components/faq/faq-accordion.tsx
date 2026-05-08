@@ -6,7 +6,7 @@ import { RevealInView } from "@/components/motion/bento-motion";
 const items = [
   {
     q: "Kurslar nasıl listeleniyor?",
-    a: "Kurslar `GET /api/lessons/courses/` uç noktasından çekilir; ön yüzdeki kartlar canlı sıralanır.",
+    a: "Kurslar sayfasından sınıf/konu filtreleriyle arama yapabilir, ilgini çeken eğitimi tek tıkla inceleyebilirsin.",
   },
   {
     q: "Üyelik ücretsiz mi?",

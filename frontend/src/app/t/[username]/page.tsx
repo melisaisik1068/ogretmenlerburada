@@ -139,7 +139,7 @@ export default async function TeacherSubdomainPage({ params }: { params: Promise
                 </div>
               </Link>
             ))}
-            {!courses.length ? <div className="text-sm text-slate-600">Henüz yayınlı kurs yok.</div> : null}
+            {!courses.length ? <div className="text-sm text-slate-600">Şu an gösterilecek kurs bulunmuyor.</div> : null}
           </div>
         </div>
 

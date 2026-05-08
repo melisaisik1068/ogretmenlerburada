@@ -6,7 +6,7 @@ import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { AuthLinks } from "@/components/auth/auth-links";
 import { useI18n } from "@/contexts/locale-context";
@@ -71,7 +71,8 @@ export function TopNav() {
 
   const navHidden = useNavScrollHide();
   const pathname = usePathname();
-  const spacerForUnderlap = pathname !== "/";
+  // Navbar hero üstüne binmesin: home dahil içerik navbar’dan sonra başlasın.
+  const spacerForUnderlap = true;
   const reduceNav = !!useReducedMotion();
   const listVars = reduceNav ? { hidden: {}, visible: { transition: {} } } : navListVariants;
   const itemVars = reduceNav
@@ -227,13 +228,13 @@ function CoursesMegaDropdown({ gradeGroups }: { gradeGroups: GradeGroup[] }) {
           </div>
           <div className="mt-6 flex flex-wrap gap-2 border-t border-slate-100 pt-5">
             <Link
-              href="/classes/lgs"
+              href="/classes"
               className="rounded-2xl bg-[var(--surface-muted)] px-3 py-2 text-xs font-semibold text-[var(--brand-navy)] transition hover:bg-slate-200/80"
             >
               {t("nav.lgs")}
             </Link>
             <Link
-              href="/classes/yks"
+              href="/classes"
               className="rounded-2xl bg-[var(--surface-muted)] px-3 py-2 text-xs font-semibold text-[var(--brand-navy)] transition hover:bg-slate-200/80"
             >
               {t("nav.yks")}
@@ -258,6 +259,19 @@ function MobileMenuDrawer({ gradeGroups, navLinks }: { gradeGroups: GradeGroup[]
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
+  // Mobil menü açıkken arka plan scroll olmasın.
+  useEffect(() => {
+    if (!open) return;
+    const prevBody = document.body.style.overflow;
+    const prevHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevBody;
+      document.documentElement.style.overflow = prevHtml;
+    };
+  }, [open]);
+
   return (
     <>
       <m.button
@@ -280,7 +294,7 @@ function MobileMenuDrawer({ gradeGroups, navLinks }: { gradeGroups: GradeGroup[]
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[60] bg-slate-900/35 backdrop-blur-[2px]"
+              className="fixed inset-0 z-[60] bg-slate-900/45 backdrop-blur-[2px]"
               onClick={() => setOpen(false)}
             />
             <m.div
