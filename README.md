@@ -33,7 +33,10 @@ copy .env.example .env
 .\.venv\Scripts\python manage.py migrate
 .\.venv\Scripts\python manage.py createsuperuser
 
-# 5) Seed (opsiyonel): admin panelinden planları ekleyin
+# 5) Demo hesaplar (opsiyonel): hızlı deneme için
+.\.venv\Scripts\python manage.py seed_demo
+
+# 6) Seed (opsiyonel): admin panelinden planları ekleyin
 .\.venv\Scripts\python manage.py runserver 0.0.0.0:8000
 ```
 
