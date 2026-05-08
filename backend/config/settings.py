@@ -205,6 +205,15 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "config.pagination.StandardPagination",
     "PAGE_SIZE": 12,
+    # Sadece scope tanımlanan endpoint’lerde çalışır (ör: contact/newsletter).
+    "DEFAULT_THROTTLE_CLASSES": (
+        "rest_framework.throttling.ScopedRateThrottle",
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        # Public formlar: bot basmasını engelle
+        "contact": "5/min",
+        "newsletter_subscribe": "3/min",
+    },
 }
 
 SPECTACULAR_SETTINGS = {
@@ -232,6 +241,10 @@ EMAIL_HOST_PASSWORD = os.getenv("DJANGO_EMAIL_HOST_PASSWORD", "").strip() or Non
 FRONTEND_PUBLIC_URL = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
 # İyzico callback tam URL için API kökü (örn. https://xxxx.up.railway.app), sonunda '/' yok
 API_PUBLIC_URL = os.getenv("API_PUBLIC_URL", "").strip().rstrip("/")
+
+# Cloudflare Turnstile (captcha). Secret boşsa doğrulama pasif kalır.
+TURNSTILE_SITE_KEY = os.getenv("TURNSTILE_SITE_KEY", "").strip()
+TURNSTILE_SECRET_KEY = os.getenv("TURNSTILE_SECRET_KEY", "").strip()
 
 # Pazaryeri: satıcı hakediş komisyon yüzdesi (KDV/brüt netleştirmesi yapılmaz; basit model)
 MARKETPLACE_COMMISSION_PERCENT = int(os.getenv("MARKETPLACE_COMMISSION_PERCENT", "15"))

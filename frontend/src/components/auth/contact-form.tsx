@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 
+import { Turnstile } from "@/components/security/turnstile";
+
 export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +20,7 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, message, turnstile_token: turnstileToken }),
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { detail?: string };
@@ -27,6 +30,7 @@ export function ContactForm() {
       }
       setStatus("done");
       setMessage("");
+      setTurnstileToken("");
     } catch {
       setError("Ağ hatası.");
       setStatus("error");
@@ -75,6 +79,7 @@ export function ContactForm() {
           className="rounded-xl bg-white px-4 py-3 text-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-sky-200"
         />
       </label>
+      <Turnstile onToken={(tok) => setTurnstileToken(tok)} theme="light" size="compact" />
       <button type="submit" disabled={status === "loading"} className="btn-accent w-full max-w-xs disabled:opacity-60">
         {status === "loading" ? "Gönderiliyor…" : "Gönder"}
       </button>

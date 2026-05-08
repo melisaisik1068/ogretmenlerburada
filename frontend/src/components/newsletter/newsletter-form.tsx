@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useI18n } from "@/contexts/locale-context";
+import { Turnstile } from "@/components/security/turnstile";
 
 type Props = {
   className?: string;
@@ -13,6 +14,7 @@ type Props = {
 export function NewsletterForm({ className = "", tone = "light", inputId }: Props) {
   const { t } = useI18n();
   const [email, setEmail] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [message, setMessage] = useState<string>("");
 
@@ -31,7 +33,7 @@ export function NewsletterForm({ className = "", tone = "light", inputId }: Prop
       const res = await fetch("/api/newsletter/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email: value }),
+        body: JSON.stringify({ email: value, turnstile_token: turnstileToken }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; created?: boolean; detail?: string };
       if (!res.ok) {
@@ -41,6 +43,7 @@ export function NewsletterForm({ className = "", tone = "light", inputId }: Prop
       }
       setStatus("ok");
       setEmail("");
+      setTurnstileToken("");
       setMessage(data.created === false ? t("newsletter.alreadyRegistered") : t("newsletter.success"));
     } catch {
       setStatus("error");
@@ -67,6 +70,12 @@ export function NewsletterForm({ className = "", tone = "light", inputId }: Prop
       >
         {status === "loading" ? "…" : t("newsletter.submit")}
       </button>
+      <Turnstile
+        className={tone === "dark" ? "mt-2" : "mt-3"}
+        onToken={(tok) => setTurnstileToken(tok)}
+        theme={tone === "dark" ? "dark" : "light"}
+        size="compact"
+      />
       {message ? (
         <div className={tone === "dark" ? "text-xs text-white/60" : "text-xs text-slate-500"}>{message}</div>
       ) : null}
