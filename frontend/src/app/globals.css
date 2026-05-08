@@ -158,19 +158,19 @@ body {
 }
 
 .btn-solid {
-  @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
+  @apply inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-semibold tracking-tight transition-all duration-200;
   background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue), var(--brand-blue-light));
   box-shadow: 0 16px 36px rgba(37, 99, 235, 0.32), 0 0 0 1px rgba(255, 255, 255, 0.12);
   @apply text-white hover:brightness-110 hover:shadow-lg active:scale-[0.99];
 }
 
 .btn-outline {
-  @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
+  @apply inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-semibold tracking-tight transition-all duration-200;
   @apply bg-white text-[var(--brand-navy)] ring-1 ring-slate-200/90 hover:-translate-y-px hover:bg-slate-50 hover:shadow-sm active:scale-[0.99];
 }
 
 .btn-accent {
-  @apply inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold tracking-tight transition-all duration-200;
+  @apply inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-semibold tracking-tight transition-all duration-200;
   background: linear-gradient(135deg, var(--brand-blue-deep), var(--brand-blue), var(--brand-blue-light));
   box-shadow: 0 16px 38px rgba(37, 99, 235, 0.35), 0 0 24px rgba(37, 99, 235, 0.12);
   @apply text-white hover:brightness-110 hover:-translate-y-px hover:shadow-lg active:scale-[0.99];

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { ChevronDown, Languages, Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 
@@ -161,7 +161,6 @@ function LangDropdown() {
           className="inline-flex h-10 items-center gap-1 rounded-full border border-white/25 bg-white/10 px-3 text-[13px] font-semibold text-[var(--brand-navy)] shadow-sm transition hover:bg-white/15"
           aria-label={t("nav.langAria")}
         >
-          <Languages className="size-3.5" aria-hidden />
           {flag}
           <ChevronDown className="size-3 opacity-70" aria-hidden />
         </button>

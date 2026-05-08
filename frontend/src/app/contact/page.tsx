@@ -9,7 +9,7 @@ export default function ContactPage() {
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
       <TopNav />
       <main className="container-page py-12">
-        <div className="section-eyebrow">Contact</div>
+        <div className="section-eyebrow">İletişim</div>
         <h1 className="section-title">İletişim</h1>
         <p className="section-lead">
           Mesajınız doğrudan Django&apos;daki iletişim kaydına düşer; ekibimiz admin panelinden yanıtlar.
@@ -21,7 +21,7 @@ export default function ContactPage() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#20bd5a]"
           >
-            Yazılım satın almak için WhatsApp (0530 766 29 75)
+            Satın Al · WhatsApp (0530 766 29 75)
           </a>
         </p>
         <div className="mt-8">

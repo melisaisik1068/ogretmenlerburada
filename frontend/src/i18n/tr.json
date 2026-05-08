@@ -63,7 +63,7 @@
     "kvkk": "KVKK",
     "terms": "Kullanım Koşulları",
     "privacy": "Gizlilik",
-    "whatsappCaption": "0530 766 29 75 — Yazılım satın almak için WhatsApp"
+    "whatsappCaption": "0530 766 29 75 — Satın almak için WhatsApp"
   },
   "newsletter": {
     "placeholder": "E-posta adresin",
@@ -75,7 +75,7 @@
     "aria": "Bülten e-postası"
   },
   "whatsappFab": {
-    "label": "Yazılım için WhatsApp",
-    "aria": "WhatsApp üzerinden yazılım satın almak için iletişime geç"
+    "label": "Satın Al · WhatsApp",
+    "aria": "WhatsApp üzerinden satın almak için iletişime geç"
   }
 }

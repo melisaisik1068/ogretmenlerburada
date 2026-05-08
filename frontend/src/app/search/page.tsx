@@ -107,9 +107,9 @@ export default async function SearchPage({
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
       <TopNav />
       <main className="container-page py-10 sm:py-12">
-        <div className="section-eyebrow">Search</div>
-        <h1 className="section-title">Global Search</h1>
-        <p className="section-lead">Kurslar, blog, events ve shop içinde ara.</p>
+        <div className="section-eyebrow">Arama</div>
+        <h1 className="section-title">Genel Arama</h1>
+        <p className="section-lead">Kurslar, blog, etkinlikler ve mağaza içinde ara.</p>
 
         <form className="mt-6 flex flex-col gap-2 sm:flex-row" action="/search" method="get">
           <input
@@ -128,13 +128,13 @@ export default async function SearchPage({
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="surface p-4">
-            <label className="text-xs font-semibold text-slate-600">Subject</label>
+            <label className="text-xs font-semibold text-slate-600">Ders</label>
             <form action="/search" method="get" className="mt-2 flex gap-2">
               <input type="hidden" name="q" value={q} />
               <input type="hidden" name="tab" value={tab} />
               <input type="hidden" name="type" value={type} />
               <select name="subject" defaultValue={subject} className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300">
-                <option value="">All</option>
+                <option value="">Tümü</option>
                 {subjects.map((s) => (
                   <option key={s.id} value={s.slug}>
                     {s.title}
@@ -142,24 +142,24 @@ export default async function SearchPage({
                 ))}
               </select>
               <button className="btn-outline h-11 px-4" type="submit">
-                Apply
+                Uygula
               </button>
             </form>
           </div>
           <div className="surface p-4">
-            <label className="text-xs font-semibold text-slate-600">Material type</label>
+            <label className="text-xs font-semibold text-slate-600">Materyal türü</label>
             <form action="/search" method="get" className="mt-2 flex gap-2">
               <input type="hidden" name="q" value={q} />
               <input type="hidden" name="tab" value={tab} />
               <input type="hidden" name="subject" value={subject} />
               <select name="type" defaultValue={type} className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300">
-                <option value="">All</option>
+                <option value="">Tümü</option>
                 <option value="pdf">PDF</option>
                 <option value="video">Video</option>
-                <option value="other">Other</option>
+                <option value="other">Diğer</option>
               </select>
               <button className="btn-outline h-11 px-4" type="submit">
-                Apply
+                Uygula
               </button>
             </form>
           </div>
@@ -167,19 +167,19 @@ export default async function SearchPage({
 
         <div className="mt-4 flex flex-wrap gap-2">
           <Link href={qsBase({ tab: "all" })} className={tab === "all" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
-            All
+            Tümü
           </Link>
           <Link href={qsBase({ tab: "courses" })} className={tab === "courses" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
-            Courses <span className="ml-1 text-xs opacity-80">({counts.courses})</span>
+            Kurslar <span className="ml-1 text-xs opacity-80">({counts.courses})</span>
           </Link>
           <Link href={qsBase({ tab: "shop" })} className={tab === "shop" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
-            Shop <span className="ml-1 text-xs opacity-80">({counts.shop})</span>
+            Mağaza <span className="ml-1 text-xs opacity-80">({counts.shop})</span>
           </Link>
           <Link href={qsBase({ tab: "blog" })} className={tab === "blog" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
             Blog <span className="ml-1 text-xs opacity-80">({counts.blog})</span>
           </Link>
           <Link href={qsBase({ tab: "events" })} className={tab === "events" ? "badge bg-slate-900 text-white ring-1 ring-slate-900" : "badge hover:bg-slate-100"}>
-            Events <span className="ml-1 text-xs opacity-80">({counts.events})</span>
+            Etkinlikler <span className="ml-1 text-xs opacity-80">({counts.events})</span>
           </Link>
         </div>
 
@@ -189,7 +189,7 @@ export default async function SearchPage({
 
         <div className="mt-8 grid gap-6 lg:grid-cols-12">
           <section className={tab === "all" || tab === "courses" ? "lg:col-span-6" : "hidden"}>
-            <div className="text-sm font-extrabold tracking-tight text-slate-900">Courses</div>
+            <div className="text-sm font-extrabold tracking-tight text-slate-900">Kurslar</div>
             <div className="mt-3 grid gap-3">
               {courses.length === 0 ? (
                 <div className="surface p-5 text-sm text-slate-600">—</div>
@@ -197,14 +197,14 @@ export default async function SearchPage({
                 courses.map((c) => (
                   <div key={c.id} className="surface p-5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{c.subject?.title ?? "Course"}</div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{c.subject?.title ?? "Kurs"}</div>
                       {c.teacher?.name || c.teacher?.username ? <div className="text-xs text-slate-500">{c.teacher?.name ?? c.teacher?.username}</div> : null}
                     </div>
                     <div className="mt-1 text-base font-extrabold text-slate-900">{highlight(c.title, q)}</div>
                     {c.snippet ? <div className="mt-2 text-sm text-slate-600">{highlight(c.snippet, q)}</div> : null}
                     <div className="mt-3">
                       <Link href={`/classes/${c.id}`} className="link-primary text-sm font-semibold">
-                        Open →
+                        Aç →
                       </Link>
                     </div>
                   </div>
@@ -214,7 +214,7 @@ export default async function SearchPage({
           </section>
 
           <section className={tab === "all" || tab === "shop" ? "lg:col-span-6" : "hidden"}>
-            <div className="text-sm font-extrabold tracking-tight text-slate-900">Shop</div>
+            <div className="text-sm font-extrabold tracking-tight text-slate-900">Mağaza</div>
             <div className="mt-3 grid gap-3">
               {materials.length === 0 ? (
                 <div className="surface p-5 text-sm text-slate-600">—</div>
@@ -222,14 +222,14 @@ export default async function SearchPage({
                 materials.map((m) => (
                   <div key={m.id} className="surface p-5">
                     <div className="flex items-center justify-between gap-2">
-                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{m.type ?? "Material"}</div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{m.type ?? "Materyal"}</div>
                       {typeof m.price_try === "number" ? <span className="badge">{m.price_try} ₺</span> : null}
                     </div>
                     <div className="mt-1 text-base font-extrabold text-slate-900">{highlight(m.title, q)}</div>
                     {m.snippet ? <div className="mt-2 text-sm text-slate-600">{highlight(m.snippet, q)}</div> : null}
                     <div className="mt-3">
                       <Link href={`/shop/${m.id}`} className="link-primary text-sm font-semibold">
-                        Details →
+                        Detay →
                       </Link>
                     </div>
                   </div>
@@ -250,7 +250,7 @@ export default async function SearchPage({
                     {p.snippet ? <div className="mt-2 text-sm text-slate-600">{highlight(p.snippet, q)}</div> : null}
                     <div className="mt-3">
                       <Link href={`/blog/${p.slug}`} className="link-primary text-sm font-semibold">
-                        Read →
+                        Oku →
                       </Link>
                     </div>
                   </div>
@@ -260,19 +260,19 @@ export default async function SearchPage({
           </section>
 
           <section className={tab === "all" || tab === "events" ? "lg:col-span-6" : "hidden"}>
-            <div className="text-sm font-extrabold tracking-tight text-slate-900">Events</div>
+            <div className="text-sm font-extrabold tracking-tight text-slate-900">Etkinlikler</div>
             <div className="mt-3 grid gap-3">
               {events.length === 0 ? (
                 <div className="surface p-5 text-sm text-slate-600">—</div>
               ) : (
                 events.map((e) => (
                   <div key={e.slug} className="surface p-5">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{e.location ?? "Event"}</div>
+                    <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{e.location ?? "Etkinlik"}</div>
                     <div className="mt-1 text-base font-extrabold text-slate-900">{highlight(e.title, q)}</div>
                     {e.snippet ? <div className="mt-2 text-sm text-slate-600">{highlight(e.snippet, q)}</div> : null}
                     <div className="mt-3">
                       <Link href={`/events/${e.slug}`} className="link-primary text-sm font-semibold">
-                        Details →
+                        Detay →
                       </Link>
                     </div>
                   </div>
