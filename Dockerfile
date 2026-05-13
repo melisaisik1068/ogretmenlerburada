@@ -21,6 +21,8 @@ COPY backend/ .
 # collectstatic için geçici anahtar — imaj katmanında ENV ile gizli anahtar tutmuyoruz
 RUN DJANGO_SECRET_KEY=collectstatic-build-only python manage.py collectstatic --noinput --clear
 
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8080
 
-CMD ["sh", "-c", "exec gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8080} --workers 2 --timeout 120"]
+CMD ["/app/entrypoint.sh"]
