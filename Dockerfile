@@ -21,7 +21,7 @@ COPY backend/ .
 # collectstatic için geçici anahtar — imaj katmanında ENV ile gizli anahtar tutmuyoruz
 RUN DJANGO_SECRET_KEY=collectstatic-build-only python manage.py collectstatic --noinput --clear
 
-RUN chmod +x /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 EXPOSE 8080
 
