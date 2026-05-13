@@ -18,8 +18,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN chmod +x /app/entrypoint.sh
+
 RUN DJANGO_SECRET_KEY=collectstatic-build-only python manage.py collectstatic --noinput --clear
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "exec gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8080} --workers 2 --timeout 120"]
+CMD ["/app/entrypoint.sh"]
