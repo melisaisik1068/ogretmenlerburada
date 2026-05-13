@@ -12,6 +12,7 @@ export function SignupForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +20,10 @@ export function SignupForm() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (password !== passwordConfirm) {
+      setError("Şifreler uyuşmuyor. Lütfen kontrol edin.");
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
@@ -148,6 +153,19 @@ export function SignupForm() {
           autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={8}
+          className="h-11 rounded-xl bg-white px-4 text-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-sky-200"
+        />
+      </label>
+
+      <label className="grid gap-1">
+        <span className="text-xs font-semibold text-slate-700">Şifre Tekrar</span>
+        <input
+          type="password"
+          autoComplete="new-password"
+          value={passwordConfirm}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
           required
           minLength={8}
           className="h-11 rounded-xl bg-white px-4 text-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-sky-200"

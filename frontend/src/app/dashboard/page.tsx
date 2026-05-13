@@ -18,12 +18,14 @@ async function loadSession(): Promise<{ user: UserMe | null; subscription: Subsc
   const base = getApiBaseUrl();
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/json" };
 
-  const meRes = await fetch(`${base}/api/accounts/me/`, { headers, cache: "no-store" });
+  const [meRes, subRes] = await Promise.all([
+    fetch(`${base}/api/accounts/me/`, { headers, cache: "no-store" }),
+    fetch(`${base}/api/subscriptions/me/`, { headers, cache: "no-store" })
+  ]);
+
   if (!meRes.ok) return { user: null, subscription: null };
 
   const user = (await meRes.json()) as UserMe;
-
-  const subRes = await fetch(`${base}/api/subscriptions/me/`, { headers, cache: "no-store" });
   const subscription = subRes.ok ? ((await subRes.json()) as SubscriptionPayload) : null;
 
   return { user, subscription };
