@@ -3,11 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 type RoleChoice = "student" | "teacher";
 
 export function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextUrl = searchParams.get("next") || "/dashboard";
   const [role, setRole] = useState<RoleChoice>("student");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -16,6 +19,7 @@ export function SignupForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
@@ -41,6 +45,8 @@ export function SignupForm() {
       });
       const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
       if (!res.ok) {
+        setPassword("");
+        setPasswordConfirm("");
         const detail = data.detail;
         if (typeof detail === "string" && detail.trim()) {
           setError(detail);
@@ -66,7 +72,12 @@ export function SignupForm() {
         );
         return;
       }
-      router.push("/dashboard");
+      // Kayıt başarılı ama otomatik oturum açılamadı — login sayfasına yönlendir
+      if (data.registered && !data.ok) {
+        router.push("/login?kayit=basarili");
+        return;
+      }
+      router.push(nextUrl.startsWith("/") ? nextUrl : "/dashboard");
       router.refresh();
     } finally {
       setLoading(false);

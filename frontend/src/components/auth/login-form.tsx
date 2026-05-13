@@ -8,6 +8,7 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextUrl = searchParams.get("next") || "/dashboard";
+  const kayitBasarili = searchParams.get("kayit") === "basarili";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -38,6 +39,11 @@ export function LoginForm() {
 
   return (
     <form className="mt-5 grid gap-3" onSubmit={onSubmit}>
+      {kayitBasarili ? (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800" role="status">
+          ✅ Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.
+        </div>
+      ) : null}
       {error ? (
         <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800" role="alert">
           {error}
