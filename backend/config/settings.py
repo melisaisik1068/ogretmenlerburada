@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     "progress",
     "reviews",
     "search",
+    "exams",
+    "assignments",
 ]
 
 MIDDLEWARE = [

@@ -2,6 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .password_views import PasswordResetConfirmView, PasswordResetRequestView
+from .parent_views import ParentDashboardView, ParentLinkStudentView
 from .views import MeView, PublicTeacherByUsernameView, PublicTeachersView, RegisterView, TeacherVerificationDocumentViewSet
 
 router = DefaultRouter()
@@ -12,6 +13,8 @@ urlpatterns = [
     path("password-reset/confirm/", PasswordResetConfirmView.as_view(), name="password-reset-confirm"),
     path("register/", RegisterView.as_view(), name="register"),
     path("me/", MeView.as_view(), name="me"),
+    path("parent/dashboard/", ParentDashboardView.as_view(), name="parent-dashboard"),
+    path("parent/link-student/", ParentLinkStudentView.as_view(), name="parent-link-student"),
     path("teachers/", PublicTeachersView.as_view(), name="teachers"),
     path("teachers/by-username/<str:username>/", PublicTeacherByUsernameView.as_view(), name="teacher-by-username"),
     path("", include(router.urls)),

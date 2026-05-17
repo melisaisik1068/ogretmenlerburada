@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 
-type RoleChoice = "student" | "teacher";
+type RoleChoice = "student" | "teacher" | "parent";
 
 export function SignupForm() {
   const router = useRouter();
@@ -77,7 +77,13 @@ export function SignupForm() {
         router.push("/login?kayit=basarili");
         return;
       }
-      router.push(nextUrl.startsWith("/") ? nextUrl : "/dashboard");
+      if (role === "parent") {
+        router.push("/veli");
+      } else if (role === "teacher") {
+        router.push("/dashboard/teacher/courses");
+      } else {
+        router.push(nextUrl.startsWith("/") ? nextUrl : "/dashboard");
+      }
       router.refresh();
     } finally {
       setLoading(false);
@@ -86,7 +92,7 @@ export function SignupForm() {
 
   return (
     <form className="mt-6 grid gap-5" onSubmit={onSubmit}>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-3">
         <button
           type="button"
           onClick={() => setRole("student")}
@@ -105,7 +111,17 @@ export function SignupForm() {
           }`}
         >
           <div className="text-sm font-extrabold text-slate-900">Öğretmen</div>
-          <div className="mt-1 text-sm text-slate-600">İçerik paylaşmak için kayıt — belge onayı sonrası yayına geçersin.</div>
+          <div className="mt-1 text-xs text-slate-600">İçerik paylaşmak için kayıt — belge onayı sonrası yayına geçersin.</div>
+        </button>
+        <button
+          type="button"
+          onClick={() => setRole("parent")}
+          className={`rounded-3xl border border-white/25 bg-white/55 p-5 text-left backdrop-blur-md ring-1 transition ${
+            role === "parent" ? "ring-2 ring-amber-400/80" : "ring-slate-200/80 hover:shadow-md"
+          }`}
+        >
+          <div className="text-sm font-extrabold text-slate-900">Veli</div>
+          <div className="mt-1 text-xs text-slate-600">Çocuğunun sınav ve derslerini takip et.</div>
         </button>
       </div>
 

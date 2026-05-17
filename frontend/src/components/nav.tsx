@@ -36,13 +36,17 @@ type NavItem = { label: string; href: string };
 function buildNavLinks(t: (path: string) => string): NavItem[] {
   return [
     { label: t("nav.home"), href: "/" },
+    { label: t("nav.exams"), href: "/exams" },
     { label: t("nav.shop"), href: "/shop" },
+    { label: t("nav.homework"), href: "/odevler" },
+    { label: t("nav.packages"), href: "/paketler" },
     { label: t("nav.upgrade"), href: "/upgrade" },
   ];
 }
 
 function buildMoreLinks(t: (path: string) => string): NavItem[] {
   return [
+    { label: t("nav.parent"), href: "/veli" },
     { label: t("nav.blog"), href: "/blog" },
     { label: t("nav.events"), href: "/events" },
     { label: t("nav.search"), href: "/search" },

@@ -44,6 +44,8 @@ urlpatterns = [
     path("api/progress/", include("progress.urls")),
     path("api/reviews/", include("reviews.urls")),
     path("api/search/", include("search.urls")),
+    path("api/exams/", include("exams.urls")),
+    path("api/assignments/", include("assignments.urls")),
 ]
 
 if settings.DEBUG and (getattr(settings, "SERVE_MEDIA_PUBLIC", False) is True):

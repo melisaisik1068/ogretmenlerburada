@@ -3,7 +3,7 @@ from django.contrib.auth.admin import GroupAdmin as DjangoGroupAdmin, UserAdmin 
 from django.contrib.auth.models import Group
 from unfold.admin import ModelAdmin
 
-from .models import TeacherVerificationDocument, User
+from .models import ParentStudentLink, TeacherVerificationDocument, User
 
 
 if admin.site.is_registered(Group):
@@ -22,6 +22,12 @@ class UserAdmin(ModelAdmin, DjangoUserAdmin):
     fieldsets = DjangoUserAdmin.fieldsets + (
         ("ÖğretmenAğı hesabı", {"fields": ("role", "bio", "avatar_url", "teacher_verification_status", "teacher_verified_at")}),
     )
+
+
+@admin.register(ParentStudentLink)
+class ParentStudentLinkAdmin(ModelAdmin):
+    list_display = ("parent", "student", "label", "created_at")
+    search_fields = ("parent__username", "student__username")
 
 
 @admin.register(TeacherVerificationDocument)

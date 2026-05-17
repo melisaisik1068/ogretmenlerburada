@@ -19,13 +19,16 @@ export default async function TeacherMaterialsPage() {
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
       <TopNav />
       <main className="container-page py-10 sm:py-12">
-        <div className="section-eyebrow">Instructor</div>
-        <h1 className="section-title">Materials</h1>
-        <p className="section-lead">Dosya yükle, fiyat/publish ayarla.</p>
+        <div className="section-eyebrow">Öğretmen</div>
+        <h1 className="section-title">Mağaza materyalleri</h1>
+        <p className="section-lead">PDF ve dosyalarını yükle, fiyat belirle ve yayınla.</p>
 
         <div className="mt-6 flex flex-wrap gap-2">
           <Link href="/dashboard/teacher/courses" className="btn-outline h-10 px-4">
-            Teacher panel
+            Öğretmen paneli
+          </Link>
+          <Link href="/shop" className="btn-outline h-10 px-4">
+            Mağazayı gör
           </Link>
         </div>
 

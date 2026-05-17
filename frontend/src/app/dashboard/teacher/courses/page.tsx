@@ -19,8 +19,8 @@ export default async function TeacherCoursesPage() {
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
       <TopNav />
       <main className="container-page py-10 sm:py-12">
-        <div className="section-eyebrow">Instructor</div>
-        <h1 className="section-title">Teacher dashboard</h1>
+        <div className="section-eyebrow">Öğretmen</div>
+        <h1 className="section-title">Öğretmen paneli</h1>
         <p className="section-lead">Kurslarını oluştur, düzenle ve ders ekle.</p>
 
         <div className="mt-6 flex flex-wrap gap-2">
@@ -28,10 +28,19 @@ export default async function TeacherCoursesPage() {
             Panele dön
           </Link>
           <Link href="/dashboard/teacher/materials" className="btn-solid h-10 px-4">
-            Materials
+            Mağaza / Materyal
+          </Link>
+          <Link href="/dashboard/teacher/homework" className="btn-outline h-10 px-4">
+            Ödevler
+          </Link>
+          <Link href="/dashboard/teacher/exams" className="btn-outline h-10 px-4">
+            Deneme sınavı
+          </Link>
+          <Link href="/dashboard/teacher/packages" className="btn-outline h-10 px-4">
+            Paketler
           </Link>
           <Link href="/dashboard/teacher/verification" className="btn-outline h-10 px-4">
-            Belge yükle / Doğrulama
+            Belge / Doğrulama
           </Link>
         </div>
 

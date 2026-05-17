@@ -141,3 +141,73 @@ class Subscription(models.Model):
         if self.trial_ends_at and self.trial_ends_at > now:
             return True
         return self.status == SubscriptionStatus.ACTIVE and (self.current_period_end is None or self.current_period_end > now)
+
+
+class InstitutionPackage(models.Model):
+    """Kurum / öğretmenin öğrencilerine sattığı esnek paket (premium video + deneme vb.)."""
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="institution_packages",
+        verbose_name=_("Paket sahibi"),
+        help_text=_("Genelde öğretmen veya kurum yöneticisi."),
+    )
+    title = models.CharField(_("Paket adı"), max_length=120)
+    slug = models.SlugField(_("Kısa ad"), max_length=80, unique=True)
+    description = models.TextField(_("Açıklama"), blank=True, default="")
+    price_try = models.PositiveIntegerField(_("Aylık fiyat (₺)"), default=0)
+    billing_cycle_days = models.PositiveSmallIntegerField(_("Dönem (gün)"), default=30)
+    includes_premium_courses = models.BooleanField(
+        _("Premium kurslar"),
+        default=True,
+        help_text=_("Pro/Enterprise erişim seviyeli kurslar."),
+    )
+    includes_all_exams = models.BooleanField(_("Tüm deneme sınavları"), default=True)
+    includes_marketplace = models.BooleanField(_("Mağaza indirimleri"), default=False)
+    is_active = models.BooleanField(_("Satışta"), default=True)
+    created_at = models.DateTimeField(_("Oluşturulma"), auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = _("Kurum paketi")
+        verbose_name_plural = _("Kurum paketleri")
+
+    def __str__(self) -> str:
+        return self.title
+
+
+class StudentPackageSubscription(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="student_package_subscriptions",
+        verbose_name=_("Öğrenci"),
+    )
+    package = models.ForeignKey(
+        InstitutionPackage,
+        on_delete=models.PROTECT,
+        related_name="subscriptions",
+        verbose_name=_("Paket"),
+    )
+    status = models.CharField(
+        _("Durum"),
+        max_length=20,
+        choices=SubscriptionStatus.choices,
+        default=SubscriptionStatus.ACTIVE,
+    )
+    current_period_end = models.DateTimeField(_("Dönem bitişi"), null=True, blank=True)
+    created_at = models.DateTimeField(_("Oluşturulma"), auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = _("Öğrenci paket aboneliği")
+        verbose_name_plural = _("Öğrenci paket abonelikleri")
+        indexes = [models.Index(fields=["user", "status"])]
+
+    @property
+    def is_active(self) -> bool:
+        now = timezone.now()
+        return self.status == SubscriptionStatus.ACTIVE and (
+            self.current_period_end is None or self.current_period_end > now
+        )

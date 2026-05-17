@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 class UserRole(models.TextChoices):
     TEACHER = "teacher", "Öğretmen"
     STUDENT = "student", "Öğrenci"
+    PARENT = "parent", "Veli"
 
 
 class TeacherVerificationStatus(models.TextChoices):
@@ -98,3 +99,38 @@ class TeacherVerificationDocument(models.Model):
         ordering = ["-created_at"]
         verbose_name = _("Öğretmen doğrulama belgesi")
         verbose_name_plural = _("Öğretmen doğrulama belgeleri")
+
+
+class ParentStudentLink(models.Model):
+    """Veli–öğrenci ilişkisi; veli panelinde yalnızca bağlı öğrenciler görünür."""
+
+    parent = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="parent_links",
+        verbose_name=_("Veli"),
+    )
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="student_parent_links",
+        verbose_name=_("Öğrenci"),
+    )
+    label = models.CharField(
+        _("İlişki etiketi"),
+        max_length=80,
+        blank=True,
+        default="",
+        help_text=_("Örn. 'Oğlum', 'Kızım'."),
+    )
+    created_at = models.DateTimeField(_("Oluşturulma"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Veli–öğrenci bağlantısı")
+        verbose_name_plural = _("Veli–öğrenci bağlantıları")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("parent", "student"),
+                name="accounts_parentstudentlink_parent_student_uniq",
+            ),
+        ]

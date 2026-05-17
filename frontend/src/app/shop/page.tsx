@@ -42,9 +42,9 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 mesh-bg" />
       <TopNav />
       <main className="container-page py-10 sm:py-12">
-        <div className="section-eyebrow">Shop</div>
-        <h1 className="section-title">Materyaller</h1>
-        <p className="section-lead">PDF, video ve diğer materyaller (Marketplace).</p>
+        <div className="section-eyebrow">Mağaza</div>
+        <h1 className="section-title">Dijital materyaller</h1>
+        <p className="section-lead">Öğretmenlerin PDF ders notları, testler ve soru bankaları.</p>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {materials.length === 0 ? (
@@ -59,7 +59,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
                 <h2 className="mt-3 text-lg font-extrabold tracking-tight text-slate-900">{m.title}</h2>
                 <p className="mt-2 line-clamp-3 text-sm text-slate-600">{m.description || "—"}</p>
                 <div className="mt-4 text-xs text-slate-500">
-                  Seller:{" "}
+                  Satıcı:{" "}
                   <Link
                     className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-2 hover:text-[var(--brand-navy)]"
                     href={`/shop?seller=${m.seller.id}`}
@@ -69,7 +69,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
                 </div>
                 <div className="mt-5 flex flex-wrap gap-2">
                   <Link href={`/shop/${m.id}`} className="btn-solid h-10 px-4">
-                    Details
+                    Detay
                   </Link>
                   <WishlistButton kind="material" targetId={m.id} className="h-10" />
                 </div>
