@@ -116,5 +116,5 @@ class Command(BaseCommand):
         self.stdout.write(f"- öğretmen: {teacher.username} / {password}")
         self.stdout.write(f"- öğrenci: {student.username} / {password}")
         self.stdout.write(f"- veli: {parent.username} / {password} (öğrenci: {student.username})")
-        self.stdout.write(f"- paket: /paketler → slug: {pkg.slug}")
+        self.stdout.write(f"- paket: /paketler (slug: {pkg.slug})")
         self.stdout.write("Sınav demo: python manage.py seed_exams")
