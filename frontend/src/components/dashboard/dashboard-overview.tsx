@@ -125,11 +125,14 @@ export function DashboardOverview({ user, subscription }: Props) {
             </SpringLink>
             {user?.role === "teacher" ? (
               <>
-                <SpringLink href="/dashboard/teacher/courses" className="btn-solid">
-                  Teacher panel
+                <SpringLink href="/dashboard/teacher" className="btn-solid">
+                  Öğretmen paneli
+                </SpringLink>
+                <SpringLink href="/dashboard/teacher/materials" className="btn-outline">
+                  Mağaza / PDF
                 </SpringLink>
                 <SpringLink href="/dashboard/teacher/appointments" className="btn-outline">
-                  Canlı ders / Randevu
+                  Canlı ders
                 </SpringLink>
               </>
             ) : null}

@@ -24,8 +24,11 @@ export default async function TeacherCoursesPage() {
         <p className="section-lead">Kurslarını oluştur, düzenle ve ders ekle.</p>
 
         <div className="mt-6 flex flex-wrap gap-2">
+          <Link href="/dashboard/teacher" className="btn-outline h-10 px-4">
+            Öğretmen merkezi
+          </Link>
           <Link href="/dashboard" className="btn-outline h-10 px-4">
-            Panele dön
+            Ana panel
           </Link>
           <Link href="/dashboard/teacher/materials" className="btn-solid h-10 px-4">
             Mağaza / Materyal

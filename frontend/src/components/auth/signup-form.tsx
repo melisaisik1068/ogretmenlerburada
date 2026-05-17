@@ -80,7 +80,7 @@ export function SignupForm() {
       if (role === "parent") {
         router.push("/veli");
       } else if (role === "teacher") {
-        router.push("/dashboard/teacher/courses");
+        router.push("/dashboard/teacher");
       } else {
         router.push(nextUrl.startsWith("/") ? nextUrl : "/dashboard");
       }
