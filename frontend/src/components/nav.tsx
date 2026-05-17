@@ -46,7 +46,7 @@ function buildNavLinks(t: (path: string) => string): NavItem[] {
 
 function buildMoreLinks(t: (path: string) => string): NavItem[] {
   return [
-    { label: t("nav.parent"), href: "/veli" },
+    { label: t("nav.parent"), href: "/dashboard/veli" },
     { label: t("nav.blog"), href: "/blog" },
     { label: t("nav.events"), href: "/events" },
     { label: t("nav.search"), href: "/search" },

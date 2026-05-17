@@ -4,10 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import { getRoleHomePath, normalizeRole } from "@/lib/auth/roles";
+
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextUrl = searchParams.get("next") || "/dashboard";
+  const nextUrl = searchParams.get("next") || "";
   const kayitBasarili = searchParams.get("kayit") === "basarili";
 
   const [username, setUsername] = useState("");
@@ -25,12 +27,16 @@ export function LoginForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.trim(), password }),
       });
-      const data = (await res.json().catch(() => ({}))) as { detail?: string };
+      const data = (await res.json().catch(() => ({}))) as { detail?: string; role?: string };
       if (!res.ok) {
         setError(typeof data.detail === "string" ? data.detail : "Giriş yapılamadı.");
         return;
       }
-      router.push(nextUrl.startsWith("/") ? nextUrl : "/dashboard");
+      const role = normalizeRole(data.role);
+      const fallback = getRoleHomePath(role);
+      const target =
+        nextUrl.startsWith("/") && nextUrl !== "/dashboard" ? nextUrl : fallback;
+      router.push(target);
       router.refresh();
     } finally {
       setLoading(false);
@@ -41,7 +47,7 @@ export function LoginForm() {
     <form className="mt-5 grid gap-3" onSubmit={onSubmit}>
       {kayitBasarili ? (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800" role="status">
-          ✅ Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.
+          Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.
         </div>
       ) : null}
       {error ? (
@@ -78,12 +84,6 @@ export function LoginForm() {
       <div className="text-right text-xs">
         <Link className="font-semibold text-sky-700 underline decoration-sky-300 underline-offset-4" href="/forgot-password">
           Şifremi unuttum
-        </Link>
-      </div>
-      <div className="mt-2 text-sm text-slate-600">
-        Hesabın yok mu?{" "}
-        <Link className="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-4" href="/signup">
-          Ücretsiz Üye Ol
         </Link>
       </div>
     </form>

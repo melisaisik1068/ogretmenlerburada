@@ -1,23 +1,48 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+import {
+  type AppRole,
+  getRoleHomePath,
+  normalizeRole,
+  requiredRolesForPath,
+  roleMayAccessPath,
+} from "./src/lib/auth/roles";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 const TENANT_BASE_DOMAIN = (process.env.NEXT_PUBLIC_TENANT_BASE_DOMAIN ?? "").trim().toLowerCase();
+
+const STUDENT_ONLY_PREFIXES = ["/odevler", "/dashboard/appointments", "/dashboard/orders"];
 
 function extractSubdomain(host: string): string | null {
   const h = host.toLowerCase();
   if (!TENANT_BASE_DOMAIN) return null;
-  // Never treat Vercel deployment domains as tenant subdomains.
-  // On Vercel, the host is typically "<project>.vercel.app" which would otherwise look like a subdomain.
   if (h.endsWith(".vercel.app") || TENANT_BASE_DOMAIN === "vercel.app") return null;
   if (!h.endsWith(`.${TENANT_BASE_DOMAIN}`)) return null;
-  const prefix = h.slice(0, -(TENANT_BASE_DOMAIN.length + 1)); // remove ".base"
-  if (!prefix) return null;
-  // Only single-label subdomains supported: username.firma.com
-  if (prefix.includes(".")) return null;
+  const prefix = h.slice(0, -(TENANT_BASE_DOMAIN.length + 1));
+  if (!prefix || prefix.includes(".")) return null;
   const reserved = new Set(["www", "app", "api", "admin"]);
   if (reserved.has(prefix)) return null;
   return prefix;
+}
+
+async function fetchUserRoleFromApi(token: string): Promise<AppRole | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/accounts/me/`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const u = (await res.json()) as { role?: string };
+    return normalizeRole(u.role);
+  } catch {
+    return null;
+  }
+}
+
+function roleFromRequest(req: NextRequest): AppRole | null {
+  const fromCookie = normalizeRole(req.cookies.get("ob_role")?.value);
+  return fromCookie;
 }
 
 async function requiresPro(token: string) {
@@ -34,11 +59,6 @@ async function requiresPro(token: string) {
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
-  const isDashboard = pathname.startsWith("/dashboard");
-  const isProArea = pathname.startsWith("/dashboard/pro");
-
-  // Teacher subdomain → rewrite to teacher storefront route (/t/[username])
-  // Example: ahmet.firma.com/classes → /t/ahmet/classes
   const host = req.headers.get("host") ?? "";
   const username = extractSubdomain(host);
   if (username && !pathname.startsWith("/t/")) {
@@ -47,7 +67,21 @@ export async function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  if (!isDashboard) return NextResponse.next();
+  const isDashboard = pathname.startsWith("/dashboard");
+  const isProArea = pathname.startsWith("/dashboard/pro");
+  const isVeliLegacy = pathname === "/veli" || pathname.startsWith("/veli/");
+  const needsAuth =
+    isDashboard ||
+    isVeliLegacy ||
+    STUDENT_ONLY_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+
+  if (isVeliLegacy) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/dashboard/veli";
+    return NextResponse.redirect(url);
+  }
+
+  if (!needsAuth) return NextResponse.next();
 
   const token = req.cookies.get("ob_access")?.value;
   if (!token) {
@@ -55,6 +89,32 @@ export async function middleware(req: NextRequest) {
     url.pathname = "/login";
     url.searchParams.set("next", `${pathname}${search}`);
     return NextResponse.redirect(url);
+  }
+
+  let role = roleFromRequest(req);
+  if (!role) {
+    role = await fetchUserRoleFromApi(token);
+  }
+
+  if (pathname === "/dashboard" && role) {
+    const url = req.nextUrl.clone();
+    url.pathname = getRoleHomePath(role);
+    return NextResponse.redirect(url);
+  }
+
+  const roleProtected = requiredRolesForPath(pathname);
+  if (roleProtected && role && !roleMayAccessPath(role, pathname)) {
+    const url = req.nextUrl.clone();
+    url.pathname = getRoleHomePath(role);
+    return NextResponse.redirect(url);
+  }
+
+  for (const prefix of STUDENT_ONLY_PREFIXES) {
+    if ((pathname === prefix || pathname.startsWith(`${prefix}/`)) && role && role !== "student") {
+      const url = req.nextUrl.clone();
+      url.pathname = getRoleHomePath(role);
+      return NextResponse.redirect(url);
+    }
   }
 
   if (isProArea) {
@@ -72,4 +132,3 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/:path*"],
 };
-

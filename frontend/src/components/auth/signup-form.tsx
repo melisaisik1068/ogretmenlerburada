@@ -78,7 +78,7 @@ export function SignupForm() {
         return;
       }
       if (role === "parent") {
-        router.push("/veli");
+        router.push("/dashboard/veli");
       } else if (role === "teacher") {
         router.push("/dashboard/teacher");
       } else {

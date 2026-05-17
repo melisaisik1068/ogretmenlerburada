@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useI18n } from "@/contexts/locale-context";
+import { getRolePanelPath, normalizeRole, ROLE_LABELS, type AppRole } from "@/lib/auth/roles";
 
-type SessionUser = { username?: string; first_name?: string; last_name?: string };
+type SessionUser = { username?: string; first_name?: string; last_name?: string; role?: string };
 
 export function AuthLinks() {
   const { t } = useI18n();
@@ -48,10 +49,18 @@ export function AuthLinks() {
 
   if (user) {
     const label = [user.first_name, user.last_name].filter(Boolean).join(" ").trim() || user.username || "Hesap";
+    const role = normalizeRole(user.role) as AppRole | null;
+    const panelHref = getRolePanelPath(role);
+    const panelTitle = role ? `${ROLE_LABELS[role]} paneli` : t("auth.panel");
+
     return (
       <div className="hidden items-center gap-2 md:flex">
-        <Link className="btn-outline h-10 rounded-full px-4 text-xs font-semibold sm:text-sm" href="/dashboard" title={label}>
-          {t("auth.panel")}
+        <Link
+          className="btn-outline h-10 rounded-full px-4 text-xs font-semibold sm:text-sm"
+          href={panelHref}
+          title={label}
+        >
+          {panelTitle}
         </Link>
         <button
           type="button"

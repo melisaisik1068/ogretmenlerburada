@@ -2,6 +2,14 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { getApiBaseUrl } from "@/lib/env";
+import { normalizeRole } from "@/lib/auth/roles";
+
+const COOKIE_OPTS = {
+  httpOnly: true,
+  path: "/",
+  sameSite: "lax" as const,
+  secure: process.env.NODE_ENV === "production",
+};
 
 export async function POST(req: Request) {
   let body: { username?: string; password?: string };
@@ -43,23 +51,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ detail: "Sunucu jeton döndürmedi." }, { status: 502 });
   }
 
-  const cookieStore = await cookies();
-  cookieStore.set("ob_access", data.access, {
-    httpOnly: true,
-    path: "/",
-    maxAge: 60 * 55,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+  const meRes = await fetch(`${base}/api/accounts/me/`, {
+    headers: { Authorization: `Bearer ${data.access}`, Accept: "application/json" },
+    cache: "no-store",
   });
-  if (data.refresh) {
-    cookieStore.set("ob_refresh", data.refresh, {
-      httpOnly: true,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
+  let role: string | null = null;
+  if (meRes.ok) {
+    const me = (await meRes.json()) as { role?: string };
+    role = normalizeRole(me.role);
   }
 
-  return NextResponse.json({ ok: true });
+  const cookieStore = await cookies();
+  cookieStore.set("ob_access", data.access, { ...COOKIE_OPTS, maxAge: 60 * 55 });
+  if (data.refresh) {
+    cookieStore.set("ob_refresh", data.refresh, { ...COOKIE_OPTS, maxAge: 60 * 60 * 24 * 7 });
+  }
+  if (role) {
+    cookieStore.set("ob_role", role, { ...COOKIE_OPTS, maxAge: 60 * 55 });
+  }
+
+  return NextResponse.json({ ok: true, role });
 }
